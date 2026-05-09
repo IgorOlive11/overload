@@ -1,0 +1,54 @@
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+
+  @import url('https://fonts.googleapis.com/css2?family=Metal+Mania&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap');
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    background-color: #080808;
+    color: #ffffff;
+    font-family: 'Barlow Condensed', sans-serif;
+    overflow: hidden;
+  }
+
+  .btn-primary {
+    @apply bg-neon text-white font-display tracking-widest
+          px-4 py-2 rounded
+          hover:bg-red-700 active:scale-95
+          transition-all duration-150;
+  }
+
+  .btn-secondary {
+    @apply border border-border2 text-white font-body
+          px-4 py-2 rounded
+          hover:bg-s2 active:scale-95
+          transition-all duration-150;
+  }
+
+  .scanlines::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.08) 3px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .input-dark {
+    @apply bg-s2 border border-border1 text-white
+          rounded px-3 py-2 w-full
+          focus:outline-none focus:border-neon
+          font-body text-sm;
+  }
