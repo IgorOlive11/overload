@@ -1,9 +1,20 @@
 import { useState } from "react";
-import { LuSwords, LuMail, LuLock, LuUser, LuArrowLeft, LuEye, LuEyeOff, LuLockKeyhole } from 'react-icons/lu'
+import { LuSwords, LuMail, LuLock, LuUser, LuArrowLeft, LuEye, LuEyeOff, LuLockKeyhole } from 'react-icons/lu';
+import { supabase } from "../lib/supabase";
 
 export default function AuthPage() {
     const [mode, setMode] = useState ('login')
-    const [email, setEmail]
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+
+    async function handleSubmit(e) {
+        e.preventDefault()
+
+        if (mode === 'login') {
+            const { error } = await supabase.auth.signInWithPassword({ email, password })
+        }
+    }
 
     return (
         <div className="min-h-screen bg-bg flex flex-col items-center justify-center px-4 ">
@@ -17,7 +28,7 @@ export default function AuthPage() {
                         {mode === 'login' ? 'ENTRAR' : mode === 'register' ? 'CRIAR CONTA' : 'RECUPERAR SENHA'}
                     </div>
                 </div>
-                <form className="space-y-3">
+                <form className="space-y-3" onSubmit={handleSubmit}>
                     <div>
 
                         <div className="font-mono text-[9px] text-muted tracking-widest mb-1">E-MAIL</div>
@@ -27,6 +38,8 @@ export default function AuthPage() {
                                 type="email"
                                 placeholder="seu@email.com"
                                 className="w-full bg-s2 border border-border2 text-ink px-3 py-3 pl-9 font-mono text-sm outline-none focus:border-neon transition-colors"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
                             />
                         </div>
 
@@ -34,12 +47,14 @@ export default function AuthPage() {
                         <div className="relative">
                             <LuLock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="••••••••"
                                 className="w-full bg-s2 border border-border2 text-ink px-3 py-3 pl-9 pr-10 font-mono text-sm outline-none focus:border-neon transition-colors"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
                             />
-                            <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink transition-colors">
-                                <LuEye size={14} />
+                            <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-ink transition-colors" onClick ={() => setShowPassword(!showPassword)}>
+                                {showPassword ? <LuEye size={14} /> : <LuEyeOff size={14} />}
                             </button>
                         </div>
 
