@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LuSwords, LuMail, LuLock, LuUser, LuArrowLeft, LuEye, LuEyeOff, LuLockKeyhole } from 'react-icons/lu';
+import { LuSwords, LuMail, LuLock, LuEye, LuEyeOff } from 'react-icons/lu';
 import { supabase } from "../lib/supabase";
 
 export default function AuthPage() {
@@ -12,7 +12,7 @@ export default function AuthPage() {
         e.preventDefault()
 
         if (mode === 'login') {
-            const { error } = await supabase.auth.signInWithPassword({ email, password })
+            await supabase.auth.signInWithPassword({ email, password })
         }
     }
 
