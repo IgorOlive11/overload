@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm ci)",
+      "Bash(npm run *)",
+      "Bash(npx playwright test *)",
+      "Bash(supabase start)",
+      "Bash(supabase test db)",
+      "Bash(supabase migration new *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ],
+    "ask": [
+      "Bash(npm install *)",
+      "Bash(npm i *)",
+      "Bash(npm uninstall *)",
+      "Bash(supabase db push *)",
+      "Bash(supabase link *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Edit(./.env)",
+      "Edit(./.env.*)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git push * master)",
+      "Bash(git push * master:*)",
+      "Bash(git push * HEAD:master)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/proteger-arquivos.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}

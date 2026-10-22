@@ -1,16 +1,28 @@
-# React + Vite
+# Overload
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+App de treino em PWA, aberto e sem fins lucrativos, para que qualquer pessoa tenha acesso a um treino bem estruturado. O produto tem dois focos: garantir que a pessoa mantenha o treino e garantir que a carga progrida de forma segura ao longo do tempo. O visual é inspirado em Doom, com Doom faces e pixel art próprias.
 
-Currently, two official plugins are available:
+## Status
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Em reconstrução. Esta é a versão 2 do Overload, refeita do zero a partir de um mock de alta fidelidade e de um documento de regras de negócio. O planejamento está no GitHub Projects do repositório, organizado em épicos, histórias, tarefas, bugs e spikes.
 
-## React Compiler
+## Como o projeto é construído
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O desenvolvimento é feito por agentes de IA, com o dono do repositório no papel de Product Owner: ele escreve e refina as issues, aprova o plano de cada tarefa e testa cada entrega antes do merge. As regras que os agentes seguem estão no [AGENTS.md](AGENTS.md), e as decisões de produto e de arquitetura ficam registradas em [docs/decisoes](docs/decisoes).
 
-## Expanding the ESLint configuration
+## Rodar localmente
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Instale as dependências com `npm ci`.
+2. Copie o `.env.example` para `.env` e preencha com os dados de um projeto Supabase de desenvolvimento.
+3. Rode `npm run dev`.
+
+## Documentação
+
+- [docs/produto](docs/produto): visão e regras de negócio.
+- [docs/tecnico](docs/tecnico): arquitetura e segurança.
+- [docs/decisoes](docs/decisoes): registro das decisões.
+- [design](design): mock e assets visuais.
+
+## Contribuir e segurança
+
+Veja [CONTRIBUTING.md](CONTRIBUTING.md). Para relatar uma falha de segurança, siga o [SECURITY.md](SECURITY.md) em vez de abrir uma issue pública.

@@ -1,0 +1,39 @@
+name: Bug
+description: Um comportamento diferente do esperado. Só evidência, sem diagnóstico.
+title: "[Bug] "
+labels: ["Bug"]
+body:
+  - type: textarea
+    id: passos
+    attributes:
+      label: Passos para reproduzir
+      value: |
+        1.
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Resultado esperado
+    validations:
+      required: true
+  - type: textarea
+    id: obtido
+    attributes:
+      label: Resultado obtido
+    validations:
+      required: true
+  - type: textarea
+    id: evidencia
+    attributes:
+      label: Evidência
+      description: Captura de tela, vídeo ou mensagem de erro. Não inclua dados de outras pessoas.
+    validations:
+      required: true
+  - type: input
+    id: aparelho
+    attributes:
+      label: Aparelho e navegador
+      placeholder: iPhone 13, Safari, app instalado na tela inicial
+    validations:
+      required: true

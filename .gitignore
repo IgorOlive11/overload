@@ -23,3 +23,17 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Variáveis de ambiente: nunca versionar valores reais
+.env
+.env.*
+!.env.example
+
+# Testes
+coverage
+playwright-report
+test-results
+
+# Supabase CLI
+supabase/.temp
+supabase/.branches

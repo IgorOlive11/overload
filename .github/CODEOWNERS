@@ -1,0 +1,9 @@
+# Todo o repositório passa pela revisão do dono.
+* @IgorOlive11
+
+# Pastas sensíveis, listadas à parte para ficarem explícitas.
+/AGENTS.md @IgorOlive11
+/CLAUDE.md @IgorOlive11
+/.claude/ @IgorOlive11
+/.github/ @IgorOlive11
+/supabase/ @IgorOlive11

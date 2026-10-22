@@ -1,0 +1,34 @@
+name: Tarefa
+description: Um trabalho técnico ou de processo que não é uma funcionalidade vista por quem usa o app.
+title: "[Task] "
+labels: ["Task"]
+body:
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo
+      description: O que precisa existir quando esta tarefa terminar, e por quê.
+    validations:
+      required: true
+  - type: textarea
+    id: fontes
+    attributes:
+      label: Fontes
+      description: Documentos, decisões e arquivos que a tarefa segue.
+    validations:
+      required: true
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Critérios de aceite
+      description: Um por linha, no formato Dado, quando, então.
+      value: |
+        - Dado <situação>, quando <ação>, então <resultado verificável>.
+    validations:
+      required: true
+  - type: textarea
+    id: fora
+    attributes:
+      label: Fora do escopo
+    validations:
+      required: true

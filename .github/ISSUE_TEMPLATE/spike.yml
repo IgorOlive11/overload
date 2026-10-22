@@ -1,0 +1,27 @@
+name: Spike
+description: Uma investigação com prazo para responder uma pergunta antes de decidir.
+title: "[Spike] "
+labels: ["Spike"]
+body:
+  - type: textarea
+    id: pergunta
+    attributes:
+      label: Pergunta
+      description: O que precisa ser respondido.
+    validations:
+      required: true
+  - type: input
+    id: prazo
+    attributes:
+      label: Prazo
+      placeholder: 2 dias
+    validations:
+      required: true
+  - type: textarea
+    id: saida
+    attributes:
+      label: Saída esperada
+      description: Um arquivo novo em docs/decisoes com as opções avaliadas e a recomendação.
+      value: Um arquivo novo em docs/decisoes com as opções avaliadas e a recomendação.
+    validations:
+      required: true

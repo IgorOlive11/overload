@@ -1,0 +1,46 @@
+name: História
+description: Uma funcionalidade do ponto de vista de quem usa o app.
+title: "[Historia] "
+labels: ["Historia"]
+body:
+  - type: textarea
+    id: historia
+    attributes:
+      label: História
+      description: Como <quem usa>, quero <o quê>, para <por quê>.
+    validations:
+      required: true
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+      description: Por que isto entra agora e qual problema resolve.
+    validations:
+      required: true
+  - type: textarea
+    id: fontes
+    attributes:
+      label: Fontes
+      description: A seção de docs/produto, a captura em design/mock/telas e as decisões em docs/decisoes que esta história segue.
+      value: |
+        - Regra de negócio: docs/produto/
+        - Tela do mock: design/mock/telas/
+        - Decisão relacionada: docs/decisoes/
+    validations:
+      required: true
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Critérios de aceite
+      description: Um por linha, no formato Dado, quando, então. Sem cenários óbvios ou repetidos.
+      value: |
+        - Dado <situação>, quando <ação>, então <resultado verificável>.
+    validations:
+      required: true
+  - type: textarea
+    id: fora
+    attributes:
+      label: Fora do escopo
+      description: O que parece fazer parte, mas fica para outra issue.
+    validations:
+      required: true
