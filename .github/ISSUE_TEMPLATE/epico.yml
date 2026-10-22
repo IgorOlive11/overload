@@ -1,0 +1,45 @@
+name: Épico
+description: Um conjunto de histórias, tarefas, bugs e spikes que entrega um resultado maior. As filhas entram como sub-issues.
+title: "[Epico] "
+labels: ["Epico"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        O título nomeia o resultado do épico, como "Fundação do repositório", e não a atividade.
+        Depois de criar, escolha a milestone da fase na barra lateral. As filhas são criadas pelos modelos de História, Tarefa, Bug ou Spike e penduradas aqui com "Add existing issue".
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo
+      description: O resultado que existe quando o épico termina.
+    validations:
+      required: true
+  - type: textarea
+    id: por-que-agora
+    attributes:
+      label: Por que agora
+      description: O que este épico destrava, ou o que depende dele.
+    validations:
+      required: true
+  - type: textarea
+    id: criterio-de-saida
+    attributes:
+      label: Critério de saída
+      description: Como saber, com um teste ou uma verificação concreta, que o épico terminou.
+    validations:
+      required: true
+  - type: textarea
+    id: fontes
+    attributes:
+      label: Fontes
+      description: A seção de docs/produto, as telas do mock e as decisões em docs/decisoes que este épico segue.
+    validations:
+      required: true
+  - type: textarea
+    id: fora-do-escopo
+    attributes:
+      label: Fora do escopo
+      description: O que parece fazer parte, mas fica para outro épico.
+    validations:
+      required: true
