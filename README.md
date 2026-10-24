@@ -1,5 +1,7 @@
 # Overload
 
+[![Licença: AGPL-3.0-or-later](https://img.shields.io/badge/licen%C3%A7a-AGPL--3.0--or--later-blue.svg)](LICENSE)
+
 App de treino em PWA, aberto e sem fins lucrativos, para que qualquer pessoa tenha acesso a um treino bem estruturado. O produto tem dois focos: garantir que a pessoa mantenha o treino e garantir que a carga progrida de forma segura ao longo do tempo. O visual é inspirado em Doom, com Doom faces e pixel art próprias.
 
 ## Status
@@ -22,6 +24,10 @@ O desenvolvimento é feito por agentes de IA, com o dono do repositório no pape
 - [docs/tecnico](docs/tecnico): arquitetura e segurança.
 - [docs/decisoes](docs/decisoes): registro das decisões.
 - [design](design): mock e assets visuais.
+
+## Licença
+
+O Overload é software livre, distribuído sob a licença [GNU Affero General Public License v3.0 ou posterior (AGPL-3.0-or-later)](LICENSE). A decisão está registrada em [docs/decisoes/0001-licenca-agpl-3-0-or-later.md](docs/decisoes/0001-licenca-agpl-3-0-or-later.md).
 
 ## Contribuir e segurança
 
