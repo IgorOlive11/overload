@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><filter id='s' x='0' y='0' color-interpolation-filters='sRGB'><feTurbulence type='turbulence' baseFrequency='.18' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .42  0 0 0 0 .37  0 0 0 0 .32  0 0 0 -2.2 1.05'/></filter><rect width='48' height='48' filter='url(#s)' opacity='.5'/></svg>
