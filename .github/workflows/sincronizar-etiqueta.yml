@@ -1,0 +1,88 @@
+# Mantém a etiqueta pronta-para-agente igual ao Status do GitHub Projects.
+# O agente só enxerga a etiqueta, e o projeto é de conta pessoal, que não dispara
+# evento para o Actions quando um card muda de coluna. Por isso o workflow roda
+# a cada 15 minutos e também pelo botão "Run workflow".
+name: Sincronizar etiqueta com o Status
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+concurrency:
+  group: sincronizar-etiqueta
+  cancel-in-progress: false
+
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # O token do dono só lê o projeto (escopo read:project). Ele não escreve nada.
+      - name: Ler o Status das issues no projeto
+        env:
+          GH_TOKEN: ${{ secrets.PROJETO_LEITURA_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Falta o segredo PROJETO_LEITURA_TOKEN, com um token clássico só com o escopo read:project."
+            exit 1
+          fi
+          gh api graphql -f query='
+            query {
+              user(login: "IgorOlive11") {
+                projectV2(number: 4) {
+                  items(first: 100) {
+                    pageInfo { hasNextPage }
+                    nodes {
+                      status: fieldValueByName(name: "Status") {
+                        ... on ProjectV2ItemFieldSingleSelectValue { name }
+                      }
+                      content {
+                        ... on Issue {
+                          number
+                          state
+                          repository { nameWithOwner }
+                          labels(first: 30) { nodes { name } }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' > itens.json
+          if [ "$(jq '.data.user.projectV2.items.pageInfo.hasNextPage' itens.json)" = "true" ]; then
+            echo "::error::O projeto passou de 100 itens. Acrescente paginação a este workflow."
+            exit 1
+          fi
+
+      # Quem põe e tira a etiqueta é o token do próprio workflow, só com permissão de issues.
+      - name: Pôr e tirar a etiqueta
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          jq -r --arg repo "$REPO" '
+            .data.user.projectV2.items.nodes[]
+            | select(.content.repository.nameWithOwner == $repo and .content.state == "OPEN")
+            | (.status.name // "") as $status
+            | ([.content.labels.nodes[].name] | index("pronta-para-agente") != null) as $tem
+            | if $status == "Pronta para agente" and ($tem | not) then "poe \(.content.number)"
+              elif $status == "Rascunho" and $tem then "tira \(.content.number)"
+              else empty end
+          ' itens.json > acoes.txt
+          if [ ! -s acoes.txt ]; then
+            echo "Nada a mudar."
+            exit 0
+          fi
+          while read -r acao numero; do
+            if [ "$acao" = "poe" ]; then
+              gh api -X POST "repos/$REPO/issues/$numero/labels" -f "labels[]=pronta-para-agente" > /dev/null
+              echo "Etiqueta posta na #$numero."
+            else
+              gh api -X DELETE "repos/$REPO/issues/$numero/labels/pronta-para-agente" > /dev/null
+              echo "Etiqueta tirada da #$numero."
+            fi
+          done < acoes.txt
