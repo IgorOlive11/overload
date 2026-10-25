@@ -1,8 +1,8 @@
 # Validar o rascunho de regras contra o mock e a spike #22, com as divergências resolvidas e as perguntas que sobram
 
-- Status: proposta
+- Status: aceita
 - Data: 2026-10-25
-- Quem decidiu: proposta da spike #25, aguarda a aprovação do PO
+- Quem decidiu: IgorOlive11 (PO), em 2026-10-25, a partir da proposta da spike #25
 
 ## Contexto e problema
 
@@ -207,9 +207,28 @@ Cada pergunta traz uma sugestão, para facilitar a resposta. A sugestão não va
 13. **Popups de bravo e feliz.** Voltam como na V1, com as frases duras, ou fica o texto no cartão de sugestão, como no mock? Sugestão: fica o cartão do mock.
 14. **Botão de feedback.** Vai para todas as contas ou sai do MVP? Se ficar, a função é reescrita sem chave de serviço e sem levar token ou dado de outra pessoa. Sugestão: sai do MVP e vira issue própria.
 
+## Respostas do PO
+
+Respondidas pelo PO em 2026-10-25. Valem como regra de negócio e são a fonte da #24 para cada ponto abaixo.
+
+1. **Primeira vez do exercício:** vale a sugestão. Conta como a mesma configuração o mesmo exercício com a mesma lista de tipos de série, e o histórico vale entre protocolos diferentes.
+2. **Dica de navegação do reel:** vale a sugestão. O tour do Doomguy mostra o reel uma vez, sem dica separada.
+3. **Cancelar sem salvar:** diverge da sugestão. Existe um botão de cancelar o treino, ao lado do botão de finalizar, que pede confirmação. Cancelar descarta a sessão sem salvar nada e sem contar presença, para quem abriu um treino por engano ou só para testar. O mock ainda não tem esse botão nem o modal de confirmação; o desenho e a regra detalhada ficam na issue própria do cancelamento.
+4. **Limpar o histórico e observações por exercício:** os dois ficam fora do MVP.
+5. **Escolher o treino:** vale a sugestão. A pessoa pode escolher outro treino da semana num menu discreto, sem mudar a regra de presença.
+6. **Descanso de preparo de 90 s:** vale a sugestão. Não volta; a importação troca para o valor mais próximo e o relatório da importação avisa.
+7. **Exercício sem séries:** vale a sugestão. Não pode; os dois montadores bloqueiam a remoção da última série.
+8. **Faixa personalizada:** vale a sugestão. Só existe quando vem do CSV, como "Do protocolo".
+9. **Exercícios salvos:** vale a sugestão. Não há lista pessoal no MVP.
+10. **Vincular exercícios à biblioteca:** o botão da V1 não volta.
+11. **Faltar de novo:** vale a sugestão. Só o aviso e a reação da Doom face, sem punição na fase ou na meta.
+12. **Conquistas:** vale a sugestão. Ficam as definições do mock (Sem desculpa: 2 semanas seguidas na meta; Rip and tear: 3 cargas sobem na mesma sessão), e o Hellwalker passa a ser uma fase inteira na meta.
+13. **Popups de bravo e feliz:** fica como no mock, com o texto no cartão de sugestão.
+14. **Botão de feedback:** sai do MVP e vira issue futura.
+
 ## Consequências
 
-- Bom, porque a #24 pode escrever já a maior parte das regras, que estão coerentes ou resolvidas, e só espera o PO nas 14 perguntas.
+- Bom, porque a #24 pode escrever já a maior parte das regras, que estão coerentes ou resolvidas, e já tem as respostas do PO para as 14 perguntas.
 - Bom, porque os pontos em que o rascunho ficou desatualizado (painel de admin, crédito da ExerciseDB, "cinco faixas", conflitos 1, 4 e 12) não passam para `regras-de-negocio.md`.
 - Ruim, porque o mock continua com detalhes que contradizem a regra: o padrão da série nova, a faixa 8 a 12 nos exemplos, a remoção da última série no montador avançado, o GER 9 e o preparo de 90 s do importador e o texto da lateral sobre o cadastro da biblioteca. Quem ler o mock como regra pode copiar esses detalhes. Ficam como sugestão de issue para corrigir o mock.
 

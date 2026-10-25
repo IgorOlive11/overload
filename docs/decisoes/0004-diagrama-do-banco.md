@@ -1,8 +1,8 @@
 # Apagar o ERD.png e manter o diagrama do v2 em Mermaid, conferido pelas migrações
 
-- Status: proposta
+- Status: aceita
 - Data: 2026-10-25
-- Quem decidiu: proposta da spike #22, aguarda a aprovação do PO
+- Quem decidiu: IgorOlive11 (PO), em 2026-10-25, a partir da proposta da spike #22
 
 ## Contexto e problema
 
