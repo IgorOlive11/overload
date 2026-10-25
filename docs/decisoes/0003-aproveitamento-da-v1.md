@@ -35,13 +35,13 @@ A recomendação é a opção 1. A opção 2 herdaria o que o v2 descartou (pap�
 | --- | --- | --- | --- |
 | Cálculo de carga | `src/utils/loads.js` | Descarta | Arredonda tudo em 2,5 kg (`round25`) e usa uma rampa própria (45%, 70%, 75% e 80%) que nem bate com `PREP_RAMPS`, da própria V1. O mock arredonda por equipamento (`EQ` e `roundEq` em `design/mock/regras.js`), como manda a regra atual. |
 | Protocolo e escala GER | `src/data/protocol.js` | Adapta | Os textos da escala GER 7 a 13 (`GER_CONFIG`) e as rampas de preparo (`PREP_RAMPS`) são iguais aos do mock (`RAMPS`). O resto muda: cinco tipos de série contra três, grade de 8 semanas por 7 dias contra semana-tipo com fase. Vale levar só as tabelas de constantes, conferidas com o mock. |
-| CSV do protocolo | `src/utils/protocolCsv.js` | Adapta | As 14 colunas são as mesmas que o mock usa, e o mock acrescenta `agenda` e `fase_semanas`. A neutralização de células com `=`, `+`, `-` e `@` existe só no mock (`design/mock/csv.js`). O leitor da V1 aceita tipos que saíram e substitui o protocolo sem confirmar, as duas coisas mudaram. Serve de ponto de partida para o importador. |
+| CSV do protocolo | `src/utils/protocolCsv.js` | Adapta | As 14 colunas são as mesmas que o mock usa, e o mock acrescenta `agenda` e `fase_semanas`. A neutralização de células com `=`, `+`, `-` e `@` existe só no mock (`design/mock/csv.js`). O leitor da V1 aceita tipos que saíram, lê todas as semanas e substitui o protocolo sem confirmar, e tudo isso mudou: o importador do v2 segue o mock (divergência 5). Serve de ponto de partida só para a leitura das colunas. |
 | Cronômetro de descanso | `src/utils/timerManager.js` | Reaproveita | São 20 linhas sem dependência que calculam o tempo pelo horário de término (`_endsAt`), como a regra que se mantém: o descanso sobrevive a recarregar a página. O mock só simula com um contador. |
 | Alarme de fim do descanso | `src/utils/alarmSound.js` | Reaproveita | Gera o alarme de duas notas pela Web Audio API, sem arquivo de áudio, e explica por que o som é a garantia no iOS, onde não há vibração. A regra se mantém e o mock não tem som. |
 | Busca na biblioteca | `src/lib/exerciseSource.js` | Adapta | O adapter que separa a fonte (ExerciseDB) da interface continua útil. A parte que lê do Supabase muda junto com a tabela `exercises_library`, que ganha o equipamento como categoria. |
 | Dicionário de busca em português | `src/lib/exercisePtDictionary.js` | Reaproveita | É um mapa de vocabulário de academia em português e inglês, sem dependência, e a fonte continua só em inglês. |
-| Seed da biblioteca | `scripts/seedExercises.mjs` | Adapta | Já roda fora do app com a chave de serviço, como a arquitetura pede para o v2. Precisa mapear os equipamentos da fonte para as categorias do mock (veja as Divergências). |
-| Filtro neon dos GIFs | `src/components/NeonGifFilters.jsx` e `src/components/ExerciseGif.jsx` | Adapta | O filtro (verde até GER 10, vermelho do 11 para cima, com opção de desligar) é requisito do MVP no rascunho de regras e não existe no mock. Os filtros SVG podem ser levados como estão; a leitura do estado global muda. |
+| Seed da biblioteca | `scripts/seedExercises.mjs` | Adapta | Já roda fora do app com a chave de serviço, como a arquitetura pede para o v2, e é o único caminho de cadastro de exercícios (divergência 3). Precisa mapear os equipamentos da fonte para as categorias do mock, o que fica para uma spike própria (divergência 2). |
+| Filtro neon dos GIFs | `src/components/NeonGifFilters.jsx` e `src/components/ExerciseGif.jsx` | Adapta | O filtro (verde até GER 10, vermelho do 11 para cima, com opção de desligar) é requisito do MVP, confirmado pelo PO (divergência 1). O mock só o representa visualmente de outra maneira. Os filtros SVG podem ser levados como estão; a leitura do estado global muda. |
 | Doom face | `src/components/DoomFace.jsx` | Descarta | O mock já tem a sua (`design/mock/doom-face.js`), com outra proporção, e as imagens já estão em `design/assets/faces`. |
 | Demais componentes | `src/components` (`Header`, `Sidebar`, `ExerciseCard`, `GlobalRestTimer`, `TutorialModal`, `ExerciseDetailModal`, `ErrorBoundary`, `ViewingAsBanner`, `AdminExerciseFormModal`, `AdminFeedbackButton`) | Descarta | A navegação, os cartões e o tour do mock são outros. `ViewingAsBanner` e os dois de admin dependem dos papéis que saíram. |
 | Páginas | `src/pages` | Descarta | As telas são de antes do mock. `TrainerPage`, `AdminPage` e `DietPage` são de funcionalidades que saíram (#28). A lógica que as páginas guardam já está descrita no rascunho de regras. |
@@ -64,13 +64,18 @@ O que o `src/` deste repositório deve virar:
 
 ## Divergências
 
-Diferenças entre a V1, o mock e as regras que esta spike encontrou e não resolve, porque a escolha é do PO. As que o rascunho de regras já lista como conflito só são citadas.
+Diferenças entre a V1, o mock e as regras que esta spike encontrou e não resolveu, porque a escolha é do PO. O PO respondeu a cada uma na revisão da spike, em 2026-10-25. As respostas valem como regra de negócio e servem de fonte para a #25 e a #24, que consolidam `docs/produto/`.
 
 1. O rascunho de regras mantém o filtro neon dos GIFs como requisito do MVP, mas o mock não mostra o filtro em nenhuma tela. Ele entra no MVP mesmo sem estar no mock?
+   - **Resposta do PO:** sim. No mock, o filtro só é representado visualmente de outra maneira.
 2. A ExerciseDB guarda os equipamentos como texto livre, em inglês, e um exercício pode ter mais de um. O mock usa cinco categorias (barra, Smith, máquina de anilhas, máquina de placas e halteres), e o arredondamento depende delas. Quem decide a categoria de cada exercício da biblioteca: um mapa automático no seed, uma revisão manual ou as duas coisas?
+   - **Resposta do PO:** vai para uma spike própria. O estudo é grande e foge do escopo desta.
 3. O rascunho de regras diz que o cadastro de exercícios sai do app e vai para um script, mas o comentário do PO na mesma regra fala num painel de admin com rota separada mais adiante, e a #28 registra que não há papel de administrador. O cadastro fica só no script, ou a arquitetura deve prever esse painel separado?
+   - **Resposta do PO:** só no script. O painel de admin da V1 foi removido para eliminar uma fonte de fragilidade, e não volta como painel separado.
 4. A V1 mostra o crédito da ExerciseDB com uso não comercial, e o rascunho de regras deixa esse ponto sem decisão. A biblioteca do v2 continua vindo da ExerciseDB, com essa licença?
+   - **Resposta do PO:** sim.
 5. A V1 tem semanas com conteúdo próprio, e o mock tem uma semana-tipo repetida na fase. O rascunho de regras já lista isso como o primeiro conflito. O importador de CSV adaptado da V1 deve esperar essa resposta antes de decidir o que fazer com as semanas além da primeira?
+   - **Resposta do PO:** o importador segue o mock. Em `design/mock/csv.js`, só a primeira semana do arquivo entra, a fase fica com 4, 6 ou 8 semanas (lida de `fase_semanas`), e o relatório avisa quantas semanas o arquivo tinha.
 
 ## Consequências
 
@@ -89,8 +94,9 @@ Diferenças entre a V1, o mock e as regras que esta spike encontrou e não resol
 ## Issues de acompanhamento sugeridas
 
 - Levar o cronômetro por horário de término e o alarme de duas notas da V1 para o v2, com testes, quando a sessão de treino for construída.
-- Adaptar o seed e a busca da biblioteca de exercícios para o v2, com a categoria de equipamento. Depende da resposta à divergência 2.
-- Levar o filtro neon dos GIFs para o passo a passo do exercício. Depende da resposta à divergência 1.
-- Escrever o importador e o exportador de CSV do v2, partindo de `src/utils/protocolCsv.js` e de `design/mock/csv.js`. Depende da resposta à divergência 5.
+- Spike: como os equipamentos da ExerciseDB viram as cinco categorias do mock (divergência 2).
+- Adaptar o seed e a busca da biblioteca de exercícios para o v2, com a categoria de equipamento e o crédito da ExerciseDB. Depende da spike acima.
+- Levar o filtro neon dos GIFs para o passo a passo do exercício (divergência 1).
+- Escrever o importador e o exportador de CSV do v2 conforme `design/mock/csv.js`, usando `src/utils/protocolCsv.js` só como referência das colunas (divergência 5).
 - Reescrever a função de e-mail do Auth com a verificação de assinatura.
 - Revisar, quando as telas principais existirem, as dependências que vieram da V1 no `package.json`.
