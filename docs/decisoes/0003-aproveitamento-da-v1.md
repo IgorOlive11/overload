@@ -69,7 +69,7 @@ Diferenças entre a V1, o mock e as regras que esta spike encontrou e não resol
 1. O rascunho de regras mantém o filtro neon dos GIFs como requisito do MVP, mas o mock não mostra o filtro em nenhuma tela. Ele entra no MVP mesmo sem estar no mock?
    - **Resposta do PO:** sim. No mock, o filtro só é representado visualmente de outra maneira.
 2. A ExerciseDB guarda os equipamentos como texto livre, em inglês, e um exercício pode ter mais de um. O mock usa cinco categorias (barra, Smith, máquina de anilhas, máquina de placas e halteres), e o arredondamento depende delas. Quem decide a categoria de cada exercício da biblioteca: um mapa automático no seed, uma revisão manual ou as duas coisas?
-   - **Resposta do PO:** vai para uma spike própria. O estudo é grande e foge do escopo desta.
+   - **Resposta do PO:** vai para uma spike própria (#43). O estudo é grande e foge do escopo desta.
 3. O rascunho de regras diz que o cadastro de exercícios sai do app e vai para um script, mas o comentário do PO na mesma regra fala num painel de admin com rota separada mais adiante, e a #28 registra que não há papel de administrador. O cadastro fica só no script, ou a arquitetura deve prever esse painel separado?
    - **Resposta do PO:** só no script. O painel de admin da V1 foi removido para eliminar uma fonte de fragilidade, e não volta como painel separado.
 4. A V1 mostra o crédito da ExerciseDB com uso não comercial, e o rascunho de regras deixa esse ponto sem decisão. A biblioteca do v2 continua vindo da ExerciseDB, com essa licença?
@@ -94,7 +94,7 @@ Diferenças entre a V1, o mock e as regras que esta spike encontrou e não resol
 ## Issues de acompanhamento sugeridas
 
 - Levar o cronômetro por horário de término e o alarme de duas notas da V1 para o v2, com testes, quando a sessão de treino for construída.
-- Spike: como os equipamentos da ExerciseDB viram as cinco categorias do mock (divergência 2).
+- Spike: como os equipamentos da ExerciseDB viram as cinco categorias do mock (divergência 2). Aberta como #43.
 - Adaptar o seed e a busca da biblioteca de exercícios para o v2, com a categoria de equipamento e o crédito da ExerciseDB. Depende da spike acima.
 - Levar o filtro neon dos GIFs para o passo a passo do exercício (divergência 1).
 - Escrever o importador e o exportador de CSV do v2 conforme `design/mock/csv.js`, usando `src/utils/protocolCsv.js` só como referência das colunas (divergência 5).
