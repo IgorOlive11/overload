@@ -1,8 +1,8 @@
 # Escrever o v2 em TypeScript, só com sintaxe que o Node consegue apagar
 
-- Status: proposta
+- Status: aceita
 - Data: 2026-10-25
-- Quem decidiu: proposta da spike #22, aguarda a aprovação do PO
+- Quem decidiu: IgorOlive11 (PO), em 2026-10-25, a partir da proposta da spike #22
 
 ## Contexto e problema
 
