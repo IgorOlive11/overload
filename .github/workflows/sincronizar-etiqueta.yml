@@ -70,7 +70,7 @@ jobs:
             | (.status.name // "") as $status
             | ([.content.labels.nodes[].name] | index("pronta-para-agente") != null) as $tem
             | if $status == "Pronta para agente" and ($tem | not) then "poe \(.content.number)"
-              elif ($status == "Rascunho" or $status == "Em Refinamento") and $tem then "tira \(.content.number)"
+              elif $status == "Rascunho" and $tem then "tira \(.content.number)"
               else empty end
           ' itens.json > acoes.txt
           if [ ! -s acoes.txt ]; then
