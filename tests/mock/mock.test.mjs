@@ -65,11 +65,17 @@ test('Dado que o mock precisa abrir como antes, quando o HTML gerado abrir no na
     t.skip('playwright não está instalado; rode com NODE_PATH apontando para um playwright global')
     return
   }
+  // Só os dois arquivos do build; o caminho pedido nunca vira caminho no disco.
+  const servidos = {
+    '/': ['index.html', 'text/html'],
+    '/index.html': ['index.html', 'text/html'],
+    '/babylon-mini.js': ['babylon-mini.js', 'text/javascript'],
+  }
   const servidor = http.createServer((req, res) => {
-    const arquivo = join(saida, req.url.split('?')[0] === '/' ? 'index.html' : req.url.split('?')[0])
-    if (!existsSync(arquivo)) return res.writeHead(404).end()
-    const tipo = extname(arquivo) === '.js' ? 'text/javascript' : 'text/html'
-    res.writeHead(200, { 'content-type': tipo }).end(readFileSync(arquivo))
+    const servido = servidos[req.url.split('?')[0]]
+    if (!servido) return res.writeHead(404).end()
+    const [nome, tipo] = servido
+    res.writeHead(200, { 'content-type': tipo }).end(readFileSync(join(saida, nome)))
   })
   await new Promise((ok) => servidor.listen(0, ok))
   const navegador = await chromium.launch()
