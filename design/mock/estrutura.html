@@ -1,0 +1,284 @@
+<body>
+<a class="skip" href="#app">Pular para o app</a>
+<div class="shell">
+  <aside class="scope" aria-label="Escopo do novo Overload">
+    <h1>Overload</h1>
+    <p class="lede">Reescrito do zero com o mesmo DNA Doom. Mantém as regras de execução da v1 e acrescenta sugestão de carga, aderência configurável e a carga em 3D.</p>
+
+    <h2><i style="background:var(--accent)"></i>Mantido da v1</h2>
+    <ul>
+      <li>Reel vertical de passos: arrastar, rolar ou usar as setas. Passos passados podem ser corrigidos e os futuros ficam bloqueados.</li>
+      <li>Doom face com o nome do esforço e as repetições na reserva em todo cartão de série, menos na pergunta de carga.</li>
+      <li>Repetições e carga digitáveis, com os botões de mais e menos ao lado.</li>
+      <li>Preparo pela matriz do músculo (3, 2 ou 1), com carga em porcentagem e editável, e corte do preparo que ficaria igual à série válida.</li>
+      <li>Descanso embaixo do reel, com menos 15 e mais 15 segundos. Vira rodapé fora da tela de treino.</li>
+      <li>Passo a passo do exercício com GIF e instruções em cada cartão.</li>
+      <li>Protocolo com os 7 dias da semana, dia de descanso e arrastar para reordenar.</li>
+      <li>Importar e exportar protocolo em CSV, no Plano, cada conta com o próprio protocolo.</li>
+    </ul>
+
+    <h2><i style="background:var(--warn)"></i>Muda</h2>
+    <ul>
+      <li>A pergunta de carga só aparece na primeira vez do exercício com aquela configuração. Depois vem um cartão de sugestão com o Ok.</li>
+      <li>Tipos de série: só normal, rest-pause (2 blocos) e muscle round (até 6 blocos de 4, podendo falhar em qualquer um).</li>
+      <li>Descanso definido por exercício, com um padrão do protocolo.</li>
+      <li>Polia usa o mesmo modelo da máquina de placas.</li>
+    </ul>
+
+    <h2><i style="background:var(--ok)"></i>Novo no MVP</h2>
+    <ul>
+      <li>Progressão automática. Normal sobe quando todas as séries chegam ao topo da faixa sem passar do esforço alvo. Rest-pause sobe com 10 no bloco 1. Muscle round sobe com os 6 blocos completos e mais de 4 no sexto.</li>
+      <li>Depois de cada série normal, você registra quanto sobrou num seletor com a Doom face de cada nível.</li>
+      <li>Treino do dia por dia da semana fixo ou por sequência, escolhido ao criar o protocolo.</li>
+      <li>Camada de aderência configurável: fase travada, meta semanal e regra de nunca faltar duas vezes.</li>
+      <li>Tela de intermissão do Doom no fim da sessão e keycards na meta da semana.</li>
+    </ul>
+
+    <h2><i style="background:var(--dim)"></i>Fora do MVP</h2>
+    <ul>
+      <li>Papéis de treinador e de admin, área do treinador e painel admin.</li>
+      <li>Cadastro da biblioteca de exercícios, que vai para um painel web separado, mais à frente no roadmap.</li>
+    </ul>
+    <p class="note">Mock de alta fidelidade · dados de exemplo · nada é salvo em servidor</p>
+  </aside>
+
+  <main class="app" id="app" tabindex="-1">
+    <canvas id="fireCv" width="96" height="64" aria-hidden="true"></canvas>
+    <div class="screens">
+
+      <!-- HOJE -->
+      <section class="screen" id="v-hoje" aria-label="Hoje">
+        <div class="topbar"><div class="mark">Overload</div><div class="row" style="gap:6px"><button class="tip chip map" id="mapChip" data-tip="Fase 1 do protocolo, sexta sessão.">Episódio <b>1</b> · Missão <b>6</b></button></div></div>
+        <div class="hero">
+          <div class="stage" id="stageHome">
+            <canvas id="c3d" aria-label="Equipamento em 3D com a carga do primeiro exercício"></canvas>
+            <button class="load tip" id="homeLoad" data-tip=""><span class="kg" id="homeKg">85</span><span class="u" id="homeU">kg</span><span class="ex" id="homeCap">Hack squat</span></button>
+          </div>
+        </div>
+        <div class="next">
+          <button class="tip facebtn" id="homeFaceBtn" data-tip="Esforço alvo de hoje: Não quero me machucar. Termine cada série com 2 a 3 repetições sobrando."><img class="face bob" id="homeFace" width="48" height="74" alt="Doom face do esforço alvo"></button>
+          <div>
+            <h2 class="next-title" id="nextTitle">Próxima: sessão A</h2>
+            <p class="next-meta"><span id="nextMeta">5 exercícios</span> <button class="tip pill" id="upsTip" data-tip=""><span id="upsCount">2 cargas sobem</span></button></p>
+          </div>
+        </div>
+        <p class="state" id="ruleText" hidden></p>
+        <button class="btn btn-primary" id="startBtn">Começar sessão A</button>
+        <div class="week">
+          <div class="slots" id="weekSlots"></div>
+          <button class="tip infobtn" data-tip="Cada sessão feita vira uma keycard. A meta é 2 por semana, em qualquer dia; a terceira é bônus e não aumenta a meta seguinte. A meta é parte da camada de aderência, configurada ao montar o protocolo." aria-label="Sobre a meta da semana"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5" stroke-linecap="square"/></svg></button>
+        </div>
+        <div class="mockbar">
+          <span>Simular cenário do mock</span>
+          <div class="seg" role="group" aria-label="Simular conta nova" id="frBar" hidden>
+            <button data-frb="day">Avançar um dia</button>
+            <button data-frb="exit">Sair da simulação</button>
+          </div>
+          <div class="seg" role="group" aria-label="Simular cenário" id="scBar">
+            <button aria-pressed="true" data-sc="ok">Em dia</button>
+            <button aria-pressed="false" data-sc="miss1">Faltou uma</button>
+            <button aria-pressed="false" data-sc="miss2">Sumiu 15 dias</button>
+            <button aria-pressed="false" data-sc="miss3">Sumiu 1 mês</button>
+            <button data-fr="start">Primeiro acesso</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TREINO -->
+      <section class="screen" id="v-treino" aria-label="Treino" hidden>
+        <div id="sessIdle" class="col">
+          <h2 class="next-title" id="idleTitle">Cargas da sessão A</h2>
+          <div class="prog-list" id="progList"></div>
+          <button class="btn btn-primary" id="startBtn2">Começar sessão A</button>
+          <div class="row" style="justify-content:center;gap:2px">
+            <button class="linkbtn" id="demoBtn">Testar os tipos de série</button>
+            <button class="tip infobtn" data-tip="Sessão de demonstração com pergunta de carga na primeira vez, cartões de sugestão, preparo pela matriz do músculo, os três tipos de série e os cinco equipamentos, incluindo uma máquina de placas acima da pilha. Não conta presença." aria-label="Sobre o teste"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5" stroke-linecap="square"/></svg></button>
+          </div>
+        </div>
+
+        <div id="sessLive" class="sess" hidden>
+          <div class="sess-top"><h2 id="sessName">Sessão A</h2><div class="row" style="gap:4px"><span class="clock num" id="hClock" aria-label="Tempo de sessão">00:00</span><button class="endbtn" id="skipEx" hidden>Pular</button><button class="endbtn" id="endEarly"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12"/></svg><span>Encerrar</span></button></div></div>
+          <button class="viewbar" id="viewBar" hidden></button>
+          <div class="reel" id="reel" aria-label="Passos da sessão. Arraste, role ou use as setas para navegar."></div>
+          <div id="restSlot"></div>
+          <div class="reelfoot">
+            <button class="nav" id="rPrev" aria-label="Passo anterior"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+            <div class="actslot" id="actSlot"></div>
+            <button class="nav" id="rNextBtn" aria-label="Próximo passo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          </div>
+        </div>
+
+        <div id="sessDone" class="col" hidden>
+          <div class="done-hero">
+            <img class="face" id="doneFace" width="72" height="112" alt="Doom face de comemoração">
+            <div class="col" style="gap:6px">
+              <h2 id="doneTitle">Meta da semana batida</h2>
+              <div class="next-meta" id="doneEyebrow">Sessão A concluída</div>
+            </div>
+          </div>
+          <div class="inter" id="inter">
+            <div><span>Séries</span><b class="num" id="tSets">0</b></div>
+            <div><span>Preparo</span><b class="num" id="tPrep">0</b></div>
+            <div><span>Cargas sobem</span><b class="num" id="tUps">0</b></div>
+            <div><span>Tempo</span><b class="num" id="tTime">00:00</b></div>
+            <div class="par"><span>Par <small>estimativa do plano</small></span><b class="num" id="tPar">00:00</b></div>
+          </div>
+          <div class="slots" id="weekSlotsDone"></div>
+          <div class="prog-list" id="nextUps"></div>
+          <div class="achrow" id="achRow"><img class="face" data-face="10" alt="" width="36" height="56"><p>Conquista nova: <b>Sem desculpa</b> <button class="tip infobtn" data-tip="Duas semanas seguidas batendo a meta de sessões. As conquistas premiam presença e carga, nunca dias seguidos." aria-label="Sobre a conquista"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5" stroke-linecap="square"/></svg></button></p></div>
+          <p id="nextCardTitle">Próxima: sessão B, em qualquer dia.</p>
+          <button class="btn btn-ghost" id="backHome">Voltar para Hoje</button>
+        </div>
+      </section>
+
+      <!-- PROGRESSO -->
+      <section class="screen" id="v-progresso" aria-label="Progresso" hidden>
+        <div class="ptop"><h2 id="pTitle">Progresso</h2></div>
+        <div id="frProg" class="col" style="gap:16px"></div>
+        <p class="lead">Fase 1, semana 3. Você fez <b class="num">5</b> das 6 sessões possíveis até agora, fechou as <b class="num">2</b> semanas completas na meta e a carga subiu <b class="num">6</b> vezes.</p>
+        <div class="card">
+          <div class="row between"><h3>Presença por semana</h3><button class="tip infobtn" data-tip="Verde: sessão feita. Tracejado: vaga de bônus. Borda vermelha: a próxima sessão." aria-label="Legenda"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5" stroke-linecap="square"/></svg></button></div>
+          <div class="grid-weeks" id="gridWeeks"></div>
+        </div>
+        <div class="card">
+          <div class="row between"><h3>Conquistas</h3><button class="tip pill" data-tip="As conquistas premiam presença semanal e carga subindo, nunca dias seguidos.">2 de 6</button></div>
+          <div class="ach">
+            <div><img class="face" data-face="9" alt="" width="36" height="56"><b>Primeira missão</b><span>primeiro treino</span></div>
+            <div><img class="face" data-face="10" alt="" width="36" height="56"><b>Habitué</b><span>5 treinos</span></div>
+            <div class="lock"><img class="face" data-face="10" alt="" width="36" height="56"><b>Sem desculpa</b><span>2 semanas seguidas na meta</span></div>
+            <div class="lock"><img class="face" data-face="11" alt="" width="36" height="56"><b>Veterano</b><span>10 treinos, faltam 5</span></div>
+            <div class="lock"><img class="face" data-face="13" alt="" width="36" height="56"><b>Rip and tear</b><span>3 cargas sobem na mesma sessão</span></div>
+            <div class="lock"><img class="face" data-face="13" alt="" width="36" height="56"><b>Doom slayer</b><span>30 treinos</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row between"><h3>Carga por exercício</h3><button class="tip infobtn" data-tip="Linha das últimas 5 sessões de cada exercício. Ponto verde: a carga sobe na próxima." aria-label="Sobre o gráfico"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5" stroke-linecap="square"/></svg></button></div>
+          <div id="exProg"></div>
+        </div>
+      </section>
+
+      <!-- PLANO -->
+      <section class="screen" id="v-plano" aria-label="Plano" hidden>
+        <div class="topbar"><div class="mark">Plano</div><span class="chip">fase 1 de 2</span></div>
+        <div class="seg big" role="group" aria-label="Seção do plano">
+          <button aria-pressed="true" data-pv="cur">Fase atual</button>
+          <button aria-pressed="false" data-pv="build">Montar protocolo</button>
+        </div>
+
+        <div id="frPlan" class="col" style="gap:16px" hidden></div>
+        <div id="planCur" class="col" style="gap:16px">
+          <div class="timeline" id="timeline"></div>
+          <div class="card">
+            <div class="row between"><h3>Fase 1</h3><button class="tip pill" data-tip="Com 10 das 12 sessões feitas até a semana 6, a fase 2 libera uma terceira sessão semanal."><span class="num" id="phaseNum">5 de 12</span></button></div>
+            <div class="bar-track"><div class="bar-fill" id="phaseFill" style="width:41.6%"></div><div class="bar-goal" style="left:83.3%"></div></div>
+          </div>
+          <div class="card">
+            <div class="lock">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              <h3>Travado até a semana 7 <button class="tip infobtn" data-tip="Esta fase foi criada com a camada de aderência ligada: plano travado, meta de 2 sessões por semana, treino por sequência e regra de nunca faltar duas vezes. Anote ideias abaixo ou monte o rascunho da próxima fase." aria-label="Por que o plano está travado"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5" stroke-linecap="square"/></svg></button></h3>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Ideias para a semana 7</h3>
+            <form class="idea-form" id="ideaForm">
+              <label class="sr" for="ideaInput">Nova ideia</label>
+              <input id="ideaInput" placeholder="Ex.: trocar flexora por adutora" autocomplete="off">
+              <button type="submit">Anotar</button>
+            </form>
+            <ul class="ideas" id="ideas"></ul>
+          </div>
+          <details class="card" open><summary><h3>Sessão A</h3></summary><ul class="plan-list" id="planA"></ul></details>
+          <details class="card"><summary><h3>Sessão B</h3></summary><ul class="plan-list" id="planB"></ul></details>
+          <details class="card">
+            <summary><h3>Como executar</h3></summary>
+            <ol class="rules">
+              <li>Deixe 2 a 3 repetições na reserva nas semanas 1 a 3 e 1 repetição nas semanas 4 a 6. Nunca até a falha nesta fase.</li>
+              <li>Fez 12 repetições nas duas séries deixando a reserva combinada: a carga sobe na próxima sessão.</li>
+              <li>Preparo só no primeiro exercício de perna e no primeiro de tronco, travado em 2 séries.</li>
+              <li>Faltou uma vez: a próxima oportunidade é obrigatória.</li>
+            </ol>
+          </details>
+        </div>
+
+        <div id="planBuild" class="col" hidden>
+          <button class="switch" role="switch" id="bAdv" aria-checked="false"><span class="kn"></span>Modo avançado</button>
+          <div id="bSimple" class="col"></div>
+          <div id="bAdvWrap" class="col">
+          <p class="next-meta" style="margin:0" id="bIntro"><span id="bIntroTxt">Rascunho da fase 2, começando do seu v3.</span> <button class="tip infobtn" id="bIntroTip" data-tip="O rascunho não mexe na fase 1, que segue travada. Ele fica guardado para ser avaliado no fim da fase, junto com as ideias anotadas." aria-label="Sobre o rascunho"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5" stroke-linecap="square"/></svg></button></p>
+          <label class="lblsel">Como o treino do dia é escolhido
+            <select id="bSched">
+              <option value="semana">Dia da semana fixo</option>
+              <option value="sequencia">Sequência: se faltar, o app oferece o treino pendente</option>
+            </select>
+          </label>
+          <p class="why" id="bSchedWhy"></p>
+          <div class="days" id="bDays" role="group" aria-label="Dias da semana"></div>
+          <div class="dayhead"><h3 id="bDayName">Segunda</h3>
+            <button class="switch" role="switch" id="bOff" aria-checked="false"><span class="kn"></span>Dia de descanso</button>
+          </div>
+          <div class="bsum" id="bSum"></div>
+          <ol class="blist" id="bList"></ol>
+          <div class="col" style="gap:6px" id="bAdd">
+            <label class="sr" for="bSearch">Buscar exercício na biblioteca</label>
+            <input class="field" id="bSearch" placeholder="Adicionar exercício: busque por nome ou músculo" autocomplete="off">
+            <ul class="results" id="bRes"></ul>
+          </div>
+          <details class="card" id="bRestDet">
+            <summary><h3>Descansos padrão</h3></summary>
+            <p>Valem para todo exercício que não tiver o próprio descanso.</p>
+            <div class="brest">
+              <label>Entre séries<select id="bRest"><option value="60">60 s</option><option value="90">90 s</option><option value="120">120 s</option><option value="150">150 s</option><option value="180">180 s</option></select></label>
+              <label>No preparo<select id="bPrepRest"><option value="30">30 s</option><option value="40">40 s</option><option value="60">60 s</option></select></label>
+            </div>
+          </details>
+          <details class="card" id="bLayerDet">
+            <summary><h3>Camada de aderência</h3></summary>
+            <p>Opcional. Ligue o que fizer sentido para o objetivo deste protocolo.</p>
+            <div class="layer">
+              <button class="switch" role="switch" data-l="phase" aria-checked="true"><span class="kn"></span>Fase com plano travado e lista de ideias</button>
+              <div class="sub"><span>Duração da fase</span><select id="lWeeks" aria-label="Duração da fase"><option value="4">4 semanas</option><option value="6">6 semanas</option><option value="8">8 semanas</option></select></div>
+              <button class="switch" role="switch" data-l="goal" aria-checked="true"><span class="kn"></span>Meta semanal de sessões</button>
+              <div class="sub"><span>Sessões por semana</span><select id="lGoal" aria-label="Sessões por semana"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+              <button class="switch" role="switch" data-l="never2" aria-checked="true"><span class="kn"></span>Nunca faltar duas vezes</button>
+            </div>
+          </details>
+          <details class="card" id="bVolDet">
+            <summary><h3>Volume semanal</h3></summary>
+            <p>Soma os dias que não são de descanso. <button class="tip pill" data-tip="Séries válidas diretas contam 1 e as de músculo acessório contam 0,5. Preparo não conta. A linha vermelha marca a dose mínima efetiva de 4 séries por semana.">Como conta</button></p>
+            <div class="vol" id="bVol"></div>
+          </details>
+          <button class="btn btn-primary" id="bTest">Testar segunda</button>
+          <button class="btn btn-ghost" id="bSave">Salvar rascunho</button>
+          <button class="btn btn-ghost" id="bExport" hidden>Exportar CSV</button>
+          <div class="bactions">
+            <button class="linkbtn" id="bClear">Limpar este dia</button>
+            <button class="linkbtn" id="bDiscard">Descartar rascunho</button>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="tipbox" id="tipBox" role="tooltip" hidden></div>
+      <div class="toast" id="toast" role="status" hidden><img class="face" id="toastFace" alt="" width="28" height="43"><div><b id="toastT">Carga sobe</b><span id="toastS"></span></div></div>
+      <div class="flash" id="flash" aria-hidden="true"></div>
+      <div class="sheet" id="sheet" hidden><div class="panel" role="dialog" aria-modal="true" aria-labelledby="shT"><div class="phd"><h3 id="shT">Exercício</h3><button class="infobtn" id="shX" aria-label="Fechar" style="width:44px;height:44px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div id="shBody" class="col" style="gap:12px"></div></div></div>
+    </div>
+
+    <div class="restfoot" id="restFoot" hidden>
+      <div class="trk3"><i id="fBar"></i></div>
+      <div class="rrow"><div class="rt"><small>Descanso</small><b class="num" id="fT">2:00</b></div><span class="sp"></span><button class="rgo" id="fBack">Voltar ao treino</button></div>
+    </div>
+
+    <nav class="tabs four" role="tablist" aria-label="Seções">
+      <button role="tab" aria-selected="true" data-v="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Hoje</button>
+      <button role="tab" aria-selected="false" data-v="treino"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12h2M20 12h2M6 7v10M18 7v10M9 9v6M15 9v6M9 12h6"/></svg>Treino<i class="live" id="liveDot" hidden></i></button>
+      <button role="tab" aria-selected="false" data-v="progresso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18M5 16l5-5 4 3 6-7"/></svg>Progresso</button>
+      <button role="tab" aria-selected="false" data-v="plano"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg>Plano</button>
+    </nav>
+      <div class="gblock" id="gBlock" hidden aria-hidden="true"></div>
+      <div class="gspot" id="gSpot" hidden aria-hidden="true"></div>
+      <div class="guide" id="guide" hidden><span class="fslot gf"><img class="face" id="gFace" width="48" height="74" alt="Doomguy"></span><div class="gbub" role="status" aria-live="polite"><p id="gText"></p><div class="gmini" id="gMini"></div><div class="gact"><button class="linkbtn" id="gSkip">Pular</button><button class="btn btn-primary" id="gNext">Próximo</button></div></div></div>
+      <div class="frlayer" id="frLayer" hidden></div>
+  </main>
+</div>
+

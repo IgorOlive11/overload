@@ -13,7 +13,8 @@ O repositório está em reconstrução. O código em `src/` (login, hooks e stor
 - `npm run lint`: ESLint.
 - `npm run build`: build de produção.
 
-Os comandos de teste entram aqui quando os testes forem configurados.
+- `npm test`: testes de `tests/` (runner do Node, sem dependência). O teste de abertura do mock no navegador usa o Playwright e é pulado se ele não estiver instalado.
+- `node design/mock/build.mjs`: gera o HTML completo do mock em `design/mock/dist/`. Veja `design/mock/README.md`.
 
 ## Stack
 
