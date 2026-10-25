@@ -7,7 +7,9 @@ O Overload é construído por agentes de IA, com o dono do repositório no papel
 1. Toda mudança começa numa issue, aberta com um dos modelos do repositório: história, tarefa, bug ou spike.
 2. A issue só pode ser trabalhada quando tiver a etiqueta `pronta-para-agente` e nenhum bloqueio aberto. O dono do repositório põe a etiqueta ao mover a issue para Pronta para o agente no GitHub Projects; o agente confere a etiqueta, porque não lê os campos do Projects.
 3. O trabalho acontece num branch `agente/<número>-<assunto>`, nunca na `master`.
-4. O pull request cita a issue, segue o modelo do repositório e só entra com o CI verde e a aprovação do dono do repositório.
+4. O pull request cita a issue, segue o modelo do repositório, traz o parecer do subagente revisor e só entra com o CI verde e a aprovação do dono do repositório.
+5. Pull request que mexe em `AGENTS.md`, `CLAUDE.md`, `.claude/` ou `.github/`, ou que altera mais de 400 linhas, não é mergeado no mesmo dia em que foi aberto. Arquivos gerados por comando, como o build do mock, não contam nas 400 linhas.
+6. Decisões e perguntas ao dono são respondidas no comentário da issue, antes do pull request. O registro em `docs/decisoes` já entra com a resposta.
 
 ## Pronta para o agente
 
