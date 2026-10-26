@@ -1,0 +1,48 @@
+# Roda o agente (Claude Code) quando o dono do repositório menciona @claude
+# numa issue ou num pull request. O agente responde como o app do Claude.
+# Cada menção é uma execução: o agente publica o plano e para, e só segue
+# quando o dono responder com uma nova menção.
+name: Agente
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+# Uma execução por vez, na fila: duas tarefas em paralelo disputariam
+# o limite da assinatura e os números de docs/decisoes.
+concurrency:
+  group: agente
+  cancel-in-progress: false
+
+jobs:
+  agente:
+    # Só o dono chama o agente. A action também exige permissão de escrita
+    # e recusa bots, mas a checagem aqui evita até subir a máquina.
+    if: >-
+      contains(github.event.comment.body || github.event.review.body || '', '@claude') &&
+      (github.event.comment.user.login || github.event.review.user.login) == 'IgorOlive11'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: --max-turns 80

@@ -13,10 +13,10 @@ description: Use no começo de toda issue do Overload, antes de escrever qualque
    - a captura em `design/mock/telas`, se for tarefa de tela;
    - os arquivos de `docs/decisoes` relacionados.
 3. Compare a issue com as fontes. Se houver divergência entre a issue, o mock e a regra de negócio, não escolha: escreva a divergência como pergunta na issue e pare.
-4. Escreva o plano como comentário na issue, com estas partes:
+4. Escreva o plano como comentário na issue. Numa sessão na nuvem, comece o comentário com a linha `**Agente (Claude Code):**` e termine com o link da sessão; no GitHub Actions, o comentário já sai como o app do Claude. O plano tem estas partes:
    - **Entendimento:** o que a issue pede, com as suas palavras, em até cinco linhas.
    - **Arquivos:** quais arquivos serão criados ou alterados.
    - **Testes:** um teste por critério de aceite, com o nome que cada um vai ter.
    - **Fora do escopo:** o que você notou e não vai fazer.
    - **Dúvidas:** o que precisa de resposta antes de começar. Se estiver vazio, escreva "nenhuma".
-5. Espere a aprovação do plano antes de escrever código.
+5. Espere a aprovação do plano antes de escrever código. No GitHub Actions, a execução termina depois do plano, e a aprovação chega numa nova menção do dono.
