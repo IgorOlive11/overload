@@ -45,4 +45,10 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: --max-turns 80
+          # O agente lê a issue e os bloqueios com o gh, como a skill ler-a-tarefa pede.
+          # Só esses dois comandos de leitura são liberados; comentar, commitar e
+          # criar o branch a própria action faz pelas ferramentas dela.
+          claude_args: >-
+            --max-turns 80
+            --allowedTools "Bash(gh issue view:*),Bash(gh api repos/IgorOlive11/overload/issues/*/dependencies/blocked_by*)"
+          branch_name_template: "agente/{{entityNumber}}-{{description}}"
