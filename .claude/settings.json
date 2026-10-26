@@ -3,7 +3,14 @@
     "allow": [
       "Bash(npm ci)",
       "Bash(npm run *)",
+      "Bash(npm test)",
+      "Bash(npm test *)",
+      "Bash(npm install *)",
+      "Bash(npm i *)",
       "Bash(npx playwright test *)",
+      "Bash(npx playwright install *)",
+      "Bash(node design/mock/*)",
+      "Bash(node --test *)",
       "Bash(supabase start)",
       "Bash(supabase test db)",
       "Bash(supabase migration new *)",
@@ -12,8 +19,6 @@
       "Bash(git log *)"
     ],
     "ask": [
-      "Bash(npm install *)",
-      "Bash(npm i *)",
       "Bash(npm uninstall *)",
       "Bash(supabase db push *)",
       "Bash(supabase link *)"
