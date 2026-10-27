@@ -4,7 +4,7 @@ App de treino em PWA, aberto e sem fins lucrativos. O foco do produto é garanti
 
 ## Estado atual
 
-O repositório está em reconstrução. O código em `src/` (login, hooks e store) e o `ERD.png` vêm de uma base anterior ao mock e ao modelo do v2, e serão substituídos. Não use o `ERD.png` como referência de modelo de dados: ele tem papel de usuário e um JSON único por seção, e as duas coisas foram descartadas.
+O repositório está em reconstrução. O código em src/ (login, hooks e store) vem de uma base anterior ao mock e ao modelo do v2, e será substituído. A referência do modelo de dados do v1 é docs/tecnico/legado/esquema-v1.sql. Não use esse modelo para o v2: ele tem papel de usuário e um JSON único por seção, e as duas coisas foram descartadas.
 
 ## Comandos
 
