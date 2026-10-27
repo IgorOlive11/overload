@@ -65,6 +65,11 @@ test('Dado que o mock precisa abrir como antes, quando o HTML gerado abrir no na
     t.skip('playwright não está instalado; rode com NODE_PATH apontando para um playwright global')
     return
   }
+  // Com o @playwright/test nas dependências, o pacote existe mesmo onde o navegador não foi baixado, como no CI.
+  if (!existsSync(chromium.executablePath())) {
+    t.skip('o Chromium do Playwright não está instalado; rode npx playwright install chromium')
+    return
+  }
   // Só os dois arquivos do build; o caminho pedido nunca vira caminho no disco.
   const servidos = {
     '/': ['index.html', 'text/html'],
@@ -78,8 +83,9 @@ test('Dado que o mock precisa abrir como antes, quando o HTML gerado abrir no na
     res.writeHead(200, { 'content-type': tipo }).end(readFileSync(join(saida, nome)))
   })
   await new Promise((ok) => servidor.listen(0, ok))
-  const navegador = await chromium.launch()
+  let navegador
   try {
+    navegador = await chromium.launch()
     const pagina = await navegador.newPage({ viewport: { width: 430, height: 900 } })
     const erros = []
     pagina.on('pageerror', (e) => erros.push(e.message))
@@ -92,7 +98,7 @@ test('Dado que o mock precisa abrir como antes, quando o HTML gerado abrir no na
     }
     assert.deepEqual(erros, [])
   } finally {
-    await navegador.close()
+    await navegador?.close()
     servidor.close()
   }
 })
