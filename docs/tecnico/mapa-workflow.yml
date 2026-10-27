@@ -1,0 +1,110 @@
+# Versão do workflow que gera o mapa de execução (issue #57, parte 1).
+# O agente não pode alterar .github/workflows/. O dono copia este arquivo sobre
+# .github/workflows/sincronizar-etiqueta.yml. Veja docs/tecnico/mapa-de-execucao.md.
+#
+# Mantém a etiqueta pronta-para-agente igual ao Status do GitHub Projects e
+# redesenha o mapa de execução. O projeto é de conta pessoal e não dispara evento
+# para o Actions quando um card muda de coluna ou um bloqueio muda. Por isso o
+# workflow também roda a cada 5 minutos e pelo botão "Run workflow".
+name: Sincronizar etiqueta com o Status
+
+on:
+  issues:
+    types: [opened, closed, reopened, labeled, unlabeled]
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: sincronizar-etiqueta
+  cancel-in-progress: false
+
+env:
+  # Issue fixada que guarda o mapa. Ela não é tarefa: fica fora da sincronização e das contas.
+  MAPA_ISSUE: '63'
+
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      # O token do dono só lê o projeto (escopo read:project). Ele não escreve nada.
+      - name: Ler o Status das issues no projeto
+        env:
+          GH_TOKEN: ${{ secrets.PROJETO_LEITURA_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Falta o segredo PROJETO_LEITURA_TOKEN, com um token clássico só com o escopo read:project."
+            exit 1
+          fi
+          gh api graphql -f query='
+            query {
+              user(login: "IgorOlive11") {
+                projectV2(number: 4) {
+                  items(first: 100) {
+                    pageInfo { hasNextPage }
+                    nodes {
+                      status: fieldValueByName(name: "Status") {
+                        ... on ProjectV2ItemFieldSingleSelectValue { name }
+                      }
+                      content {
+                        ... on Issue {
+                          number
+                          state
+                          repository { nameWithOwner }
+                          labels(first: 30) { nodes { name } }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' > itens.json
+          if [ "$(jq '.data.user.projectV2.items.pageInfo.hasNextPage' itens.json)" = "true" ]; then
+            echo "::error::O projeto passou de 100 itens. Acrescente paginação a este workflow."
+            exit 1
+          fi
+
+      # Quem põe e tira a etiqueta é o token do próprio workflow, só com permissão de issues.
+      # A issue do mapa e as tarefas com a etiqueta tarefa-do-po nunca recebem pronta-para-agente.
+      - name: Pôr e tirar a etiqueta
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          jq -r --arg repo "$REPO" --argjson mapa "$MAPA_ISSUE" '
+            .data.user.projectV2.items.nodes[]
+            | select(.content.repository.nameWithOwner == $repo and .content.state == "OPEN" and .content.number != $mapa)
+            | (.status.name // "") as $status
+            | ([.content.labels.nodes[].name]) as $etiquetas
+            | ($etiquetas | index("pronta-para-agente") != null) as $tem
+            | ($etiquetas | index("tarefa-do-po") != null) as $do_po
+            | if $status == "Pronta para agente" and ($tem | not) and ($do_po | not) then "poe \(.content.number)"
+              elif $status == "Rascunho" and $tem then "tira \(.content.number)"
+              else empty end
+          ' itens.json > acoes.txt
+          if [ ! -s acoes.txt ]; then
+            echo "Nada a mudar."
+            exit 0
+          fi
+          while read -r acao numero; do
+            if [ "$acao" = "poe" ]; then
+              gh api -X POST "repos/$REPO/issues/$numero/labels" -f "labels[]=pronta-para-agente" > /dev/null
+              echo "Etiqueta posta na #$numero."
+            else
+              gh api -X DELETE "repos/$REPO/issues/$numero/labels/pronta-para-agente" > /dev/null
+              echo "Etiqueta tirada da #$numero."
+            fi
+          done < acoes.txt
+
+      # Roda depois da etiqueta, para o mapa sair com a etiqueta já atualizada.
+      - name: Redesenhar o mapa de execução
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node .github/mapa/gerar-mapa.mjs
