@@ -37,3 +37,6 @@ test-results
 # Supabase CLI
 supabase/.temp
 supabase/.branches
+
+# Corpo do pull request escrito pelo agente no GitHub Actions
+pr-body.md

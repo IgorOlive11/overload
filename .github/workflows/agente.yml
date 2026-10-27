@@ -48,7 +48,9 @@ jobs:
           # O agente lê a issue e os bloqueios com o gh, como a skill ler-a-tarefa pede,
           # roda os comandos de desenvolvimento e o subagente revisor.
           # Comentar, commitar e criar o branch a própria action faz pelas ferramentas dela.
+          # O pull request o agente abre com o gh pr create, depois do parecer do revisor.
           claude_args: >-
             --max-turns 80
-            --allowedTools "Task,Agent,Bash(gh issue view:*),Bash(gh api repos/IgorOlive11/overload/issues/*/dependencies/blocked_by*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm test:*),Bash(npm run:*),Bash(npx playwright install:*),Bash(npx playwright test:*),Bash(node design/mock/:*),Bash(node --test:*)"
+            --allowedTools "Task,Agent,Bash(gh issue view:*),Bash(gh api repos/IgorOlive11/overload/issues/*/dependencies/blocked_by*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm test:*),Bash(npm run:*),Bash(npx playwright install:*),Bash(npx playwright test:*),Bash(node design/mock/:*),Bash(node --test:*),Bash(gh pr create:*)"
+            --append-system-prompt "Neste repositório, quando terminar as mudanças e o subagente revisor der o veredito de pronto para revisão humana, abra você mesmo o pull request com gh pr create --base master --head <o branch atual> --title <título no formato tipo: descrição> --body-file pr-body.md, escrevendo antes o corpo nesse arquivo na raiz do repositório, que é ignorado pelo git e não deve ser commitado. O corpo segue o modelo de .github/pull_request_template.md, começa com Closes #<número da issue> e traz o parecer do revisor na seção Parecer do revisor. Não use o link Create a PR: no comentário de acompanhamento, coloque o link do pull request aberto."
           branch_name_template: "agente/{{entityNumber}}-{{description}}"
