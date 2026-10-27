@@ -17,18 +17,8 @@ O workflow `sincronizar-etiqueta.yml` roda quando uma issue é aberta, fechada, 
 
 - `.github/mapa/montar-mapa.mjs`: função pura, dados em, Markdown fora.
 - `.github/mapa/gerar-mapa.mjs`: lê a API REST com o `github.token` e grava na issue (`MAPA_ISSUE`). Localiza a issue pelo marcador `<!-- mapa-de-execucao -->` no corpo e recusa escrever se ele não estiver lá.
-- `docs/tecnico/mapa-workflow.yml`: a versão nova do workflow.
+- `.github/workflows/sincronizar-etiqueta.yml`: o workflow, com a sincronização da etiqueta e o passo do mapa.
 - `tests/mapa/`: os testes.
-
-## Como aplicar o workflow
-
-O agente não tem permissão para alterar `.github/workflows/`. O dono aplica à mão:
-
-```
-cp docs/tecnico/mapa-workflow.yml .github/workflows/sincronizar-etiqueta.yml
-```
-
-O teste `tests/mapa/workflow.test.mjs` confere o arquivo em `docs/tecnico/`. Mantenha os dois iguais.
 
 ## Limites desta parte
 

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 
 // O agente não altera .github/workflows/. O workflow novo vive em docs/tecnico
 // até o dono copiá-lo; os testes conferem esse arquivo.
-const workflow = readFileSync(new URL('../../docs/tecnico/mapa-workflow.yml', import.meta.url), 'utf8');
+const workflow = readFileSync(new URL('../../.github/workflows/sincronizar-etiqueta.yml', import.meta.url), 'utf8');
 
 test('Dado que uma issue foi aberta, fechada, reaberta ou mudou de etiqueta, quando o evento acontecer, então o workflow roda na hora e o mapa é redesenhado', () => {
   assert.match(workflow, /^on:\n\s+issues:\n\s+types: \[opened, closed, reopened, labeled, unlabeled\]/m);
