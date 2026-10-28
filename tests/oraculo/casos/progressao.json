@@ -1,0 +1,2307 @@
+[
+  {
+    "id": "judge-01",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal: topo da faixa com a reserva combinada",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12,
+        "ger": 8
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": true,
+      "under": false,
+      "big": false,
+      "txt": "12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-02",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal: meio da faixa",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 10,
+        "ger": 8
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "under": false,
+      "big": false,
+      "txt": "10 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-03",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal: topo, mas com menos reserva que o combinado",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12,
+        "ger": 9
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "under": false,
+      "big": false,
+      "txt": "12 repetições, sobrou 1, numa série de 8 a 12 com 2 a 3 na reserva (chegou ao topo, mas com menos reserva que o combinado)"
+    }
+  },
+  {
+    "id": "judge-04",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal: topo com mais reserva que o combinado",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12,
+        "ger": 7
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": true,
+      "under": false,
+      "big": false,
+      "txt": "12 repetições, sobraram 4 a 6, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-05",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal: sem GER no resultado vale o GER da série",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": true,
+      "under": false,
+      "big": false,
+      "txt": "12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-06",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "normal: uma repetição abaixo do topo",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 11,
+        "ger": 8
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "under": false,
+      "big": false,
+      "txt": "11 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-07",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "normal: exatamente o mínimo da faixa não é abaixo da faixa",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 8,
+        "ger": 8
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "under": false,
+      "big": false,
+      "txt": "8 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-08",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "normal: uma repetição abaixo do mínimo é abaixo da faixa",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 7,
+        "ger": 8
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "under": true,
+      "big": false,
+      "txt": "7 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-09",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "salto grande: repetições = topo não basta",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12,
+        "ger": 8
+      },
+      "kg": 20,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "under": false,
+      "big": true,
+      "txt": "12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva (o próximo salto passa de 10% da carga, então sobe com 13)"
+    }
+  },
+  {
+    "id": "judge-10",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "salto grande: repetições = topo + 1 sobe",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 13,
+        "ger": 8
+      },
+      "kg": 20,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": true,
+      "under": false,
+      "big": true,
+      "txt": "13 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-11",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "sem salto grande (exatamente 10%): o topo basta",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12,
+        "ger": 8
+      },
+      "kg": 25,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": true,
+      "under": false,
+      "big": false,
+      "txt": "12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva"
+    }
+  },
+  {
+    "id": "judge-12",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "série não feita",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": null,
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "txt": "série não feita"
+    }
+  },
+  {
+    "id": "judge-13",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "rest-pause: bloco 1 com 10 repetições sobe",
+    "entrada": {
+      "serie": {
+        "type": "REST_PAUSE"
+      },
+      "resultado": {
+        "b1": 10,
+        "b2": 4
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": true,
+      "txt": "rest-pause com 10 repetições no bloco 1 e 4 no bloco 2 (sobe com 10 no bloco 1)"
+    }
+  },
+  {
+    "id": "judge-14",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "rest-pause: bloco 1 com 9 repetições não sobe",
+    "entrada": {
+      "serie": {
+        "type": "REST_PAUSE"
+      },
+      "resultado": {
+        "b1": 9,
+        "b2": 5
+      },
+      "kg": 40,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "txt": "rest-pause com 9 repetições no bloco 1 e 5 no bloco 2 (sobe com 10 no bloco 1)"
+    }
+  },
+  {
+    "id": "judge-15",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "muscle round completo com 6 repetições no sexto bloco",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      },
+      "resultado": {
+        "blocks": 6,
+        "last": 6
+      },
+      "kg": 20,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": true,
+      "txt": "muscle round completo com 6 repetições no sexto bloco (sobe com mais de 4)"
+    }
+  },
+  {
+    "id": "judge-16",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "muscle round: sexto bloco com 5 repetições sobe",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      },
+      "resultado": {
+        "blocks": 6,
+        "last": 5
+      },
+      "kg": 20,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": true,
+      "txt": "muscle round completo com 5 repetições no sexto bloco (sobe com mais de 4)"
+    }
+  },
+  {
+    "id": "judge-17",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "muscle round: sexto bloco com 4 repetições não sobe",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      },
+      "resultado": {
+        "blocks": 6,
+        "last": 4
+      },
+      "kg": 20,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "txt": "muscle round completo com 4 repetições no sexto bloco (sobe com mais de 4)"
+    }
+  },
+  {
+    "id": "judge-18",
+    "funcao": "judge",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "muscle round: falha no bloco 5 não sobe",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      },
+      "resultado": {
+        "blocks": 5,
+        "last": 4
+      },
+      "kg": 20,
+      "eq": "pilha"
+    },
+    "saida": {
+      "ok": false,
+      "txt": "muscle round com falha no bloco 6 de 6"
+    }
+  },
+  {
+    "id": "suggestion-01",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "sobe quando todas as séries batem a regra",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 12,
+              "ger": 8
+            }
+          ]
+        }
+      }
+    },
+    "saida": {
+      "kg": 85,
+      "up": true,
+      "short": "Sobe 5 kg",
+      "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Bateu a regra em todas as séries, então hoje sobe 5 kg."
+    }
+  },
+  {
+    "id": "suggestion-02",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "mantém quando uma série não bate",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 10,
+              "ger": 8
+            }
+          ]
+        }
+      }
+    },
+    "saida": {
+      "kg": 80,
+      "up": false,
+      "short": "Mantém",
+      "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 10 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Ainda falta bater a regra em todas as séries, então a carga se mantém."
+    }
+  },
+  {
+    "id": "suggestion-03",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "usa o histórico de exemplo do mock (hack, 12 e 12 com 80 kg)",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      }
+    },
+    "saida": {
+      "kg": 85,
+      "up": true,
+      "short": "Sobe 5 kg",
+      "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Bateu a regra em todas as séries, então hoje sobe 5 kg."
+    }
+  },
+  {
+    "id": "suggestion-04",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "sobe com rest-pause e muscle round nos limites da regra",
+    "entrada": {
+      "exercicio": {
+        "id": "dev",
+        "sets": [
+          {
+            "type": "REST_PAUSE"
+          },
+          {
+            "type": "MUSCLE_ROUND"
+          }
+        ],
+        "last": {
+          "kg": 40,
+          "res": [
+            {
+              "b1": 10,
+              "b2": 3
+            },
+            {
+              "blocks": 6,
+              "last": 5
+            }
+          ]
+        }
+      }
+    },
+    "saida": {
+      "kg": 42.5,
+      "up": true,
+      "short": "Sobe 2,5 kg",
+      "why": "Na última sessão, com 40 kg: rest-pause com 10 repetições no bloco 1 e 3 no bloco 2 (sobe com 10 no bloco 1); muscle round completo com 5 repetições no sexto bloco (sobe com mais de 4). Bateu a regra em todas as séries, então hoje sobe 2,5 kg."
+    }
+  },
+  {
+    "id": "suggestion-05",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "sem histórico: primeira vez",
+    "entrada": {
+      "exercicio": {
+        "id": "pecfly",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              10,
+              12
+            ]
+          }
+        ]
+      }
+    },
+    "saida": {
+      "kg": null,
+      "up": false,
+      "short": "Sem histórico",
+      "why": "Primeira vez neste formato. Responda a pergunta da calibração; a carga vira a referência."
+    }
+  },
+  {
+    "id": "suggestion-06",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "abaixo da faixa em uma série: mantém e avisa",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 7,
+              "ger": 8
+            }
+          ]
+        }
+      }
+    },
+    "saida": {
+      "kg": 80,
+      "up": false,
+      "under": true,
+      "short": "Abaixo da faixa",
+      "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 7 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Ficou abaixo do mínimo da faixa. A sugestão mantém a carga; se repetir, considere reduzir."
+    }
+  },
+  {
+    "id": "suggestion-07",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "salto grande no topo: mantém",
+    "entrada": {
+      "exercicio": {
+        "id": "pul",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              10,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 15,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 9
+            }
+          ]
+        }
+      }
+    },
+    "saida": {
+      "kg": 15,
+      "up": false,
+      "short": "Mantém",
+      "why": "Na última sessão, com 15 kg: 12 repetições, sobrou 1, numa série de 10 a 12 com 1 na reserva (o próximo salto passa de 10% da carga, então sobe com 13). Ainda falta bater a regra em todas as séries, então a carga se mantém."
+    }
+  },
+  {
+    "id": "suggestion-08",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "salto grande uma repetição acima do topo: sobe",
+    "entrada": {
+      "exercicio": {
+        "id": "pul",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              10,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 15,
+          "res": [
+            {
+              "reps": 13,
+              "ger": 9
+            }
+          ]
+        }
+      }
+    },
+    "saida": {
+      "kg": 17.5,
+      "up": true,
+      "short": "Sobe 2,5 kg",
+      "why": "Na última sessão, com 15 kg: 13 repetições, sobrou 1, numa série de 10 a 12 com 1 na reserva. Bateu a regra em todas as séries, então hoje sobe 2,5 kg."
+    }
+  },
+  {
+    "id": "suggestion-09",
+    "funcao": "suggestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "número de séries diferente do histórico de exemplo: sem histórico",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      }
+    },
+    "saida": {
+      "kg": null,
+      "up": false,
+      "short": "Sem histórico",
+      "why": "Primeira vez neste formato. Responda a pergunta da calibração; a carga vira a referência."
+    }
+  },
+  {
+    "id": "targetOf-01",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal que subiu: faixa inteira",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12,
+        "ger": 8
+      },
+      "subiu": true,
+      "salto_grande": false
+    },
+    "saida": {
+      "reps": 12,
+      "range": true,
+      "txt": "8 a 12 repetições"
+    }
+  },
+  {
+    "id": "targetOf-02",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal no topo sem subir: repete o topo",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12,
+        "ger": 9
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "reps": 12,
+      "txt": "12 repetições de novo, deixando 2 a 3 na reserva",
+      "effort": true
+    }
+  },
+  {
+    "id": "targetOf-03",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal no meio da faixa: uma repetição a mais",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 10,
+        "ger": 8
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "reps": 11,
+      "txt": "11 repetições"
+    }
+  },
+  {
+    "id": "targetOf-04",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "normal abaixo do mínimo: a meta sobe para o mínimo da faixa",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 5,
+        "ger": 8
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "reps": 8,
+      "txt": "8 repetições"
+    }
+  },
+  {
+    "id": "targetOf-05",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "normal exatamente no mínimo: mínimo + 1",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 8,
+        "ger": 8
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "reps": 9,
+      "txt": "9 repetições"
+    }
+  },
+  {
+    "id": "targetOf-06",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "salto grande no topo: uma repetição além do topo",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 12,
+        "ger": 8
+      },
+      "subiu": false,
+      "salto_grande": true
+    },
+    "saida": {
+      "reps": 13,
+      "txt": "13 repetições, uma além do topo, porque o próximo salto de carga passa de 10%"
+    }
+  },
+  {
+    "id": "targetOf-07",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "salto grande abaixo do topo: segue a regra comum",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      },
+      "resultado": {
+        "reps": 11,
+        "ger": 8
+      },
+      "subiu": false,
+      "salto_grande": true
+    },
+    "saida": {
+      "reps": 12,
+      "txt": "12 repetições"
+    }
+  },
+  {
+    "id": "targetOf-08",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "rest-pause que subiu: cerca de 8 repetições",
+    "entrada": {
+      "serie": {
+        "type": "REST_PAUSE"
+      },
+      "resultado": {
+        "b1": 10,
+        "b2": 4
+      },
+      "subiu": true,
+      "salto_grande": false
+    },
+    "saida": {
+      "txt": "cerca de 8 repetições no bloco 1"
+    }
+  },
+  {
+    "id": "targetOf-09",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "rest-pause sem subir: bloco 1 mais uma",
+    "entrada": {
+      "serie": {
+        "type": "REST_PAUSE"
+      },
+      "resultado": {
+        "b1": 7,
+        "b2": 3
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "b1": 8,
+      "txt": "8 repetições no bloco 1"
+    }
+  },
+  {
+    "id": "targetOf-10",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "rest-pause com 9 no bloco 1: a meta é 10, o teto",
+    "entrada": {
+      "serie": {
+        "type": "REST_PAUSE"
+      },
+      "resultado": {
+        "b1": 9,
+        "b2": 3
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "b1": 10,
+      "txt": "10 repetições no bloco 1"
+    }
+  },
+  {
+    "id": "targetOf-11",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "rest-pause com 10 no bloco 1 sem subir: a meta não passa de 10",
+    "entrada": {
+      "serie": {
+        "type": "REST_PAUSE"
+      },
+      "resultado": {
+        "b1": 10,
+        "b2": 3
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "b1": 10,
+      "txt": "10 repetições no bloco 1"
+    }
+  },
+  {
+    "id": "targetOf-12",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "muscle round que subiu: os 6 blocos de 4",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      },
+      "resultado": {
+        "blocks": 6,
+        "last": 5
+      },
+      "subiu": true,
+      "salto_grande": false
+    },
+    "saida": {
+      "txt": "os 6 blocos de 4"
+    }
+  },
+  {
+    "id": "targetOf-13",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "muscle round com falha no bloco 3: passar do bloco 4",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      },
+      "resultado": {
+        "blocks": 3,
+        "last": 4
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "txt": "passar do bloco 4"
+    }
+  },
+  {
+    "id": "targetOf-14",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "muscle round completo com 4 no sexto: a meta é 5 repetições",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      },
+      "resultado": {
+        "blocks": 6,
+        "last": 4
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "last": 5,
+      "txt": "5 repetições no sexto bloco"
+    }
+  },
+  {
+    "id": "targetOf-15",
+    "funcao": "targetOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "muscle round completo com 6 no sexto sem subir: 7 repetições",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      },
+      "resultado": {
+        "blocks": 6,
+        "last": 6
+      },
+      "subiu": false,
+      "salto_grande": false
+    },
+    "saida": {
+      "last": 7,
+      "txt": "7 repetições no sexto bloco"
+    }
+  },
+  {
+    "id": "planFor-01",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "modo up: todas as séries bateram a regra",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 12,
+              "ger": 8
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 0,
+      "demo": false
+    },
+    "saida": {
+      "mode": "up",
+      "kg": 85,
+      "s": {
+        "kg": 85,
+        "up": true,
+        "short": "Sobe 5 kg",
+        "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Bateu a regra em todas as séries, então hoje sobe 5 kg."
+      },
+      "tg": [
+        {
+          "reps": 12,
+          "range": true,
+          "txt": "8 a 12 repetições"
+        },
+        {
+          "reps": 12,
+          "range": true,
+          "txt": "8 a 12 repetições"
+        }
+      ],
+      "head": "Você superou seus limites",
+      "body": "No último treino você fez 12 e 12 repetições com 80 kg. Hoje, tente 8 a 12 repetições em cada série com 85 kg.",
+      "face": 13
+    }
+  },
+  {
+    "id": "planFor-02",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "modo hold: uma série ficou abaixo do topo",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 10,
+              "ger": 8
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 0,
+      "demo": false
+    },
+    "saida": {
+      "mode": "hold",
+      "kg": 80,
+      "s": {
+        "kg": 80,
+        "up": false,
+        "short": "Mantém",
+        "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 10 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Ainda falta bater a regra em todas as séries, então a carga se mantém."
+      },
+      "tg": [
+        {
+          "reps": 12,
+          "txt": "12 repetições de novo, deixando 2 a 3 na reserva",
+          "effort": true
+        },
+        {
+          "reps": 11,
+          "txt": "11 repetições"
+        }
+      ],
+      "head": "Mais uma hoje",
+      "body": "Você fez 12 e 10 repetições da última vez nesse exercício, com 80 kg. Tente fazer 12 repetições de novo, deixando 2 a 3 na reserva na série 1 e 11 repetições na série 2 com a mesma carga hoje.",
+      "face": 10
+    }
+  },
+  {
+    "id": "planFor-03",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "modo under: uma série abaixo do mínimo da faixa",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 6,
+              "ger": 8
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 0,
+      "demo": false
+    },
+    "saida": {
+      "mode": "under",
+      "kg": 80,
+      "s": {
+        "kg": 80,
+        "up": false,
+        "under": true,
+        "short": "Abaixo da faixa",
+        "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 6 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Ficou abaixo do mínimo da faixa. A sugestão mantém a carga; se repetir, considere reduzir."
+      },
+      "tg": [
+        {
+          "reps": 12,
+          "txt": "12 repetições de novo, deixando 2 a 3 na reserva",
+          "effort": true
+        },
+        {
+          "reps": 8,
+          "txt": "8 repetições"
+        }
+      ],
+      "head": "Abaixo da faixa",
+      "body": "Você fez 12 e 6 repetições da última vez, com 80 kg, abaixo do mínimo da faixa. Mantenha a carga e busque 12 repetições de novo, deixando 2 a 3 na reserva na série 1 e 8 repetições na série 2. Se repetir, ajuste a carga para baixo.",
+      "face": 8
+    }
+  },
+  {
+    "id": "planFor-04",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "rest-pause e muscle round que subiram",
+    "entrada": {
+      "exercicio": {
+        "id": "dev",
+        "sets": [
+          {
+            "type": "REST_PAUSE"
+          },
+          {
+            "type": "MUSCLE_ROUND"
+          }
+        ],
+        "last": {
+          "kg": 40,
+          "res": [
+            {
+              "b1": 10,
+              "b2": 3
+            },
+            {
+              "blocks": 6,
+              "last": 5
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 3,
+      "demo": false
+    },
+    "saida": {
+      "mode": "up",
+      "kg": 42.5,
+      "s": {
+        "kg": 42.5,
+        "up": true,
+        "short": "Sobe 2,5 kg",
+        "why": "Na última sessão, com 40 kg: rest-pause com 10 repetições no bloco 1 e 3 no bloco 2 (sobe com 10 no bloco 1); muscle round completo com 5 repetições no sexto bloco (sobe com mais de 4). Bateu a regra em todas as séries, então hoje sobe 2,5 kg."
+      },
+      "tg": [
+        {
+          "txt": "cerca de 8 repetições no bloco 1"
+        },
+        {
+          "txt": "os 6 blocos de 4"
+        }
+      ],
+      "head": "Você superou seus limites",
+      "body": "No último treino você fez 10 repetições no bloco 1 do rest-pause e os 6 blocos do muscle round com 5 repetições no sexto com 40 kg. Hoje, tente cerca de 8 repetições no bloco 1 e os 6 blocos de 4 com 42,5 kg.",
+      "face": 13
+    }
+  },
+  {
+    "id": "planFor-05",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "modo wq: primeira vez, usa a carga padrão do equipamento",
+    "entrada": {
+      "exercicio": {
+        "id": "pecfly",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              10,
+              12
+            ]
+          }
+        ]
+      },
+      "dias_sem_treinar": 0,
+      "demo": false
+    },
+    "saida": {
+      "mode": "wq",
+      "kg": 30,
+      "s": {
+        "kg": null,
+        "up": false,
+        "short": "Sem histórico",
+        "why": "Primeira vez neste formato. Responda a pergunta da calibração; a carga vira a referência."
+      },
+      "tg": []
+    }
+  },
+  {
+    "id": "planFor-06",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "modo wq na demonstração",
+    "entrada": {
+      "exercicio": {
+        "id": "pecfly",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              10,
+              12
+            ]
+          }
+        ]
+      },
+      "dias_sem_treinar": 30,
+      "demo": true
+    },
+    "saida": {
+      "mode": "wq",
+      "kg": 30,
+      "s": {
+        "kg": null,
+        "up": false,
+        "short": "Sem histórico",
+        "why": "Primeira vez neste formato. Responda a pergunta da calibração; a carga vira a referência."
+      },
+      "tg": []
+    }
+  },
+  {
+    "id": "planFor-07",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "demonstração ignora os dias sem treinar",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 12,
+              "ger": 8
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 30,
+      "demo": true
+    },
+    "saida": {
+      "mode": "up",
+      "kg": 85,
+      "s": {
+        "kg": 85,
+        "up": true,
+        "short": "Sobe 5 kg",
+        "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Bateu a regra em todas as séries, então hoje sobe 5 kg."
+      },
+      "tg": [
+        {
+          "reps": 12,
+          "range": true,
+          "txt": "8 a 12 repetições"
+        },
+        {
+          "reps": 12,
+          "range": true,
+          "txt": "8 a 12 repetições"
+        }
+      ],
+      "head": "Você superou seus limites",
+      "body": "No último treino você fez 12 e 12 repetições com 80 kg. Hoje, tente 8 a 12 repetições em cada série com 85 kg.",
+      "face": 13
+    }
+  },
+  {
+    "id": "planFor-08",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "14 dias sem treinar: ainda não é volta",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 12,
+              "ger": 8
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 14,
+      "demo": false
+    },
+    "saida": {
+      "mode": "up",
+      "kg": 85,
+      "s": {
+        "kg": 85,
+        "up": true,
+        "short": "Sobe 5 kg",
+        "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Bateu a regra em todas as séries, então hoje sobe 5 kg."
+      },
+      "tg": [
+        {
+          "reps": 12,
+          "range": true,
+          "txt": "8 a 12 repetições"
+        },
+        {
+          "reps": 12,
+          "range": true,
+          "txt": "8 a 12 repetições"
+        }
+      ],
+      "head": "Você superou seus limites",
+      "body": "No último treino você fez 12 e 12 repetições com 80 kg. Hoje, tente 8 a 12 repetições em cada série com 85 kg.",
+      "face": 13
+    }
+  },
+  {
+    "id": "planFor-09",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "15 dias sem treinar: modo back, mesma carga, meta no começo da faixa",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 12,
+              "ger": 8
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 15,
+      "demo": false
+    },
+    "saida": {
+      "mode": "back",
+      "kg": 80,
+      "s": {
+        "kg": 85,
+        "up": true,
+        "short": "Sobe 5 kg",
+        "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Bateu a regra em todas as séries, então hoje sobe 5 kg."
+      },
+      "tg": [
+        {
+          "reps": 8,
+          "txt": "8 repetições"
+        },
+        {
+          "reps": 8,
+          "txt": "8 repetições"
+        }
+      ],
+      "head": "De volta do inferno",
+      "body": "Faz 15 dias desde o último treino, quando você fez 12 e 12 repetições com 80 kg. A força se mantém nesse intervalo, então a carga continua a mesma. Hoje, mire em 8 repetições em cada série e deixe folga na reserva.",
+      "face": 7
+    }
+  },
+  {
+    "id": "planFor-10",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "27 dias sem treinar: modo back sem corte de carga",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 12,
+              "ger": 8
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 27,
+      "demo": false
+    },
+    "saida": {
+      "mode": "back",
+      "kg": 80,
+      "s": {
+        "kg": 85,
+        "up": true,
+        "short": "Sobe 5 kg",
+        "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Bateu a regra em todas as séries, então hoje sobe 5 kg."
+      },
+      "tg": [
+        {
+          "reps": 8,
+          "txt": "8 repetições"
+        },
+        {
+          "reps": 8,
+          "txt": "8 repetições"
+        }
+      ],
+      "head": "De volta do inferno",
+      "body": "Faz 27 dias desde o último treino, quando você fez 12 e 12 repetições com 80 kg. A força se mantém nesse intervalo, então a carga continua a mesma. Hoje, mire em 8 repetições em cada série e deixe folga na reserva.",
+      "face": 7
+    }
+  },
+  {
+    "id": "planFor-11",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "28 dias sem treinar: modo back com a carga 10% menor",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 80,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 8
+            },
+            {
+              "reps": 12,
+              "ger": 8
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 28,
+      "demo": false
+    },
+    "saida": {
+      "mode": "back",
+      "kg": 70,
+      "s": {
+        "kg": 85,
+        "up": true,
+        "short": "Sobe 5 kg",
+        "why": "Na última sessão, com 80 kg: 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva; 12 repetições, sobraram 2 a 3, numa série de 8 a 12 com 2 a 3 na reserva. Bateu a regra em todas as séries, então hoje sobe 5 kg."
+      },
+      "tg": [
+        {
+          "reps": 8,
+          "txt": "8 repetições"
+        },
+        {
+          "reps": 8,
+          "txt": "8 repetições"
+        }
+      ],
+      "head": "De volta do inferno",
+      "body": "Faz 28 dias desde o último treino, quando você fez 12 e 12 repetições com 80 kg. Depois de quatro semanas parado a força começa a cair, então hoje a carga vem 10% mais leve, 70 kg. Tente 8 repetições em cada série.",
+      "face": 7
+    }
+  },
+  {
+    "id": "planFor-12",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "30 dias sem treinar com rest-pause: a meta de rest-pause segue a regra comum",
+    "entrada": {
+      "exercicio": {
+        "id": "dev",
+        "sets": [
+          {
+            "type": "REST_PAUSE"
+          }
+        ],
+        "last": {
+          "kg": 40,
+          "res": [
+            {
+              "b1": 8,
+              "b2": 3
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 30,
+      "demo": false
+    },
+    "saida": {
+      "mode": "back",
+      "kg": 35,
+      "s": {
+        "kg": 40,
+        "up": false,
+        "short": "Mantém",
+        "why": "Na última sessão, com 40 kg: rest-pause com 8 repetições no bloco 1 e 3 no bloco 2 (sobe com 10 no bloco 1). Ainda falta bater a regra em todas as séries, então a carga se mantém."
+      },
+      "tg": [
+        {
+          "b1": 9,
+          "txt": "9 repetições no bloco 1"
+        }
+      ],
+      "head": "De volta do inferno",
+      "body": "Faz 30 dias desde o último treino, quando você fez 8 repetições no bloco 1 do rest-pause com 40 kg. Depois de quatro semanas parado a força começa a cair, então hoje a carga vem 10% mais leve, 35 kg. Tente 9 repetições no bloco 1.",
+      "face": 7
+    }
+  },
+  {
+    "id": "planFor-13",
+    "funcao": "planFor",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "salto grande no topo: meta de uma repetição além do topo",
+    "entrada": {
+      "exercicio": {
+        "id": "pul",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              10,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 15,
+          "res": [
+            {
+              "reps": 12,
+              "ger": 9
+            }
+          ]
+        }
+      },
+      "dias_sem_treinar": 0,
+      "demo": false
+    },
+    "saida": {
+      "mode": "hold",
+      "kg": 15,
+      "s": {
+        "kg": 15,
+        "up": false,
+        "short": "Mantém",
+        "why": "Na última sessão, com 15 kg: 12 repetições, sobrou 1, numa série de 10 a 12 com 1 na reserva (o próximo salto passa de 10% da carga, então sobe com 13). Ainda falta bater a regra em todas as séries, então a carga se mantém."
+      },
+      "tg": [
+        {
+          "reps": 13,
+          "txt": "13 repetições, uma além do topo, porque o próximo salto de carga passa de 10%"
+        }
+      ],
+      "head": "Mais uma hoje",
+      "body": "Você fez 12 repetições da última vez nesse exercício, com 15 kg. Tente fazer 13 repetições com a mesma carga hoje.",
+      "face": 10
+    }
+  },
+  {
+    "id": "lastOf-01",
+    "funcao": "lastOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "histórico dado na própria entrada",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ],
+        "last": {
+          "kg": 50,
+          "res": [
+            {
+              "reps": 10,
+              "ger": 8
+            }
+          ]
+        }
+      }
+    },
+    "saida": {
+      "kg": 50,
+      "res": [
+        {
+          "reps": 10,
+          "ger": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "lastOf-02",
+    "funcao": "lastOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "mesmo número de séries normais: reaproveita o histórico do exercício",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      }
+    },
+    "saida": {
+      "kg": 80,
+      "res": [
+        {
+          "reps": 12,
+          "ger": 8
+        },
+        {
+          "reps": 12,
+          "ger": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "lastOf-03",
+    "funcao": "lastOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "número de séries diferente: sem histórico",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      }
+    },
+    "saida": null
+  },
+  {
+    "id": "lastOf-04",
+    "funcao": "lastOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "exercício sem histórico",
+    "entrada": {
+      "exercicio": {
+        "id": "pecfly",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              10,
+              12
+            ]
+          }
+        ]
+      }
+    },
+    "saida": null
+  },
+  {
+    "id": "lastOf-05",
+    "funcao": "lastOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "série que não é normal sem histórico dado: sem histórico no mock",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "REST_PAUSE"
+          }
+        ]
+      }
+    },
+    "saida": null
+  },
+  {
+    "id": "lastOf-06",
+    "funcao": "lastOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "mesma lista de tipos (normal e rest-pause) no histórico: reaproveita",
+    "entrada": {
+      "exercicio": {
+        "id": "dev",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              6,
+              8
+            ]
+          },
+          {
+            "type": "REST_PAUSE"
+          }
+        ]
+      },
+      "historico": {
+        "tipos": [
+          "NORMAL",
+          "REST_PAUSE"
+        ],
+        "kg": 40,
+        "res": [
+          {
+            "reps": 10,
+            "ger": 9
+          },
+          {
+            "b1": 9,
+            "b2": 4
+          }
+        ]
+      }
+    },
+    "saida": {
+      "kg": 40,
+      "res": [
+        {
+          "reps": 10,
+          "ger": 9
+        },
+        {
+          "b1": 9,
+          "b2": 4
+        }
+      ]
+    },
+    "divergencia_do_mock": true,
+    "saida_do_mock": null,
+    "decisao": "docs/decisoes/0005-cruzamento-das-regras-com-o-mock.md",
+    "pergunta": "Pergunta 1: o que é \"aquela configuração\" de séries"
+  },
+  {
+    "id": "lastOf-07",
+    "funcao": "lastOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "mesma lista de tipos em outra faixa de repetições (outro protocolo): reaproveita",
+    "entrada": {
+      "exercicio": {
+        "id": "stiff",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              8,
+              10
+            ]
+          },
+          {
+            "type": "REST_PAUSE"
+          }
+        ]
+      },
+      "historico": {
+        "tipos": [
+          "NORMAL",
+          "REST_PAUSE"
+        ],
+        "kg": 40,
+        "res": [
+          {
+            "reps": 10,
+            "ger": 9
+          },
+          {
+            "b1": 9,
+            "b2": 4
+          }
+        ]
+      }
+    },
+    "saida": {
+      "kg": 40,
+      "res": [
+        {
+          "reps": 10,
+          "ger": 9
+        },
+        {
+          "b1": 9,
+          "b2": 4
+        }
+      ]
+    },
+    "divergencia_do_mock": true,
+    "saida_do_mock": null,
+    "decisao": "docs/decisoes/0005-cruzamento-das-regras-com-o-mock.md",
+    "pergunta": "Pergunta 1: o que é \"aquela configuração\" de séries"
+  },
+  {
+    "id": "lastOf-08",
+    "funcao": "lastOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "lista de tipos diferente (rest-pause no lugar de normal): sem histórico",
+    "entrada": {
+      "exercicio": {
+        "id": "dev",
+        "sets": [
+          {
+            "type": "REST_PAUSE"
+          },
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              6,
+              8
+            ]
+          }
+        ]
+      },
+      "historico": {
+        "tipos": [
+          "NORMAL",
+          "REST_PAUSE"
+        ],
+        "kg": 40,
+        "res": [
+          {
+            "reps": 10,
+            "ger": 9
+          },
+          {
+            "b1": 9,
+            "b2": 4
+          }
+        ]
+      }
+    },
+    "saida": null,
+    "divergencia_do_mock": true,
+    "saida_do_mock": null,
+    "decisao": "docs/decisoes/0005-cruzamento-das-regras-com-o-mock.md",
+    "pergunta": "Pergunta 1: o que é \"aquela configuração\" de séries"
+  }
+]

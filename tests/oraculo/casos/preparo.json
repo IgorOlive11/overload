@@ -1,0 +1,1505 @@
+[
+  {
+    "id": "prepInfo-01",
+    "funcao": "prepInfo",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "estreante: músculo novo na sessão, 3 séries",
+    "entrada": {
+      "lista": [
+        {
+          "id": "dev",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "indice": 0
+    },
+    "saida": {
+      "n": 3,
+      "state": "estreante",
+      "auto": 3,
+      "locked": false,
+      "why": "Ombros entra pela primeira vez na sessão (estreante), então são 3 séries de preparo."
+    }
+  },
+  {
+    "id": "prepInfo-02",
+    "funcao": "prepInfo",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "já primário: o mesmo músculo principal antes, 1 série",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "indice": 1
+    },
+    "saida": {
+      "n": 1,
+      "state": "ja_primario",
+      "auto": 1,
+      "locked": false,
+      "why": "Quadríceps já foi o músculo principal de um exercício anterior (já primário), então é 1 série de preparo."
+    }
+  },
+  {
+    "id": "prepInfo-03",
+    "funcao": "prepInfo",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "pré-ativado: o músculo foi acessório antes, 2 séries",
+    "entrada": {
+      "lista": [
+        {
+          "id": "flex",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60,
+          "acc": [
+            "PEITO"
+          ]
+        },
+        {
+          "id": "sup",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "indice": 1
+    },
+    "saida": {
+      "n": 2,
+      "state": "pre_ativado",
+      "auto": 2,
+      "locked": false,
+      "why": "Peito já trabalhou como acessório antes nesta sessão (pré-ativado), então são 2 séries de preparo."
+    }
+  },
+  {
+    "id": "prepInfo-04",
+    "funcao": "prepInfo",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "primário vence acessório quando os dois valem",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "sup",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60,
+          "acc": [
+            "QUADRÍCEPS"
+          ]
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "indice": 2
+    },
+    "saida": {
+      "n": 1,
+      "state": "ja_primario",
+      "auto": 1,
+      "locked": false,
+      "why": "Quadríceps já foi o músculo principal de um exercício anterior (já primário), então é 1 série de preparo."
+    }
+  },
+  {
+    "id": "prepInfo-05",
+    "funcao": "prepInfo",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "trava manual em 0 série de preparo",
+    "entrada": {
+      "lista": [
+        {
+          "id": "dev",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": 0,
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "indice": 0
+    },
+    "saida": {
+      "n": 0,
+      "state": "estreante",
+      "auto": 3,
+      "locked": true,
+      "why": "Travado manualmente em 0. Pelo estado do músculo seriam 3: ombros entra pela primeira vez na sessão (estreante), então são 3 séries de preparo."
+    }
+  },
+  {
+    "id": "prepInfo-06",
+    "funcao": "prepInfo",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "trava manual em 3 com o automático em 1",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": 3,
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "indice": 1
+    },
+    "saida": {
+      "n": 3,
+      "state": "ja_primario",
+      "auto": 1,
+      "locked": true,
+      "why": "Travado manualmente em 3. Pelo estado do músculo seriam 1: quadríceps já foi o músculo principal de um exercício anterior (já primário), então é 1 série de preparo."
+    }
+  },
+  {
+    "id": "prepInfo-07",
+    "funcao": "prepInfo",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "prep indefinido segue o automático",
+    "entrada": {
+      "lista": [
+        {
+          "id": "dev",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ]
+        }
+      ],
+      "indice": 0
+    },
+    "saida": {
+      "n": 3,
+      "state": "estreante",
+      "auto": 3,
+      "locked": false,
+      "why": "Ombros entra pela primeira vez na sessão (estreante), então são 3 séries de preparo."
+    }
+  },
+  {
+    "id": "buildSteps-01",
+    "funcao": "buildSteps",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "um exercício estreante com duas séries normais: calibração, 3 preparos e 2 séries",
+    "entrada": {
+      "lista": [
+        {
+          "id": "dev",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            },
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ]
+    },
+    "saida": [
+      {
+        "k": 0,
+        "kind": "CALIB"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 0,
+        "n": 3,
+        "pct": 0.55,
+        "rr": "8 a 10"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 1,
+        "n": 3,
+        "pct": 0.7,
+        "rr": "6 a 8"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 2,
+        "n": 3,
+        "pct": 0.85,
+        "rr": "4 a 6"
+      },
+      {
+        "k": 0,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      },
+      {
+        "k": 0,
+        "kind": "WORK",
+        "j": 1,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "buildSteps-02",
+    "funcao": "buildSteps",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "dois exercícios do mesmo músculo: o segundo tem 1 preparo",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ]
+    },
+    "saida": [
+      {
+        "k": 0,
+        "kind": "CALIB"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 0,
+        "n": 3,
+        "pct": 0.55,
+        "rr": "8 a 10"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 1,
+        "n": 3,
+        "pct": 0.7,
+        "rr": "6 a 8"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 2,
+        "n": 3,
+        "pct": 0.85,
+        "rr": "4 a 6"
+      },
+      {
+        "k": 0,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      },
+      {
+        "k": 1,
+        "kind": "CALIB"
+      },
+      {
+        "k": 1,
+        "kind": "PREP",
+        "j": 0,
+        "n": 1,
+        "pct": 0.8,
+        "rr": "4 a 6"
+      },
+      {
+        "k": 1,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "buildSteps-03",
+    "funcao": "buildSteps",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "rest-pause e muscle round como séries válidas",
+    "entrada": {
+      "lista": [
+        {
+          "id": "dev",
+          "sets": [
+            {
+              "type": "REST_PAUSE"
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "elev",
+          "sets": [
+            {
+              "type": "MUSCLE_ROUND"
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ]
+    },
+    "saida": [
+      {
+        "k": 0,
+        "kind": "CALIB"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 0,
+        "n": 3,
+        "pct": 0.55,
+        "rr": "8 a 10"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 1,
+        "n": 3,
+        "pct": 0.7,
+        "rr": "6 a 8"
+      },
+      {
+        "k": 0,
+        "kind": "PREP",
+        "j": 2,
+        "n": 3,
+        "pct": 0.85,
+        "rr": "4 a 6"
+      },
+      {
+        "k": 0,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "REST_PAUSE"
+        }
+      },
+      {
+        "k": 1,
+        "kind": "CALIB"
+      },
+      {
+        "k": 1,
+        "kind": "PREP",
+        "j": 0,
+        "n": 1,
+        "pct": 0.8,
+        "rr": "4 a 6"
+      },
+      {
+        "k": 1,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "MUSCLE_ROUND"
+        }
+      }
+    ]
+  },
+  {
+    "id": "buildSteps-04",
+    "funcao": "buildSteps",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "preparo travado em 0: só calibração e séries",
+    "entrada": {
+      "lista": [
+        {
+          "id": "dev",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": 0,
+          "rest": 120,
+          "prepRest": 60
+        }
+      ]
+    },
+    "saida": [
+      {
+        "k": 0,
+        "kind": "CALIB"
+      },
+      {
+        "k": 0,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "buildSteps-05",
+    "funcao": "buildSteps",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "lista vazia",
+    "entrada": {
+      "lista": []
+    },
+    "saida": []
+  },
+  {
+    "id": "shouldCut-01",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "comum",
+    "descricao": "preparo leve em carga baixa de trabalho: não corta",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        60
+      ],
+      "passo": 2
+    },
+    "saida": false
+  },
+  {
+    "id": "shouldCut-02",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "comum",
+    "descricao": "carga de preparo menor que a de trabalho: não corta",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                4,
+                6
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        60
+      ],
+      "passo": 2
+    },
+    "saida": false
+  },
+  {
+    "id": "shouldCut-03",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "o primeiro preparo nunca é cortado",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                4,
+                6
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        20
+      ],
+      "passo": 1
+    },
+    "saida": false
+  },
+  {
+    "id": "shouldCut-04",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "passo que não é preparo (calibração)",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                4,
+                6
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        20
+      ],
+      "passo": 0
+    },
+    "saida": false
+  },
+  {
+    "id": "shouldCut-05",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "passo que não é preparo (série de trabalho)",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                4,
+                6
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        20
+      ],
+      "passo": 4
+    },
+    "saida": false
+  },
+  {
+    "id": "shouldCut-06",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "passo inexistente",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                4,
+                6
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        20
+      ],
+      "passo": 99
+    },
+    "saida": false
+  },
+  {
+    "id": "shouldCut-07",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "carga do preparo igual à de trabalho e repetições acima do mínimo: corta",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                4,
+                6
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        20
+      ],
+      "passo": 2
+    },
+    "saida": true
+  },
+  {
+    "id": "shouldCut-08",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "carga do preparo igual à de trabalho, repetições (6) abaixo do mínimo (8): não corta",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        20
+      ],
+      "passo": 2
+    },
+    "saida": false
+  },
+  {
+    "id": "shouldCut-09",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "repetições do preparo (6) iguais ao mínimo da série (6): corta",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                6,
+                10
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        20
+      ],
+      "passo": 2
+    },
+    "saida": true
+  },
+  {
+    "id": "shouldCut-10",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "carga do preparo logo abaixo da de trabalho: não corta",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                4,
+                6
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        22.5
+      ],
+      "passo": 2
+    },
+    "saida": false
+  },
+  {
+    "id": "shouldCut-11",
+    "funcao": "shouldCut",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "primeira série em rest-pause: o mínimo é infinito e nunca corta",
+    "entrada": {
+      "lista": [
+        {
+          "id": "stiff",
+          "sets": [
+            {
+              "type": "REST_PAUSE"
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "carga_de_trabalho": [
+        20
+      ],
+      "passo": 2
+    },
+    "saida": false
+  },
+  {
+    "id": "restBefore-01",
+    "funcao": "restBefore",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "antes de um preparo vale o descanso de preparo do exercício",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 90,
+          "prepRest": 40
+        }
+      ],
+      "atual": {
+        "k": 0,
+        "kind": "PREP",
+        "j": 0,
+        "n": 3,
+        "pct": 0.55,
+        "rr": "8 a 10"
+      },
+      "proximo": {
+        "k": 0,
+        "kind": "PREP",
+        "j": 1,
+        "n": 3,
+        "pct": 0.7,
+        "rr": "6 a 8"
+      }
+    },
+    "saida": 60
+  },
+  {
+    "id": "restBefore-02",
+    "funcao": "restBefore",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "antes de uma série válida vale o descanso do exercício",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 90,
+          "prepRest": 40
+        }
+      ],
+      "atual": {
+        "k": 0,
+        "kind": "PREP",
+        "j": 2,
+        "n": 3,
+        "pct": 0.85,
+        "rr": "4 a 6"
+      },
+      "proximo": {
+        "k": 0,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      }
+    },
+    "saida": 120
+  },
+  {
+    "id": "restBefore-03",
+    "funcao": "restBefore",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "entre séries do mesmo exercício",
+    "entrada": {
+      "lista": [
+        {
+          "id": "dev",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            },
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": 0,
+          "rest": 120,
+          "prepRest": 60
+        }
+      ],
+      "atual": {
+        "k": 0,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      },
+      "proximo": {
+        "k": 0,
+        "kind": "WORK",
+        "j": 1,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      }
+    },
+    "saida": 120
+  },
+  {
+    "id": "restBefore-04",
+    "funcao": "restBefore",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "depois da calibração nunca há descanso",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 90,
+          "prepRest": 40
+        }
+      ],
+      "atual": {
+        "k": 0,
+        "kind": "CALIB"
+      },
+      "proximo": {
+        "k": 0,
+        "kind": "PREP",
+        "j": 0,
+        "n": 3,
+        "pct": 0.55,
+        "rr": "8 a 10"
+      }
+    },
+    "saida": 0
+  },
+  {
+    "id": "restBefore-05",
+    "funcao": "restBefore",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "na última série não há próximo passo",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 90,
+          "prepRest": 40
+        }
+      ],
+      "atual": {
+        "k": 1,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      },
+      "proximo": null
+    },
+    "saida": 0
+  },
+  {
+    "id": "restBefore-06",
+    "funcao": "restBefore",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "entre exercícios vale o valor do exercício da próxima série",
+    "entrada": {
+      "lista": [
+        {
+          "id": "hack",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 120,
+          "prepRest": 60
+        },
+        {
+          "id": "ext",
+          "sets": [
+            {
+              "type": "NORMAL",
+              "ger": 8,
+              "rr": [
+                8,
+                12
+              ]
+            }
+          ],
+          "prep": "auto",
+          "rest": 90,
+          "prepRest": 40
+        }
+      ],
+      "atual": {
+        "k": 0,
+        "kind": "WORK",
+        "j": 0,
+        "set": {
+          "type": "NORMAL",
+          "ger": 8,
+          "rr": [
+            8,
+            12
+          ]
+        }
+      },
+      "proximo": {
+        "k": 1,
+        "kind": "CALIB"
+      }
+    },
+    "saida": 0
+  },
+  {
+    "id": "weightQuestion-01",
+    "funcao": "weightQuestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal com 2 a 3 na reserva",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 8,
+        "rr": [
+          8,
+          12
+        ]
+      }
+    },
+    "saida": "Com que peso você faz 8 a 12 repetições deixando 2 a 3 na reserva?"
+  },
+  {
+    "id": "weightQuestion-02",
+    "funcao": "weightQuestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "normal com 4 a 6 na reserva",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 7,
+        "rr": [
+          10,
+          12
+        ]
+      }
+    },
+    "saida": "Com que peso você faz 10 a 12 repetições deixando 4 a 6 na reserva?"
+  },
+  {
+    "id": "weightQuestion-03",
+    "funcao": "weightQuestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "normal com 1 na reserva: último nível com reserva",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 9,
+        "rr": [
+          6,
+          8
+        ]
+      }
+    },
+    "saida": "Com que peso você faz 6 a 8 repetições deixando 1 na reserva?"
+  },
+  {
+    "id": "weightQuestion-04",
+    "funcao": "weightQuestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "normal até a falha com técnica perfeita",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 10,
+        "rr": [
+          8,
+          12
+        ]
+      }
+    },
+    "saida": "Com que peso você faz 8 a 12 repetições indo até a falha com a técnica perfeita?"
+  },
+  {
+    "id": "weightQuestion-05",
+    "funcao": "weightQuestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "normal além da falha: pergunta pelo topo da faixa",
+    "entrada": {
+      "serie": {
+        "type": "NORMAL",
+        "ger": 11,
+        "rr": [
+          6,
+          8
+        ]
+      }
+    },
+    "saida": "Com que peso você faria 8 repetições indo além da falha?"
+  },
+  {
+    "id": "weightQuestion-06",
+    "funcao": "weightQuestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "rest-pause",
+    "entrada": {
+      "serie": {
+        "type": "REST_PAUSE"
+      }
+    },
+    "saida": "Com que peso você faria cerca de 8 repetições chegando perto da falha total?"
+  },
+  {
+    "id": "weightQuestion-07",
+    "funcao": "weightQuestion",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "muscle round",
+    "entrada": {
+      "serie": {
+        "type": "MUSCLE_ROUND"
+      }
+    },
+    "saida": "Com que peso você normalmente falharia entre 10 e 12 repetições?"
+  }
+]

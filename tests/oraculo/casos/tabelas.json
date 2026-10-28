@@ -1,0 +1,82 @@
+{
+  "EQ": {
+    "barra": {
+      "name": "Barra",
+      "base": 20,
+      "step": 2.5,
+      "what": "barra olímpica de 20 kg com anilhas, arredonda em 2,5 kg"
+    },
+    "smith": {
+      "name": "Smith",
+      "base": 15,
+      "step": 2.5,
+      "what": "barra do Smith de 15 kg com anilhas, arredonda em 2,5 kg"
+    },
+    "carregada": {
+      "name": "Máquina de anilhas",
+      "base": 0,
+      "step": 5,
+      "what": "máquina carregada com anilhas nos dois lados, arredonda em 5 kg"
+    },
+    "pilha": {
+      "name": "Máquina de placas",
+      "base": 0,
+      "step": 2.5,
+      "what": "pilha de placas de 5 kg com meia placa de 2,5 kg; acima da pilha, anilhas no gympin. Polias usam o mesmo modelo"
+    },
+    "halteres": {
+      "name": "Halteres",
+      "base": 0,
+      "step": 2,
+      "what": "par de halteres, carga por mão, de 2 em 2 kg",
+      "each": true
+    }
+  },
+  "INC": {
+    "barra": 5,
+    "smith": 2.5,
+    "carregada": 5,
+    "pilha": 2.5,
+    "halteres": 2
+  },
+  "DEFKG": {
+    "barra": 40,
+    "smith": 30,
+    "carregada": 40,
+    "pilha": 30,
+    "halteres": 10
+  },
+  "RAMPS": {
+    "0": [],
+    "1": [
+      [
+        0.8,
+        "4 a 6"
+      ]
+    ],
+    "2": [
+      [
+        0.6,
+        "8 a 10"
+      ],
+      [
+        0.8,
+        "4 a 6"
+      ]
+    ],
+    "3": [
+      [
+        0.55,
+        "8 a 10"
+      ],
+      [
+        0.7,
+        "6 a 8"
+      ],
+      [
+        0.85,
+        "4 a 6"
+      ]
+    ]
+  }
+}

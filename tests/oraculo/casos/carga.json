@@ -1,0 +1,849 @@
+[
+  {
+    "id": "roundEq-01",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "42 kg em barra",
+    "entrada": {
+      "kg": 42,
+      "eq": "barra"
+    },
+    "saida": 42.5
+  },
+  {
+    "id": "roundEq-02",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "57,3 kg em barra",
+    "entrada": {
+      "kg": 57.3,
+      "eq": "barra"
+    },
+    "saida": 57.5
+  },
+  {
+    "id": "roundEq-03",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "42 kg em smith",
+    "entrada": {
+      "kg": 42,
+      "eq": "smith"
+    },
+    "saida": 42.5
+  },
+  {
+    "id": "roundEq-04",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "57,3 kg em smith",
+    "entrada": {
+      "kg": 57.3,
+      "eq": "smith"
+    },
+    "saida": 57.5
+  },
+  {
+    "id": "roundEq-05",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "42 kg em carregada",
+    "entrada": {
+      "kg": 42,
+      "eq": "carregada"
+    },
+    "saida": 40
+  },
+  {
+    "id": "roundEq-06",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "57,3 kg em carregada",
+    "entrada": {
+      "kg": 57.3,
+      "eq": "carregada"
+    },
+    "saida": 55
+  },
+  {
+    "id": "roundEq-07",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "42 kg em pilha",
+    "entrada": {
+      "kg": 42,
+      "eq": "pilha"
+    },
+    "saida": 42.5
+  },
+  {
+    "id": "roundEq-08",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "57,3 kg em pilha",
+    "entrada": {
+      "kg": 57.3,
+      "eq": "pilha"
+    },
+    "saida": 57.5
+  },
+  {
+    "id": "roundEq-09",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "42 kg em halteres",
+    "entrada": {
+      "kg": 42,
+      "eq": "halteres"
+    },
+    "saida": 42
+  },
+  {
+    "id": "roundEq-10",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "57,3 kg em halteres",
+    "entrada": {
+      "kg": 57.3,
+      "eq": "halteres"
+    },
+    "saida": 58
+  },
+  {
+    "id": "roundEq-11",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga zero em barra: nunca abaixo da base ou do passo",
+    "entrada": {
+      "kg": 0,
+      "eq": "barra"
+    },
+    "saida": 20
+  },
+  {
+    "id": "roundEq-12",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga 1 kg abaixo da base de barra: não fica abaixo da base",
+    "entrada": {
+      "kg": 19,
+      "eq": "barra"
+    },
+    "saida": 20
+  },
+  {
+    "id": "roundEq-13",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "meio passo exato em barra: arredonda para cima",
+    "entrada": {
+      "kg": 21.25,
+      "eq": "barra"
+    },
+    "saida": 22.5
+  },
+  {
+    "id": "roundEq-14",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "logo abaixo do meio passo em barra: arredonda para baixo",
+    "entrada": {
+      "kg": 21.24,
+      "eq": "barra"
+    },
+    "saida": 20
+  },
+  {
+    "id": "roundEq-15",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga zero em smith: nunca abaixo da base ou do passo",
+    "entrada": {
+      "kg": 0,
+      "eq": "smith"
+    },
+    "saida": 15
+  },
+  {
+    "id": "roundEq-16",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga 1 kg abaixo da base de smith: não fica abaixo da base",
+    "entrada": {
+      "kg": 14,
+      "eq": "smith"
+    },
+    "saida": 15
+  },
+  {
+    "id": "roundEq-17",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "meio passo exato em smith: arredonda para cima",
+    "entrada": {
+      "kg": 16.25,
+      "eq": "smith"
+    },
+    "saida": 17.5
+  },
+  {
+    "id": "roundEq-18",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "logo abaixo do meio passo em smith: arredonda para baixo",
+    "entrada": {
+      "kg": 16.24,
+      "eq": "smith"
+    },
+    "saida": 15
+  },
+  {
+    "id": "roundEq-19",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga zero em carregada: nunca abaixo da base ou do passo",
+    "entrada": {
+      "kg": 0,
+      "eq": "carregada"
+    },
+    "saida": 5
+  },
+  {
+    "id": "roundEq-20",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga 1 kg abaixo da base de carregada: não fica abaixo da base",
+    "entrada": {
+      "kg": -1,
+      "eq": "carregada"
+    },
+    "saida": 5
+  },
+  {
+    "id": "roundEq-21",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "meio passo exato em carregada: arredonda para cima",
+    "entrada": {
+      "kg": 2.5,
+      "eq": "carregada"
+    },
+    "saida": 5
+  },
+  {
+    "id": "roundEq-22",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "logo abaixo do meio passo em carregada: arredonda para baixo",
+    "entrada": {
+      "kg": 2.49,
+      "eq": "carregada"
+    },
+    "saida": 5
+  },
+  {
+    "id": "roundEq-23",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga zero em pilha: nunca abaixo da base ou do passo",
+    "entrada": {
+      "kg": 0,
+      "eq": "pilha"
+    },
+    "saida": 2.5
+  },
+  {
+    "id": "roundEq-24",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga 1 kg abaixo da base de pilha: não fica abaixo da base",
+    "entrada": {
+      "kg": -1,
+      "eq": "pilha"
+    },
+    "saida": 2.5
+  },
+  {
+    "id": "roundEq-25",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "meio passo exato em pilha: arredonda para cima",
+    "entrada": {
+      "kg": 1.25,
+      "eq": "pilha"
+    },
+    "saida": 2.5
+  },
+  {
+    "id": "roundEq-26",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "logo abaixo do meio passo em pilha: arredonda para baixo",
+    "entrada": {
+      "kg": 1.24,
+      "eq": "pilha"
+    },
+    "saida": 2.5
+  },
+  {
+    "id": "roundEq-27",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga zero em halteres: nunca abaixo da base ou do passo",
+    "entrada": {
+      "kg": 0,
+      "eq": "halteres"
+    },
+    "saida": 2
+  },
+  {
+    "id": "roundEq-28",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga 1 kg abaixo da base de halteres: não fica abaixo da base",
+    "entrada": {
+      "kg": -1,
+      "eq": "halteres"
+    },
+    "saida": 2
+  },
+  {
+    "id": "roundEq-29",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "meio passo exato em halteres: arredonda para cima",
+    "entrada": {
+      "kg": 1,
+      "eq": "halteres"
+    },
+    "saida": 2
+  },
+  {
+    "id": "roundEq-30",
+    "funcao": "roundEq",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "logo abaixo do meio passo em halteres: arredonda para baixo",
+    "entrada": {
+      "kg": 0.99,
+      "eq": "halteres"
+    },
+    "saida": 2
+  },
+  {
+    "id": "unitOf-01",
+    "funcao": "unitOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "unidade de barra",
+    "entrada": {
+      "eq": "barra"
+    },
+    "saida": "kg"
+  },
+  {
+    "id": "unitOf-02",
+    "funcao": "unitOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "unidade de smith",
+    "entrada": {
+      "eq": "smith"
+    },
+    "saida": "kg"
+  },
+  {
+    "id": "unitOf-03",
+    "funcao": "unitOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "unidade de carregada",
+    "entrada": {
+      "eq": "carregada"
+    },
+    "saida": "kg"
+  },
+  {
+    "id": "unitOf-04",
+    "funcao": "unitOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "unidade de pilha",
+    "entrada": {
+      "eq": "pilha"
+    },
+    "saida": "kg"
+  },
+  {
+    "id": "unitOf-05",
+    "funcao": "unitOf",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "halteres: carga por mão",
+    "entrada": {
+      "eq": "halteres"
+    },
+    "saida": "kg cada"
+  },
+  {
+    "id": "prepKg-01",
+    "funcao": "prepKg",
+    "origem": "design/mock/sessao.js",
+    "tipo": "comum",
+    "descricao": "barra, 55% de 60 kg",
+    "entrada": {
+      "exercicio": "stiff",
+      "kg_trabalho": 60,
+      "pct": 0.55
+    },
+    "saida": 32.5
+  },
+  {
+    "id": "prepKg-02",
+    "funcao": "prepKg",
+    "origem": "design/mock/sessao.js",
+    "tipo": "comum",
+    "descricao": "placas, 70% de 50 kg",
+    "entrada": {
+      "exercicio": "ext",
+      "kg_trabalho": 50,
+      "pct": 0.7
+    },
+    "saida": 35
+  },
+  {
+    "id": "prepKg-03",
+    "funcao": "prepKg",
+    "origem": "design/mock/sessao.js",
+    "tipo": "comum",
+    "descricao": "anilhas, 85% de 80 kg",
+    "entrada": {
+      "exercicio": "hack",
+      "kg_trabalho": 80,
+      "pct": 0.85
+    },
+    "saida": 70
+  },
+  {
+    "id": "prepKg-04",
+    "funcao": "prepKg",
+    "origem": "design/mock/sessao.js",
+    "tipo": "comum",
+    "descricao": "Smith, 60% de 40 kg",
+    "entrada": {
+      "exercicio": "dev",
+      "kg_trabalho": 40,
+      "pct": 0.6
+    },
+    "saida": 25
+  },
+  {
+    "id": "prepKg-05",
+    "funcao": "prepKg",
+    "origem": "design/mock/sessao.js",
+    "tipo": "comum",
+    "descricao": "halteres, 80% de 20 kg",
+    "entrada": {
+      "exercicio": "supH",
+      "kg_trabalho": 20,
+      "pct": 0.8
+    },
+    "saida": 16
+  },
+  {
+    "id": "prepKg-06",
+    "funcao": "prepKg",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "barra: o preparo calculado fica abaixo da barra vazia e sobe para 20 kg",
+    "entrada": {
+      "exercicio": "stiff",
+      "kg_trabalho": 20,
+      "pct": 0.55
+    },
+    "saida": 20
+  },
+  {
+    "id": "prepKg-07",
+    "funcao": "prepKg",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "halteres: 55% de 10 kg arredonda em 2 kg",
+    "entrada": {
+      "exercicio": "supH",
+      "kg_trabalho": 10,
+      "pct": 0.55
+    },
+    "saida": 6
+  },
+  {
+    "id": "prepKg-08",
+    "funcao": "prepKg",
+    "origem": "design/mock/sessao.js",
+    "tipo": "borda",
+    "descricao": "placas: meio passo exato arredonda para cima",
+    "entrada": {
+      "exercicio": "ext",
+      "kg_trabalho": 12.5,
+      "pct": 0.8
+    },
+    "saida": 10
+  },
+  {
+    "id": "bigJump-01",
+    "funcao": "bigJump",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "placas com 60 kg: incremento de 4%",
+    "entrada": {
+      "kg": 60,
+      "eq": "pilha"
+    },
+    "saida": false
+  },
+  {
+    "id": "bigJump-02",
+    "funcao": "bigJump",
+    "origem": "design/mock/regras.js",
+    "tipo": "comum",
+    "descricao": "placas com 10 kg: incremento de 25%",
+    "entrada": {
+      "kg": 10,
+      "eq": "pilha"
+    },
+    "saida": true
+  },
+  {
+    "id": "bigJump-03",
+    "funcao": "bigJump",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "incremento exatamente em 10% (placas, 25 kg): não é salto grande",
+    "entrada": {
+      "kg": 25,
+      "eq": "pilha"
+    },
+    "saida": false
+  },
+  {
+    "id": "bigJump-04",
+    "funcao": "bigJump",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "logo acima de 10% (placas, 24 kg): é salto grande",
+    "entrada": {
+      "kg": 24,
+      "eq": "pilha"
+    },
+    "saida": true
+  },
+  {
+    "id": "bigJump-05",
+    "funcao": "bigJump",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "incremento exatamente em 10% (barra, 50 kg)",
+    "entrada": {
+      "kg": 50,
+      "eq": "barra"
+    },
+    "saida": false
+  },
+  {
+    "id": "bigJump-06",
+    "funcao": "bigJump",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "logo acima de 10% (barra, 49 kg)",
+    "entrada": {
+      "kg": 49,
+      "eq": "barra"
+    },
+    "saida": true
+  },
+  {
+    "id": "bigJump-07",
+    "funcao": "bigJump",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "incremento exatamente em 10% (halteres, 20 kg)",
+    "entrada": {
+      "kg": 20,
+      "eq": "halteres"
+    },
+    "saida": false
+  },
+  {
+    "id": "bigJump-08",
+    "funcao": "bigJump",
+    "origem": "design/mock/regras.js",
+    "tipo": "borda",
+    "descricao": "carga zero nunca é salto grande",
+    "entrada": {
+      "kg": 0,
+      "eq": "barra"
+    },
+    "saida": false
+  },
+  {
+    "id": "backKg-01",
+    "funcao": "backKg",
+    "origem": "design/mock/hoje.js",
+    "tipo": "comum",
+    "descricao": "sem tempo fora: a carga continua a mesma",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      },
+      "equipamento": "carregada",
+      "dias_sem_treinar": 0
+    },
+    "saida": 80
+  },
+  {
+    "id": "backKg-02",
+    "funcao": "backKg",
+    "origem": "design/mock/hoje.js",
+    "tipo": "comum",
+    "descricao": "15 dias fora na máquina de anilhas",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      },
+      "equipamento": "carregada",
+      "dias_sem_treinar": 15
+    },
+    "saida": 80
+  },
+  {
+    "id": "backKg-03",
+    "funcao": "backKg",
+    "origem": "design/mock/hoje.js",
+    "tipo": "comum",
+    "descricao": "30 dias fora: carga 10% mais leve (anilhas)",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      },
+      "equipamento": "carregada",
+      "dias_sem_treinar": 30
+    },
+    "saida": 70
+  },
+  {
+    "id": "backKg-04",
+    "funcao": "backKg",
+    "origem": "design/mock/hoje.js",
+    "tipo": "borda",
+    "descricao": "14 dias: ainda abaixo do limite de 15",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      },
+      "equipamento": "carregada",
+      "dias_sem_treinar": 14
+    },
+    "saida": 80
+  },
+  {
+    "id": "backKg-05",
+    "funcao": "backKg",
+    "origem": "design/mock/hoje.js",
+    "tipo": "borda",
+    "descricao": "27 dias: ainda abaixo do limite de 28, a carga se mantém",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      },
+      "equipamento": "carregada",
+      "dias_sem_treinar": 27
+    },
+    "saida": 80
+  },
+  {
+    "id": "backKg-06",
+    "funcao": "backKg",
+    "origem": "design/mock/hoje.js",
+    "tipo": "borda",
+    "descricao": "28 dias: a carga cai 10%",
+    "entrada": {
+      "exercicio": {
+        "id": "hack",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          },
+          {
+            "type": "NORMAL",
+            "ger": 8,
+            "rr": [
+              8,
+              12
+            ]
+          }
+        ]
+      },
+      "equipamento": "carregada",
+      "dias_sem_treinar": 28
+    },
+    "saida": 70
+  },
+  {
+    "id": "backKg-07",
+    "funcao": "backKg",
+    "origem": "design/mock/hoje.js",
+    "tipo": "borda",
+    "descricao": "28 dias no Smith: 10% menos, arredondado em 2,5 kg sobre a base de 15 kg",
+    "entrada": {
+      "exercicio": {
+        "id": "dev",
+        "sets": [
+          {
+            "type": "NORMAL",
+            "ger": 9,
+            "rr": [
+              6,
+              8
+            ]
+          }
+        ],
+        "last": {
+          "kg": 40,
+          "res": [
+            {
+              "reps": 8,
+              "ger": 9
+            }
+          ]
+        }
+      },
+      "equipamento": "smith",
+      "dias_sem_treinar": 28
+    },
+    "saida": 35
+  }
+]
