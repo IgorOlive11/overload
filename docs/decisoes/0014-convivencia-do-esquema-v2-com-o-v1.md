@@ -29,7 +29,7 @@ A pergunta é como as tabelas, as políticas e os gatilhos do v2 convivem com os
 
 1. **Schema próprio `overload`.** Tabelas, funções e políticas do v2 ficam nele.
    - Exige: expor o schema na API (config `[api] schemas` no `supabase/config.toml` local e "Exposed schemas" no painel em produção, que o dono configura); `grant usage on schema overload` e privilégios por tabela só para `authenticated`; no cliente, `createClient(..., { db: { schema: 'overload' } })` e `supabase.schema('public')` nas leituras da biblioteca; migrações que sempre qualificam o nome (`overload.sessions`).
-   - Bom: nomes, políticas e funções não colidem com os do v1 (o v1 tem políticas duplicadas com os mesmos nomes, como `admin all`, e funções como `is_admin`). A Fase 3 vira apagar objetos do `public` sem tocar no v2. Dá para começar sem nenhum privilégio para `anon`, ao contrário do `public`.
+   - Bom: nomes de tabelas, funções e políticas do v2 não se misturam com os do v1 (`profiles`, `is_admin`, `get_my_role`), e é fácil ver o que pertence a quem. A Fase 3 vira apagar objetos do `public` sem tocar no v2. Dá para começar sem nenhum privilégio para `anon`, ao contrário do `public`.
    - Ruim: configuração a mais no painel de produção e no local; o schema novo não é exposto por padrão; quem esquecer o `grant` vê tabela "inexistente" na API.
 2. **Tabelas novas no `public`, com outros nomes.**
    - Exige só migrações, sem expor nada.
@@ -56,7 +56,7 @@ Em qualquer das três, o gatilho do v1 continua rodando e cria uma linha em `pub
 | Item do v1 | Na Fase 3 | Observação |
 | --- | --- | --- |
 | `auth.users` e o Auth | Fica | Compartilhado. O v2 depende. |
-| Hook de e-mail do Auth (`send-email`) | Fica até o v2 ter o dele | O Auth tem um hook só por projeto, e o v2 aproveita o e-mail do Auth (0003). |
+| Hook de e-mail do Auth (`send-email`) | Fica até o v2 ter o dele | O Auth aceita um hook de envio de e-mail por projeto, e o v2 aproveita o e-mail do Auth (0003). |
 | `public.exercises_library` | Fica até o v2 ter a cópia própria | Ver "Biblioteca" abaixo. |
 | Bucket `exercises` | Fica | Os `gif_url` apontam para ele. A cópia da tabela não copia os arquivos. |
 | `public.profiles`, `user_data`, `workout_logs`, `exercise_history`, `saved_exercises`, `meal_logs`, `micro_logs` | Sai, depois de arquivada e migrada | Meal e micro logs: a dieta saiu do produto ([0010](0010-dieta-fora-do-produto.md)); arquivar antes de apagar, pelo relatório de cada pessoa. |
