@@ -33,4 +33,4 @@ A opção 1. O v2 não guarda papel nenhum, e cada conta só acessa os próprios
 
 ## Como conferir
 
-Nenhuma tabela, política de acesso ou função do v2 lê ou grava papel. Toda política de acesso do v2 é "só o dono". A chave de serviço não aparece no código do app.
+Nenhuma tabela, política de acesso ou função do v2 lê ou grava papel. Os dados de cada conta só são acessíveis ao dono; a biblioteca de exercícios é de leitura pública. A chave de serviço não aparece no código do app.
