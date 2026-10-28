@@ -12,6 +12,7 @@ O repositório está em reconstrução. O código em src/ (login, hooks e store)
 - `npm run dev`: sobe o app local. Precisa de um `.env` criado a partir do `.env.example`.
 - `npm run lint`: ESLint.
 - `npm run build`: build de produção.
+- `npm run typecheck`: confere os tipos com o `tsc --noEmit`. O CI roda antes do build.
 
 - `npm test`: testes de `tests/` (runner do Node, sem dependência). O teste de abertura do mock no navegador usa o Playwright e é pulado se ele não estiver instalado.
 - `node design/mock/build.mjs`: gera o HTML completo do mock em `design/mock/dist/`. Veja `design/mock/README.md`.
