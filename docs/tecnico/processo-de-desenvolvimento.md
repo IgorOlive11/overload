@@ -1,6 +1,6 @@
 # Processo de desenvolvimento
 
-O Overload é construído por agentes de IA, com o dono do repositório no papel de Product Owner. Este documento descreve o processo. As regras que os agentes seguem estão no [AGENTS.md](../../AGENTS.md).
+O Overload é construído por agentes de IA, com o dono do repositório no papel de Product Owner. Este documento descreve o processo. As regras que os agentes seguem estão no [AGENTS.md](../../AGENTS.md). O Claude Code lê esse arquivo pelo `CLAUDE.md`, e outras ferramentas que seguem o padrão AGENTS.md leem diretamente.
 
 ## Quem faz o quê
 
