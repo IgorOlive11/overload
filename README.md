@@ -17,7 +17,7 @@
   <img src="design/mock/telas/progresso.png" width="230" alt="Tela Progresso">
 </p>
 
-> English in two lines: Overload is an open-source, non-profit workout PWA focused on two things, keeping you consistent and raising your load safely. It is being rebuilt as version 2, designed by one product owner and built by AI agents.
+> Overload is an open-source, non-profit workout PWA focused on two things, keeping you consistent and raising your load safely. It is being rebuilt as version 2, designed by one product owner and built by AI agents.
 
 ## O que é
 
