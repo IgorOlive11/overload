@@ -53,7 +53,7 @@ A prévia é o que permite ao PO "ver sem rodar nada". Três formas, todas a cus
 
 Proposta: a opção 1. O mock é evoluído em `design/mock/` por pull request, e o artifact do Claude é congelado como histórico.
 
-Prévia: começar pela forma A, que funciona hoje sem nenhuma permissão nova, e o PO decide se liga a forma B (uma configuração na Vercel) quando quiser interação na prévia. A forma C fica descartada. Nenhuma das duas formas custa dinheiro nem pede conta nova.
+Prévia: começar pela forma A, que funciona hoje sem nenhuma permissão nova, e o PO decide se liga a forma B (uma configuração na Vercel) quando quiser interação na prévia. A forma C fica descartada. Nenhuma das duas formas mantidas custa dinheiro nem pede conta nova.
 
 Por que a opção 1: é a única que cumpre os critérios 1, 3 e 4 sem depender de algo que não consegui verificar, e preserva a dinâmica do PO, porque o pedido continua em linguagem natural (um comentário na issue) e o resultado continua renderizado (capturas ou prévia). As opções 3 e 4 não podem ser recomendadas enquanto o que dependem da conta do PO não for confirmado; se o PO já testou alguma delas, essa informação reabre a comparação.
 
