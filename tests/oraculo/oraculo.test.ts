@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { gerarCasos } from "./gerar.mjs";
-import { arredondar, cartao, descansoAntes, estimativaMin, passos, perguntaDeCarga, preparo } from "../../src/domain/index.ts";
+import { arredondar, cartao, descansoAntes, estimativaMin, exportarCsv, importarCsv, passos, perguntaDeCarga, preparo, proximoTreino } from "../../src/domain/index.ts";
 
 const casos = gerarCasos();
 const plano = (x: unknown) => JSON.parse(JSON.stringify(x));
@@ -34,4 +34,16 @@ test("Preparo, passos, descansos e duração estimada da sessão são os do mock
     assert.deepEqual(p.map((x, i) => descansoAntes(x, p.at(i + 1), entrada)), esperado.descansos);
     assert.equal(estimativaMin(entrada), esperado.estimativaMin);
   }
+});
+
+test("A tela Hoje oferece só o próximo treino pelo modo de agenda, como no mock", () => {
+  for (const { entrada, esperado } of casos.agenda) assert.deepEqual(proximoTreino(entrada), esperado, JSON.stringify(entrada));
+});
+
+test("Exportar o protocolo em CSV dá o mesmo arquivo que o mock", () => {
+  for (const { entrada, esperado } of casos.exportar) assert.equal(exportarCsv(entrada, casos.biblioteca), esperado);
+});
+
+test("Importar CSV, inclusive da v1, dá o mesmo rascunho e o mesmo relatório que o mock", () => {
+  for (const { entrada, esperado } of casos.importar) assert.deepEqual(plano(importarCsv(entrada, casos.biblioteca)), esperado, entrada);
 });
