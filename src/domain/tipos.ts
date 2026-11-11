@@ -32,3 +32,36 @@ export interface ExercicioDoTreino {
   descanso: number;
   descansoPreparo: number;
 }
+
+/* ---------- Protocolo: uma semana-tipo repetida durante a fase (decisão do PO de 11/11) ---------- */
+
+/* semana: cada treino no seu dia; faltou, aquele treino pula. sequencia: os treinos seguem em fila e a falta não pula nenhum. */
+export type ModoAgenda = "semana" | "sequencia";
+
+export const MUSCULOS = ["COSTAS", "PEITO", "OMBROS", "TRÍCEPS", "BÍCEPS", "QUADRÍCEPS", "POSTERIOR", "GLÚTEOS", "ADUTORES", "PANTURRILHA", "CORE"] as const;
+
+export interface ItemDaBiblioteca { nome: string; musculo: string; acessorios: readonly string[]; equipamento: Equipamento }
+export type Biblioteca = Readonly<Record<string, ItemDaBiblioteca>>;
+
+/* Exercício no protocolo. Acessórios, descanso e descanso de preparo vazios seguem a biblioteca e o padrão do protocolo. */
+export interface ExercicioDoPlano {
+  id: string;
+  series: Serie[];
+  preparo: "auto" | 0 | 1 | 2 | 3;
+  acessorios?: string[];
+  descanso: number | null;
+  descansoPreparo: number | null;
+}
+
+export interface DiaDoPlano { folga: boolean; exercicios: ExercicioDoPlano[] }
+
+export interface CamadaDeAderencia { fase: boolean; semanas: number; meta: boolean; metaN: number; nuncaDuas: boolean }
+
+export interface Protocolo {
+  agenda: ModoAgenda;
+  descanso: number;
+  descansoPreparo: number;
+  camada: CamadaDeAderencia;
+  /* Sete dias, de segunda a domingo. */
+  dias: DiaDoPlano[];
+}

@@ -4,3 +4,6 @@ export * from "./texto.ts";
 export * from "./equipamento.ts";
 export * from "./preparo.ts";
 export * from "./progressao.ts";
+export * from "./agenda.ts";
+export * from "./presenca.ts";
+export * from "./csv.ts";
