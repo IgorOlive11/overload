@@ -9,10 +9,13 @@ export function rotasDaBiblioteca(app: FastifyInstance, pool: pg.Pool) {
   app.get("/biblioteca", {
     preHandler: exigirConta,
     schema: { querystring: { type: "object", additionalProperties: false, properties: {
-      q: { type: "string", maxLength: 60 }, musculos: { type: "string", maxLength: 200 },
+      q: { type: "string", maxLength: 60 }, musculos: { type: "string", maxLength: 200 }, ids: { type: "string", maxLength: 4000 },
       pagina: { type: "string", pattern: "^[0-9]{1,4}$" } } } }
   }, async req => {
-    const { q = "", musculos = "", pagina = "0" } = req.query as { q?: string; musculos?: string; pagina?: string };
+    const { q = "", musculos = "", pagina = "0", ids } = req.query as { q?: string; musculos?: string; pagina?: string; ids?: string };
+    // Por ids: os itens de um modelo pronto ou de um CSV, de uma vez.
+    if (ids !== undefined) return { itens: await transacao(pool, req.contaId, async c => (await c.query(
+      `select ${CAMPOS} from overload.biblioteca where id = any($1)`, [ids.split(",").map(x => x.trim()).filter(Boolean).slice(0, 200)])).rows) };
     // Busca sem acento, como no mock: "supino" acha "Supino", "triceps" acha "TRÍCEPS".
     const termo = `%${q.trim().replace(/[\\%_]/g, m => `\\${m}`)}%`;
     const grupo = musculos.split(",").map(m => m.trim()).filter(Boolean);
