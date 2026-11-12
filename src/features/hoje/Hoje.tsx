@@ -5,41 +5,28 @@ import { useNavigate } from "react-router-dom";
 import { diaDaSemana, proximoTreino } from "../../domain/agenda.ts";
 import { EQUIPAMENTOS, unidade } from "../../domain/equipamento.ts";
 import { GER } from "../../domain/ger.ts";
-import { chaveDoExercicio, configuracao, registroDaApi, type RegistroDaApi } from "../../domain/historico.ts";
+import { chaveDoExercicio, configuracao, registroDaApi } from "../../domain/historico.ts";
 import { avisoDeVolta, diaCorrido, presenca } from "../../domain/presenca.ts";
 import { estimativaMin } from "../../domain/preparo.ts";
 import { sugestao } from "../../domain/progressao.ts";
 import { fmt } from "../../domain/texto.ts";
 import type { Equipamento, Registro } from "../../domain/tipos.ts";
 import { useProtocolo } from "../../app/protocolo.ts";
+import { useTreino } from "../../app/treino.ts";
 import { Pix } from "../../components/pix.tsx";
+import { Slots } from "../../components/Slots.tsx";
+import { buscarUltimos, type Ultimos } from "../../app/historico.ts";
 import { Palco } from "../../components/Palco.tsx";
-import { api } from "../../lib/api.ts";
 import { FACE } from "../../lib/faces.ts";
-import { gravarChave, lerChave } from "../../lib/idb.ts";
 import { daApi, DIAN, paraTreino, type Ex } from "../../lib/plano.ts";
 
 const hojeLocal = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
-
-type Ultimos = Record<string, { em: string; registros: RegistroDaApi[] } | null>;
-
-function Slots({ feitos, meta }: { feitos: number; meta: number }) {
-  const bonus = feitos > meta;
-  return (
-    <div className="slots">
-      {Array.from({ length: meta }, (_, i) => (
-        <div key={i} className={`slot ${i < feitos ? "done" : ""}`} aria-label={i < feitos ? "Sessão feita" : "Sessão pendente"}>{i < feitos ? <Pix nome="check" w={20} /> : i + 1}</div>
-      ))}
-      <div className={`slot bonus ${bonus ? "done" : ""}`} aria-label="Bônus">{bonus ? <Pix nome="check" w={20} /> : <Pix nome="skey" w={14} />}</div>
-      <div className="week-count num">{Math.min(feitos, meta)}<small> de {meta}</small></div>
-    </div>
-  );
-}
 
 export function Hoje() {
   const { protocolo, sessoes, carregado, carregar, bib } = useProtocolo();
   const [ultimos, setUltimos] = useState<Ultimos>({});
   const navegar = useNavigate();
+  const aoVivo = useTreino(x => x.sessao);
   useEffect(() => { if (!carregado) void carregar(); }, [carregado, carregar]);
 
   const r = protocolo ? daApi(protocolo) : null;
@@ -56,16 +43,7 @@ export function Hoje() {
   useEffect(() => {
     const itens = JSON.parse(chavePedidos) as typeof pedidos;
     if (!itens.length) return;
-    void (async () => {
-      try {
-        const { ultimos: u } = await api<{ ultimos: Ultimos }>("POST", "/historico/ultimos", { itens });
-        setUltimos(a => ({ ...a, ...u }));
-        await gravarChave("ultimos", { ...((await lerChave<Ultimos>("ultimos")) ?? {}), ...u });
-      } catch {
-        const salvo = await lerChave<Ultimos>("ultimos").catch(() => undefined);
-        if (salvo) setUltimos(a => ({ ...a, ...salvo }));
-      }
-    })();
+    void buscarUltimos(itens).then(u => setUltimos(a => ({ ...a, ...u })));
   }, [chavePedidos]);
 
   const ultimoDe = (e: Ex): Registro | null => {
@@ -142,7 +120,9 @@ export function Hoje() {
       </div>
     </div>
     {regra && <p className="state">{regra}</p>}
-    <button className={`btn ${prox.hoje ? "btn-primary" : "btn-ghost"}`} onClick={() => navegar("/treino", { state: { dia: t.i } })}>{botao}</button>
+    {aoVivo
+      ? <button className="btn btn-primary" onClick={() => navegar("/treino")}>Voltar ao treino: {aoVivo.titulo}</button>
+      : <button className={`btn ${prox.hoje ? "btn-primary" : "btn-ghost"}`} onClick={() => navegar("/treino", { state: { dia: t.i } })}>{botao}</button>}
     <div className="week">
       <Slots feitos={pr.feitosNaSemana} meta={meta} />
       <button className="tip infobtn" aria-label="Sobre a meta da semana"

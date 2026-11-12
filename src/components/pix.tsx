@@ -18,8 +18,13 @@ const PIXI = {
 } as const;
 export type NomeDoPixel = keyof typeof PIXI;
 
-export function Pix({ nome, w }: { nome: NomeDoPixel; w: number }) {
-  const rows = PIXI[nome], H = rows.length, W = rows[0]!.length;
+export function Pix({ nome, w, className }: { nome: NomeDoPixel; w: number; className?: string }) {
+  return <PixLinhas linhas={PIXI[nome]} w={w} className={className} />;
+}
+
+/* Desenho em pixel art a partir das linhas (cada "#" é um pixel). */
+export function PixLinhas({ linhas: rows, w, className, style }: { linhas: readonly string[]; w: number; className?: string; style?: React.CSSProperties }) {
+  const H = rows.length, W = rows[0]!.length;
   const rects: { x: number; y: number; w: number }[] = [];
   rows.forEach((row, y) => {
     let x = 0;
@@ -28,7 +33,7 @@ export function Pix({ nome, w }: { nome: NomeDoPixel; w: number }) {
     }
   });
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width={w} height={Math.round(w * H / W)} fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
+    <svg className={className} style={style} viewBox={`0 0 ${W} ${H}`} width={w} height={Math.round(w * H / W)} fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
       {rects.map((r, i) => <rect key={i} x={r.x} y={r.y} width={r.w} height={1} />)}
     </svg>
   );

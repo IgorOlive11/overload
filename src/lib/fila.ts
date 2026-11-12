@@ -102,6 +102,17 @@ export class Fila {
     }
   }
 
+  /* Tira da fila a sessão e os registros dela que ainda não foram. Diz se a sessão ainda estava só no aparelho. */
+  async descartar(sessaoId: string): Promise<boolean> {
+    const todos = await this.armazem.listar();
+    const ids = todos.filter(i => i.id === sessaoId || (i.tipo === "registro" && i.dados.sessaoId === sessaoId)).map(i => i.id);
+    const soAqui = todos.some(i => i.tipo === "sessao" && i.id === sessaoId && i.dados.estado === "em_andamento") && !this.rodando;
+    if (soAqui) await this.armazem.remover(ids);
+    else await this.armazem.remover(ids.filter(id => id !== sessaoId));
+    this.mudar({ pendentes: (await this.armazem.listar()).length });
+    return soAqui;
+  }
+
   dispensarRecusas() { this.mudar({ recusas: [] }); }
 }
 

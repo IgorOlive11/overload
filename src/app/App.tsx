@@ -4,6 +4,8 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Cadastro, Confirmar, Entrar, Esqueci, Redefinir } from "../features/conta/telas.tsx";
 import { EmBreve } from "../features/inicio/EmBreve.tsx";
+import { Clarao, RodapeDoDescanso, Treino } from "../features/treino/Treino.tsx";
+import { useTreino } from "./treino.ts";
 import { Plano } from "../features/plano/Plano.tsx";
 import { Hoje } from "../features/hoje/Hoje.tsx";
 import { Dicas } from "../components/Dicas.tsx";
@@ -31,10 +33,11 @@ function Abas() {
   const local = useLocation();
   const navegar = useNavigate();
   const ativa = (para: string) => (para === "/" ? local.pathname === "/" : local.pathname.startsWith(para));
+  const aoVivo = useTreino(x => !!x.sessao);
   return (
     <nav className="tabs four" role="tablist" aria-label="Seções">
       {ABAS.map(([id, para, nome]) => (
-        <button key={id} role="tab" aria-selected={ativa(para)} data-v={id} onClick={() => navegar(para)}>{ICONES[id]}{nome}</button>
+        <button key={id} role="tab" aria-selected={ativa(para)} data-v={id} onClick={() => navegar(para)}>{ICONES[id]}{nome}{id === "treino" && aoVivo && <i className="live" />}</button>
       ))}
     </nav>
   );
@@ -42,6 +45,11 @@ function Abas() {
 
 function Moldura() {
   const fogoCv = useRef<HTMLCanvasElement>(null);
+  const local = useLocation();
+  const aba = local.pathname === "/" ? "hoje" : local.pathname.slice(1).split("/")[0];
+  const aoVivo = useTreino(x => !!x.sessao);
+  const restaurar = useTreino(x => x.restaurar);
+  useEffect(() => { void restaurar(); }, [restaurar]);
   useEffect(() => {
     const pararFogo = fogoCv.current ? fogo(fogoCv.current) : () => {};
     const pararFaces = facesVivas();
@@ -53,8 +61,10 @@ function Moldura() {
         <canvas id="fireCv" ref={fogoCv} width={96} height={64} aria-hidden="true" />
         <AvisoDaFila />
         <div className="screens">
-          <section className="screen"><Outlet /></section>
+          <section className={`screen${aba === "treino" && aoVivo ? " live" : ""}`} id={`v-${aba}`}><Outlet /></section>
         </div>
+        <Clarao />
+        <RodapeDoDescanso />
         <Abas />
         <Dicas />
         <Toast />
@@ -75,7 +85,7 @@ export function App() {
       <Route path="/redefinir" element={<Redefinir />} />
       <Route element={<SoComConta><Moldura /></SoComConta>}>
         <Route index element={<Hoje />} />
-        <Route path="treino" element={<EmBreve tela="Treino" />} />
+        <Route path="treino" element={<Treino />} />
         <Route path="progresso" element={<EmBreve tela="Progresso" />} />
         <Route path="plano" element={<Plano />} />
       </Route>
