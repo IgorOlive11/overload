@@ -88,3 +88,22 @@ test("cancelar uma sessão que já foi para a API mantém a sessão na fila para
   assert.equal(await fila.descartar("s1"), false);
   assert.equal(fila.atual.pendentes, 0);
 });
+
+import { gradeDeSemanas, resumoDaFase, vezesQueSubiu } from "../../src/domain/progresso.ts";
+
+test("progresso: a grade mostra a fase inteira, marca a próxima vaga da semana atual e a vaga de bônus", () => {
+  const fase = { ligada: true, semanas: 6, meta: 2 };
+  // Semana 1 com 3 treinos (bônus), semana 2 com 2, semana 3 com 1; hoje é a semana 3.
+  const g = gradeDeSemanas([0, 2, 4, 7, 9, 14], 15, fase);
+  assert.equal(g.length, 6);
+  assert.deepEqual(g[0]!.celulas, ["done", "done", "bonus done"]);
+  assert.deepEqual(g[2]!.celulas, ["done", "next", "bonus"]);
+  assert.equal(g[2]!.atual, true);
+  const r = resumoDaFase([0, 2, 4, 7, 9, 14], 15, fase);
+  assert.deepEqual(r, { semana: 3, feitos: 6, possiveis: 6, completas: 2, naMeta: 2 });
+});
+
+test("progresso: a carga sobe quando passa da sessão anterior no mesmo exercício e na mesma configuração", () => {
+  const c = (chave: string, configuracao: string, kg: number) => ({ chave, configuracao, diaLocal: "2026-11-01", kg });
+  assert.equal(vezesQueSubiu([c("a", "x", 60), c("a", "x", 65), c("a", "y", 70), c("a", "x", 65), c("a", "x", 70)]), 2);
+});

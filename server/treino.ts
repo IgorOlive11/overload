@@ -169,4 +169,16 @@ export function rotasDeTreino(app: FastifyInstance, pool: pg.Pool) {
           and not exists (select 1 from overload.registros_serie x where x.substitui = r.id)
         group by s.id, s.dia_local order by s.dia_local`, [(req.query as { chave: string }).chave])).rows)
   }));
+
+  // Carga de cada sessão por exercício e configuração, para o Progresso: a linha das últimas sessões e quantas vezes a carga subiu.
+  app.get("/progresso", { preHandler: exigirConta }, async req => ({
+    cargas: await transacao(pool, req.contaId, async c => (await c.query(
+      `select r.exercicio_chave as chave, r.configuracao, s.dia_local as "diaLocal", max(r.kg) as kg
+         from overload.registros_serie r
+         join overload.sessoes_treino s on s.id = r.sessao_id
+        where r.passo = 'valida' and s.estado in ('concluida', 'encerrada')
+          and not exists (select 1 from overload.registros_serie x where x.substitui = r.id)
+        group by r.exercicio_chave, r.configuracao, s.id, s.dia_local, s.iniciada_em
+        order by s.iniciada_em`)).rows)
+  }));
 }

@@ -3,7 +3,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Cadastro, Confirmar, Entrar, Esqueci, Redefinir } from "../features/conta/telas.tsx";
-import { EmBreve } from "../features/inicio/EmBreve.tsx";
+import { Progresso } from "../features/progresso/Progresso.tsx";
 import { Clarao, RodapeDoDescanso, Treino } from "../features/treino/Treino.tsx";
 import { useTreino } from "./treino.ts";
 import { Plano } from "../features/plano/Plano.tsx";
@@ -86,7 +86,7 @@ export function App() {
       <Route element={<SoComConta><Moldura /></SoComConta>}>
         <Route index element={<Hoje />} />
         <Route path="treino" element={<Treino />} />
-        <Route path="progresso" element={<EmBreve tela="Progresso" />} />
+        <Route path="progresso" element={<Progresso />} />
         <Route path="plano" element={<Plano />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

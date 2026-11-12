@@ -159,7 +159,7 @@ describe("API", { skip: semBanco }, () => {
   });
 
   test("sem login, nada de dado: 401 em todas as rotas de conta", async () => {
-    for (const [m, u] of [["GET", "/protocolo"], ["GET", "/sessoes"], ["GET", "/biblioteca"], ["POST", "/envio"]] as const) {
+    for (const [m, u] of [["GET", "/protocolo"], ["GET", "/sessoes"], ["GET", "/progresso"], ["GET", "/biblioteca"], ["POST", "/envio"]] as const) {
       assert.equal((await chamar(m, u, m === "POST" ? {} : undefined)).statusCode, 401, `${m} ${u}`);
     }
   });
@@ -200,6 +200,18 @@ describe("API", { skip: semBanco }, () => {
     await chamar("POST", "/envio", { sessoes: [s], registros: [r] }, a.cookie);
     assert.deepEqual((await chamar("GET", "/sessoes", undefined, a.cookie)).json().sessoes, []);
     assert.equal((await chamar("GET", "/historico/ultimo?chave=x&configuracao=N10:8-10", undefined, a.cookie)).json().ultimo, null);
+  });
+
+  test("progresso: a carga de cada sessão por exercício, sem a correção substituída e sem sessão cancelada", async () => {
+    const a = await contaConfirmada();
+    const sessao = (id: string, dia: string, estado: string) => ({ id, dia: 0, indiceTreino: 0, diaLocal: dia, iniciadaEm: `${dia}T10:00:00Z`, terminadaEm: `${dia}T11:00:00Z`, estado });
+    const reg = (sessaoId: string, kg: number, substitui: string | null = null) => ({ id: randomUUID(), sessaoId, exercicioChave: "hack", configuracao: "N8:8-12", passo: "valida", ordem: 0, tipo: "NORMAL", kg, reps: 10, ger: 8, substitui, feitoEm: "2026-11-11T10:20:00Z" });
+    const [s1, s2, s3] = [randomUUID(), randomUUID(), randomUUID()];
+    const errado = reg(s2, 70);
+    await chamar("POST", "/envio", { sessoes: [sessao(s1, "2026-11-09", "concluida"), sessao(s2, "2026-11-10", "concluida"), sessao(s3, "2026-11-11", "cancelada")],
+      registros: [reg(s1, 60), errado, reg(s2, 65, errado.id), reg(s3, 90)] }, a.cookie);
+    const { cargas } = (await chamar("GET", "/progresso", undefined, a.cookie)).json();
+    assert.deepEqual(cargas.map((c: { kg: number }) => c.kg), [60, 65]);
   });
 
   test("o protocolo guarda o nome do treino e devolve os itens da biblioteca que usa", async () => {

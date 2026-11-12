@@ -9,3 +9,4 @@ export * from "./presenca.ts";
 export * from "./csv.ts";
 export * from "./historico.ts";
 export * from "./sessao.ts";
+export * from "./progresso.ts";
