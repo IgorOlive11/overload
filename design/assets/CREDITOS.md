@@ -11,3 +11,4 @@ Cada sprite, rosto, fonte ou imagem usada no Overload tem uma linha aqui, com qu
 | Jersey 10 | `fontes/jersey-10-*.woff2` | The Soft Type Project Authors | SIL OFL 1.1 (`fontes/LICENSE-jersey-10.txt`) |
 | VT323 | `fontes/vt323-*.woff2` | The VT323 Project Authors | SIL OFL 1.1 (`fontes/LICENSE-vt323.txt`) |
 | Babylon.js (minificado) | `babylon-mini.js` | Babylon.js | Apache-2.0 (a confirmar a versão) |
+| Ícone do app (O de pedra em chamas) e os tamanhos gerados dele | `icone/icone-original.jpg`, `public/icones/*`, `public/favicon*` | A confirmar pelo dono do repositório | A confirmar |

@@ -10,7 +10,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: false,
-      includeAssets: ["favicon.svg", "fontes/*.woff2", "icones/apple-touch-icon.png"],
+      includeAssets: ["favicon.ico", "favicon-32.png", "fontes/*.woff2", "icones/apple-touch-icon.png"],
       manifest: {
         name: "Overload",
         short_name: "Overload",
@@ -20,7 +20,7 @@ export default defineConfig({
         scope: "/",
         display: "standalone",
         orientation: "portrait",
-        background_color: "#080808",
+        background_color: "#0b0505",
         theme_color: "#080808",
         icons: [
           { src: "/icones/icone-192.png", sizes: "192x192", type: "image/png" },
@@ -29,7 +29,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,ico,woff2}"],
         navigateFallback: "/index.html",
         // A API nunca vem do cache: dado de treino vive no IndexedDB, não no service worker.
         navigateFallbackDenylist: [/^\/api\//],
