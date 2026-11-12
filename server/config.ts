@@ -23,7 +23,7 @@ export function lerConfig(env: NodeJS.ProcessEnv = process.env): Config {
   return {
     porta: Number(env.PORT ?? 3000),
     urlBanco: env.DATABASE_URL!,
-    origem: env.ORIGEM_PUBLICA!.replace(/\/+$/, ""),
+    origem: new URL(env.ORIGEM_PUBLICA!).origin,
     producao,
     resendChave: env.RESEND_API_KEY,
     remetente: env.EMAIL_REMETENTE ?? "Overload <nao-responda@overload.app.br>",

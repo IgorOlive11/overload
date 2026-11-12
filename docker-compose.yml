@@ -9,7 +9,8 @@ services:
     environment:
       - SERVICE_FQDN_APP_3000
       - NODE_ENV=production
-      - ORIGEM_PUBLICA=${SERVICE_FQDN_APP}
+      # Endereço público exato (https://...), usado nos links dos e-mails e na conferência de origem.
+      - ORIGEM_PUBLICA=${ORIGEM_PUBLICA}
       - DATABASE_URL=postgres://overload_api:${SERVICE_PASSWORD_API}@banco:5432/overload
       - DATABASE_URL_MIGRACAO=postgres://overload_dono:${SERVICE_PASSWORD_DONO}@banco:5432/overload
       - RESEND_API_KEY=${RESEND_API_KEY}
