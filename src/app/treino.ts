@@ -71,6 +71,12 @@ export const useTreino = create<Estado>((set, get) => {
     if (!s) return;
     const agora = Date.now();
     s.descanso = null;
+    if (s.teste) {
+      // O teste não mexe na semana nem no histórico. Encerrar antes só sai; ir até o fim mostra o resumo.
+      set({ sessao: null, regs: {}, fim: cedo ? null : { s, cedo, terminadaEm: agora, totalAntes: useProtocolo.getState().sessoes.length } });
+      guardar();
+      return;
+    }
     await fila.acrescentar({ tipo: "sessao", id: s.id, dados: dadosDaSessao(s, cedo ? "encerrada" : "concluida", agora) });
     // A Hoje e o Progresso já contam esta sessão, mesmo sem rede.
     const P = useProtocolo.getState();
@@ -107,6 +113,7 @@ export const useTreino = create<Estado>((set, get) => {
       const s = iniciar(d);
       set({ sessao: s, regs: {}, fim: null, vista: 0 });
       guardar();
+      if (s.teste) return;
       await fila.acrescentar({ tipo: "sessao", id: s.id, dados: dadosDaSessao(s, "em_andamento", null) });
       void fila.enviar();
     },
@@ -118,7 +125,7 @@ export const useTreino = create<Estado>((set, get) => {
       const c = concluir(s, r, Date.now());
       const id = crypto.randomUUID();
       const regs = { ...get().regs, [i]: id };
-      await fila.acrescentar({ tipo: "registro", id, dados: registro(s, i, id, null) });
+      if (!s.teste) await fila.acrescentar({ tipo: "registro", id, dados: registro(s, i, id, null) });
       mostrar(c.avisos, set);
       if (c.terminou) { set({ sessao: s, regs }); await terminar(false); return; }
       // Depois do julgamento do exercício, uma pausa curta para o aviso aparecer antes do próximo cartão.
@@ -133,7 +140,7 @@ export const useTreino = create<Estado>((set, get) => {
       const s = copia(atual);
       const a = corrigir(s, i, r);
       const id = crypto.randomUUID();
-      await fila.acrescentar({ tipo: "registro", id, dados: registro(s, i, id, get().regs[i] ?? null) });
+      if (!s.teste) await fila.acrescentar({ tipo: "registro", id, dados: registro(s, i, id, get().regs[i] ?? null) });
       set({ sessao: s, regs: { ...get().regs, [i]: id } });
       toast(a.titulo, a.sub, a.face, a.bom);
       guardar();
@@ -170,7 +177,7 @@ export const useTreino = create<Estado>((set, get) => {
     async cancelar() {
       const s = get().sessao;
       if (!s) return;
-      const soAqui = await fila.descartar(s.id);
+      const soAqui = s.teste || await fila.descartar(s.id);
       if (!soAqui) await fila.acrescentar({ tipo: "sessao", id: s.id, dados: dadosDaSessao(s, "cancelada", Date.now()) });
       set({ sessao: null, regs: {}, fim: null, vista: 0 });
       guardar();

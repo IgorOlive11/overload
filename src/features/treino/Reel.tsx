@@ -55,7 +55,7 @@ function BotaoArmado({ rotulo, armado, icone, aria, agir }: { rotulo: string; ar
 }
 
 export function Reel({ s }: { s: EstadoDaSessao }) {
-  const { vista, ver, concluirPasso, corrigirPasso, encerrar, cancelar } = useTreino();
+  const { vista, ver, concluirPasso, corrigirPasso, encerrar, cancelar, pular } = useTreino();
   const protocolo = useProtocolo(x => x.protocolo);
   const agora = useAgora();
   const reel = useRef<HTMLDivElement>(null);
@@ -77,7 +77,7 @@ export function Reel({ s }: { s: EstadoDaSessao }) {
     : atual.tipo === "TRABALHO" && atual.serie.tipo === "NORMAL" ? "ger" : null;
   const ritmo = s.validas >= 1 && !!vistos.ger;
   useEffect(() => {
-    if (!guiaPronto || !novato || vista !== s.i) return;
+    if (!guiaPronto || !novato || s.teste || vista !== s.i) return;
     const D: Record<string, PassoDoGuia> = {
       wq: { alvo: "#cardBody .qbox", face: 9, texto: "Primeira vez neste exercício, então eu ainda não sei sua força. Escolha uma carga que dê para fazer a faixa deixando a reserva que eu pedi. Se errar, tudo bem: no próximo treino eu corrijo." },
       prep: { alvo: "#cardBody", face: 10, texto: "Isto é preparo: séries leves para aquecer o músculo. Não contam como série válida e não precisam ir perto da falha." },
@@ -89,7 +89,7 @@ export function Reel({ s }: { s: EstadoDaSessao }) {
       if (qual) dica(qual, D[qual]!);
     }, ritmo ? 700 : 400);
     return () => clearTimeout(t);
-  }, [guiaPronto, novato, vista, s.i, qual, ritmo, dica]);
+  }, [guiaPronto, novato, s.teste, vista, s.i, qual, ritmo, dica]);
   const travado = (descansando && md === "live") || md === "fut";
 
   /* posições do reel: cartão ativo no centro, vizinhos encolhendo e apagando como na v1 */
@@ -210,8 +210,11 @@ export function Reel({ s }: { s: EstadoDaSessao }) {
         <h2 id="sessName">{s.titulo}</h2>
         <div className="row" style={{ gap: 4 }}>
           <span className="clock num" aria-label="Tempo de sessão">{relogio(Math.max(0, Math.floor((agora - s.inicio) / 1000)))}</span>
-          <BotaoArmado rotulo="" armado="Descartar?" aria="Cancelar o treino sem salvar" icone={<Pix nome="x" w={14} />} agir={() => void cancelar()} />
-          <BotaoArmado rotulo="Encerrar" armado="Tem certeza?" icone={<Pix nome="skull" w={16} />} agir={() => void encerrar()} />
+          {s.teste
+            ? <><button className="endbtn" id="skipEx" onClick={() => void pular()}>Pular</button>
+                <BotaoArmado rotulo="Sair" armado="Tem certeza?" icone={<Pix nome="skull" w={16} />} agir={() => void encerrar()} /></>
+            : <><BotaoArmado rotulo="" armado="Descartar?" aria="Cancelar o treino sem salvar" icone={<Pix nome="x" w={14} />} agir={() => void cancelar()} />
+                <BotaoArmado rotulo="Encerrar" armado="Tem certeza?" icone={<Pix nome="skull" w={16} />} agir={() => void encerrar()} /></>}
         </div>
       </div>
       {md !== "live" && <button className={`viewbar${md === "edit" ? " past" : ""}`} onClick={() => ver(s.i)}><Pix nome={md === "edit" ? "down" : "up"} w={14} />Voltar ao atual</button>}

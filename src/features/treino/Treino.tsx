@@ -9,7 +9,8 @@ import { estimativaMin } from "../../domain/preparo.ts";
 import { sugestao } from "../../domain/progressao.ts";
 import { relogio, type ExercicioDaSessao } from "../../domain/sessao.ts";
 import { fmt } from "../../domain/texto.ts";
-import type { Registro } from "../../domain/tipos.ts";
+import type { Equipamento, ExercicioDoTreino, Registro, Serie } from "../../domain/tipos.ts";
+import { api } from "../../lib/api.ts";
 import { buscarUltimos, type Ultimos } from "../../app/historico.ts";
 import { useProtocolo } from "../../app/protocolo.ts";
 import { useTreino, type Fim } from "../../app/treino.ts";
@@ -59,7 +60,8 @@ function Resumo({ fim }: { fim: Fim }) {
   const segs = Math.max(60, Math.round((fim.terminadaEm - s.inicio) / 1000));
   const par = estimativaMin(s.lista.map(e => e.treino)) * 60;
   const validas = useContagem(s.validas), preparos = useContagem(s.preparos), sobem = useContagem(s.sobem), tempo = useContagem(segs);
-  const n = fim.totalAntes + 1, primeira = n === 1, conquista = conquistaNova(n);
+  const teste = !!s.teste;
+  const n = fim.totalAntes + 1, primeira = n === 1 && !teste, conquista = teste ? undefined : conquistaNova(n);
   const { carregado: guiaPronto, dica } = useGuia();
   const primeiroNome = useApp(x => x.conta?.nome.split(" ")[0] ?? "");
   useEffect(() => {
@@ -69,9 +71,9 @@ function Resumo({ fim }: { fim: Fim }) {
   }, [guiaPronto, primeira, primeiroNome, dica]);
   const fase = protocolo ? { ligada: protocolo.camada.fase, semanas: protocolo.camada.semanas, meta: protocolo.camada.metaN } : { ligada: false, semanas: 6, meta: 3 };
   const pr = presenca(sessoes.map(x => diaCorrido(new Date(x.diaLocal + "T12:00:00"))), diaCorrido(new Date()), fase);
-  const titulo = cedo ? "Presença registrada" : `Missão ${n} concluída`;
+  const titulo = teste ? "Teste concluído" : cedo ? "Presença registrada" : `Missão ${n} concluída`;
   const t = prox ? treinos[prox.indice] : undefined;
-  const proximo = t && prox ? `Próxima: ${nomeDe(t.i)}, ${quando(prox.emDias)}.` + (protocolo?.agenda === "sequencia" ? " De preferência com um dia de intervalo." : "") : "";
+  const proximo = teste ? "O teste não mexe na semana nem no histórico." : t && prox ? `Próxima: ${nomeDe(t.i)}, ${quando(prox.emDias)}.` + (protocolo?.agenda === "sequencia" ? " De preferência com um dia de intervalo." : "") : "";
   const feito = (k: number) => s.passos.some((p, i) => p.k === k && p.tipo === "TRABALHO" && s.res[i]);
   const sobemLista = s.lista.map((e, k) => ({ e, w: s.wk[k]! })).filter(x => x.w.sobe);
   return (
@@ -80,7 +82,7 @@ function Resumo({ fim }: { fim: Fim }) {
         <img className={`face${reduzido() ? "" : " shake"}`} src={FACE[cedo ? 10 : 13]} width={72} height={112} alt="Doom face de comemoração" />
         <div className="col" style={{ gap: 6 }}>
           <h2 id="doneTitle">{titulo.split(" ").map((w, j) => <Fragment key={j}>{j > 0 && " "}<span className="w" style={{ display: "inline-block" }}>{w}</span></Fragment>)}</h2>
-          <div className="next-meta">{s.titulo} concluída</div>
+          <div className="next-meta">{teste ? "Não conta presença" : `${s.titulo} concluída`}</div>
         </div>
       </div>
       <div className="inter" id="inter">
@@ -90,7 +92,7 @@ function Resumo({ fim }: { fim: Fim }) {
         <div><span>Tempo</span><b className="num">{relogio(tempo)}</b></div>
         <div className="par"><span>Par <small>estimativa do plano</small></span><b className="num">{relogio(par)}</b></div>
       </div>
-      <Slots id="weekSlotsDone" feitos={pr.feitosNaSemana} meta={protocolo?.camada.metaN ?? 3} />
+      {!teste && <Slots id="weekSlotsDone" feitos={pr.feitosNaSemana} meta={protocolo?.camada.metaN ?? 3} />}
       <div className="prog-list" id="nextUps">
         {primeira ? <>
           <p className="next-meta">Cargas guardadas como referência para o próximo treino:</p>
@@ -106,9 +108,53 @@ function Resumo({ fim }: { fim: Fim }) {
         </div>
       )}
       {proximo && <p>{proximo}</p>}
-      <button className="btn btn-ghost" onClick={() => { fechar(); navegar("/"); }}>Voltar para Hoje</button>
+      <button className="btn btn-ghost" onClick={() => { fechar(); navegar(teste ? "/treino" : "/"); }}>{teste ? "Voltar" : "Voltar para Hoje"}</button>
     </div>
   );
+}
+
+/* Sessão de demonstração do mock (regras.js: DEMO): pergunta de carga na primeira vez, os três estados do músculo,
+   trava manual do preparo, os três tipos de série e os cinco equipamentos. Não conta presença nem entra no histórico. */
+const N = (ger: number, a: number, b: number): Serie => ({ tipo: "NORMAL", ger, faixa: [a, b] });
+const DEMO: { id: string; series: Serie[]; preparo: ExercicioDoTreino["preparo"]; descanso: number; descansoPreparo: number; ultimo?: Registro }[] = [
+  { id: "dev", series: [N(9, 6, 8), { tipo: "REST_PAUSE" }], preparo: "auto", descanso: 120, descansoPreparo: 40, ultimo: { kg: 40, resultados: [{ reps: 10, ger: 9 }, { b1: 9, b2: 4 }] } },
+  { id: "pecfly", series: [N(9, 10, 12)], preparo: "auto", descanso: 90, descansoPreparo: 40 },
+  { id: "supH", series: [N(9, 10, 12), N(9, 10, 12)], preparo: "auto", descanso: 120, descansoPreparo: 40, ultimo: { kg: 20, resultados: [{ reps: 12, ger: 9 }, { reps: 12, ger: 9 }] } },
+  { id: "elev", series: [{ tipo: "MUSCLE_ROUND" }], preparo: "auto", descanso: 90, descansoPreparo: 40, ultimo: { kg: 20, resultados: [{ blocos: 6, ultimo: 6 }] } },
+  { id: "pul", series: [N(10, 10, 12)], preparo: 0, descanso: 90, descansoPreparo: 40, ultimo: { kg: 25, resultados: [{ reps: 11, ger: 10 }] } },
+  { id: "hack", series: [N(8, 10, 12), N(8, 10, 12)], preparo: "auto", descanso: 120, descansoPreparo: 40, ultimo: { kg: 80, resultados: [{ reps: 12, ger: 8 }, { reps: 12, ger: 9 }] } },
+  { id: "pantp", series: [N(9, 10, 12)], preparo: 1, descanso: 60, descansoPreparo: 30, ultimo: { kg: 110, resultados: [{ reps: 13, ger: 9 }] } },
+  { id: "stiff", series: [N(9, 8, 10), N(9, 8, 10)], preparo: "auto", descanso: 120, descansoPreparo: 40, ultimo: { kg: 70, resultados: [{ reps: 10, ger: 9 }, { reps: 9, ger: 9 }] } }
+];
+
+function Teste() {
+  const comecar = useTreino(x => x.comecar);
+  const lembrar = useProtocolo(x => x.lembrar);
+  const [erro, setErro] = useState("");
+  async function testar() {
+    try {
+      const { itens } = await api<{ itens: { id: string; nome: string; nomePt: string | null; musculo: string; acessorios: string[]; equipamento: Equipamento; pilhaKg: number | null }[] }>("GET", `/biblioteca?ids=${DEMO.map(d => d.id).join(",")}`);
+      const L = Object.fromEntries(itens.map(i => [i.id, i]));
+      lembrar(Object.fromEntries(itens.map(i => [i.id, { nome: i.nomePt || i.nome, musculo: i.musculo, acessorios: i.acessorios, equipamento: i.equipamento, pilhaKg: i.pilhaKg }])));
+      const lista: ExercicioDaSessao[] = DEMO.filter(d => L[d.id]).map(d => {
+        const i = L[d.id]!;
+        return {
+          uid: crypto.randomUUID(), id: d.id, nome: i.nomePt || i.nome, pilhaKg: i.pilhaKg, chave: d.id, configuracao: configuracao(d.series), ultimo: d.ultimo ?? null,
+          treino: { musculo: i.musculo, acessorios: i.acessorios, equipamento: i.equipamento, series: d.series, preparo: d.preparo, descanso: d.descanso, descansoPreparo: d.descansoPreparo }
+        };
+      });
+      await comecar({ id: crypto.randomUUID(), titulo: "Teste de séries", dia: 0, indiceTreino: 0, protocoloId: null, protocoloVersao: null, diaLocal: hojeLocal(), inicio: Date.now(), diasParado: 0, lista, teste: true });
+    } catch {
+      setErro("O teste precisa de internet para carregar os exercícios.");
+    }
+  }
+  return <>
+    <div className="row" style={{ justifyContent: "center", gap: 2 }}>
+      <button className="linkbtn" onClick={() => void testar()}>Testar os tipos de série</button>
+      <button className="tip infobtn" aria-label="Sobre o teste" data-tip="Sessão de demonstração com pergunta de carga na primeira vez, cartões de sugestão, preparo pela matriz do músculo, os três tipos de série e os cinco equipamentos, incluindo uma máquina de placas acima da pilha. Não conta presença."><Pix nome="info" w={16} /></button>
+    </div>
+    {erro && <p className="frerr" role="alert">{erro}</p>}
+  </>;
 }
 
 export function Treino() {
@@ -172,7 +218,8 @@ export function Treino() {
     return <div id="sessIdle" className="col">
       <h2 className="next-title">{carregado ? "Sem protocolo ainda" : "Carregando"}</h2>
       <p className="next-meta">Os treinos aparecem aqui depois que o protocolo for montado.</p>
-      <button className="btn btn-primary" onClick={() => navegar("/plano")}>Montar protocolo</button>
+      <button className="btn btn-primary" onClick={() => navegar("/plano", { state: { montar: true } })}>Montar protocolo</button>
+      <Teste />
     </div>;
   }
   const nome = nomeDe(t.i);
@@ -187,6 +234,7 @@ export function Treino() {
         })}
       </div>
       <button className="btn btn-primary" onClick={() => void comecarTreino()}>Começar {nome}</button>
+      <Teste />
     </div>
   );
 }

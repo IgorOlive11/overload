@@ -46,11 +46,13 @@ export interface EstadoDaSessao {
   preparos: number;
   sobem: number;
   descanso: Descanso | null;
+  /* Sessão de teste dos tipos de série: não conta presença nem entra no histórico. */
+  teste?: boolean;
 }
 
 export interface Dados {
   id: string; titulo: string; dia: number; indiceTreino: number; protocoloId: string | null; protocoloVersao: number | null;
-  diaLocal: string; inicio: number; diasParado: number; lista: ExercicioDaSessao[];
+  diaLocal: string; inicio: number; diasParado: number; lista: ExercicioDaSessao[]; teste?: boolean;
 }
 
 export function iniciar(d: Dados): EstadoDaSessao {
