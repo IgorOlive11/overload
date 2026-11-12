@@ -27,5 +27,5 @@ Para tarefa de tela: a captura do mock e a do app, lado a lado.
 - [ ] Todo registro em `docs/decisoes` com status aceito ou rejeitado cita a resposta do dono na issue.
 - [ ] Testes, lint e build passam no CI.
 - [ ] Nada fora do escopo da issue foi alterado.
-- [ ] Se este pull request mexe em `supabase/`, `.claude/` ou `.github/`, a explicação acima diz quem passa a poder fazer o quê.
+- [ ] Se este pull request mexe em `db/`, `.claude/` ou `.github/`, a explicação acima diz quem passa a poder fazer o quê.
 - [ ] Se uma regra de negócio mudou, `docs/produto` foi atualizado aqui.

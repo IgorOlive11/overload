@@ -4,22 +4,24 @@ App de treino em PWA, aberto e sem fins lucrativos. O foco do produto é garanti
 
 ## Estado atual
 
-O repositório está em reconstrução. O código em src/ (login, hooks e store) vem de uma base anterior ao mock e ao modelo do v2, e será substituído. A referência do modelo de dados do v1 é docs/tecnico/legado/esquema-v1.sql. Não use esse modelo para o v2: ele tem papel de usuário e um JSON único por seção, e as duas coisas foram descartadas.
+O repositório está em reconstrução. O MVP é construído no branch `agente/mvp-v2` (plano na Doc "Overload v2: plano do MVP"). A referência do modelo de dados do v1 é docs/tecnico/legado/esquema-v1.sql. Não use esse modelo para o v2: ele tem papel de usuário e um JSON único por seção, e as duas coisas foram descartadas.
 
 ## Comandos
 
 - `npm ci`: instala as dependências.
-- `npm run dev`: sobe o app local. Precisa de um `.env` criado a partir do `.env.example`.
+- `npm run dev`: sobe o app local; `/api` vai para a API local.
+- `npm run api`: sobe a API local. Precisa de um `.env` criado a partir do `.env.example`.
+- `npm run db:preparar` e `npm run db:migrar`: preparam e migram o banco. Veja `db/AGENTS.md`.
 - `npm run lint`: ESLint.
 - `npm run build`: build de produção.
-- `npm run typecheck`: confere os tipos com o `tsc --noEmit`. O CI roda antes do build.
+- `npm run typecheck`: confere os tipos do app e do servidor com o `tsc --noEmit`. O CI roda antes do build.
 
-- `npm test`: testes de `tests/` (runner do Node, sem dependência). O teste de abertura do mock no navegador usa o Playwright e é pulado se ele não estiver instalado.
+- `npm test`: testes de `tests/` (runner do Node, sem dependência). Os testes de banco e da API precisam de `DATABASE_URL_TESTE` e são pulados sem ela. O teste de abertura do mock no navegador usa o Playwright e é pulado se ele não estiver instalado.
 - `node design/mock/build.mjs`: gera o HTML completo do mock em `design/mock/dist/`. Veja `design/mock/README.md`.
 
 ## Stack
 
-React 19, Vite 8, Tailwind 3, Zustand 5 e o cliente do Supabase 2. As versões exatas estão no `package.json`. Deploy na Vercel; banco, autenticação e Edge Functions no Supabase.
+App: React 19, Vite 8, TypeScript estrito, Tailwind 3, Zustand 5 e `vite-plugin-pwa`. API: Node 24, Fastify 5 e `pg`, com login próprio (`bcryptjs`). Banco: Postgres 16. Tudo pelo Coolify no servidor `oracle-a1` (decisão 0015, em proposta). As versões exatas estão no `package.json`. Sem Next.js, sem RabbitMQ e sem Supabase.
 
 ## Onde está cada verdade
 
@@ -31,12 +33,13 @@ React 19, Vite 8, Tailwind 3, Zustand 5 e o cliente do Supabase 2. As versões e
 ## Estrutura
 
 - `src/app`: rotas, providers e o shell do PWA.
-- `src/domain`: regras de negócio puras, como progressão, carga e séries válidas. Sem React e sem Supabase.
+- `src/domain`: regras de negócio puras, como progressão, carga e séries válidas. Sem React e sem banco. O app e a API usam o mesmo código.
 - `src/features`: uma pasta por funcionalidade. Uma feature não importa outra; a composição acontece em `src/app`.
 - `src/components`: peças visuais compartilhadas.
-- `src/lib`: cliente do Supabase e integrações.
-- `supabase/`: migrações, Edge Functions e testes de banco. Tem regras próprias no `supabase/AGENTS.md`.
-- `tests/e2e`: testes de ponta a ponta. `tests/oraculo`: casos de entrada e saída gerados a partir do mock.
+- `src/lib`: chamadas à API, IndexedDB e a fila de envio.
+- `server/`: a API (Fastify). Toda leitura de dado de conta passa por `transacao`, que grava a conta para a RLS.
+- `db/`: preparo, migrações e executor. Tem regras próprias no `db/AGENTS.md`.
+- `tests/db` e `tests/api`: banco e API contra um Postgres de verdade. `tests/e2e`: testes de ponta a ponta. `tests/oraculo`: casos de entrada e saída gerados a partir do mock.
 
 ## Testes
 
@@ -70,8 +73,7 @@ React 19, Vite 8, Tailwind 3, Zustand 5 e o cliente do Supabase 2. As versões e
 
 - Nunca grave segredo, chave ou dado de pessoa real no código, em teste, em fixture ou em log.
 - Nunca leia nem edite arquivos `.env`.
-- Nunca use a chave de serviço do Supabase no código do app.
-- Nunca leia permissão de `user_metadata`: o usuário consegue alterar esse campo.
+- Nunca decida permissão por dado que o cliente manda: a conta vem só do cookie de sessão, conferido no banco.
 - Nunca dê push direto na `master` nem force push.
 - Nunca trabalhe numa issue sem a etiqueta `pronta-para-agente` nem numa issue com bloqueio ainda aberto.
 - Nunca grave um registro em `docs/decisoes` como aceito ou rejeitado sem a resposta do dono na issue. Sem resposta, ele entra como proposta e o pull request diz isso.

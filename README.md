@@ -72,7 +72,7 @@ As regras que os agentes seguem estão no [AGENTS.md](AGENTS.md), e o processo c
 
 ## Tecnologia
 
-React, Vite, TypeScript, Tailwind e Zustand no app. Supabase para autenticação, banco com políticas de acesso por conta e funções de servidor. Deploy na Vercel. Os testes usam o runner do Node e o Playwright. As versões exatas estão no [package.json](package.json).
+React, Vite, TypeScript, Tailwind e Zustand no app, instalável como PWA. API em Node com Fastify, login próprio e Postgres com políticas de acesso por conta. Hospedagem pelo Coolify. Os testes usam o runner do Node e o Playwright. As versões exatas estão no [package.json](package.json).
 
 ## Para quem quer estudar ou fazer fork
 
@@ -85,7 +85,8 @@ O código é aberto para isso. Um mapa rápido de onde está cada coisa:
 | [docs/decisoes](docs/decisoes) | Cada decisão de produto e de arquitetura, com as opções consideradas. |
 | [design](design) | O mock de alta fidelidade, as capturas de tela e os assets visuais. |
 | `src` | O app. |
-| `supabase` | Migrações, funções de servidor e testes do banco. |
+| `server` | A API. |
+| `db` | Preparo e migrações do banco, com regras próprias em `db/AGENTS.md`. |
 | `tests` | Testes, incluindo o oráculo de progressão e carga, gerado a partir do mock. |
 
 Os comandos de desenvolvimento estão no [AGENTS.md](AGENTS.md).

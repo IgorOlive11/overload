@@ -35,7 +35,7 @@ A opção 1.
 - `overload_dono`: dona do schema e das tabelas, usada só para migrar;
 - `overload_api`: a API, sem `BYPASSRLS` e sem ser dona de nada, com privilégios só nas tabelas que usa.
 
-Toda tabela com dados de uma conta tem RLS ligado e forçado, com a política "só o dono" comparando a coluna `conta_id` com `overload.conta_atual()`, que lê `current_setting('overload.conta_id', true)`. A API abre uma transação por requisição autenticada e grava esse valor com `set_config(..., true)`, que vale só dentro da transação. Sem o valor, nenhuma linha aparece. Assim, um erro de `where` na API não vaza dado de outra conta.
+Toda tabela com dados de uma conta tem RLS ligado (a API não é dona das tabelas, então não escapa dele), com a política "só o dono" comparando a coluna `conta_id` com `overload.conta_atual()`, que lê `current_setting('overload.conta_id', true)`. A API abre uma transação por requisição autenticada e grava esse valor com `set_config(..., true)`, que vale só dentro da transação. Sem o valor, nenhuma linha aparece. Assim, um erro de `where` na API não vaza dado de outra conta.
 
 **Login.** A API cuida de cadastro, confirmação de e-mail, login, saída e redefinição de senha. A senha é guardada com bcrypt (`bcryptjs`, custo 12), e os hashes `$2a$` do v1 entram sem mudança. A sessão é um cookie `HttpOnly`, `Secure`, `SameSite=Lax`, com um token aleatório de 32 bytes; o banco guarda só o SHA-256 do token. O login tem limite de tentativas. Nada que o cliente envia no cadastro vira permissão.
 
