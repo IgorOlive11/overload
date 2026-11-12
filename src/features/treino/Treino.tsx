@@ -13,6 +13,8 @@ import type { Registro } from "../../domain/tipos.ts";
 import { buscarUltimos, type Ultimos } from "../../app/historico.ts";
 import { useProtocolo } from "../../app/protocolo.ts";
 import { useTreino, type Fim } from "../../app/treino.ts";
+import { useGuia } from "../../app/guia.ts";
+import { useApp } from "../../app/estado.ts";
 import { Pix } from "../../components/pix.tsx";
 import { Slots } from "../../components/Slots.tsx";
 import { FACE } from "../../lib/faces.ts";
@@ -58,6 +60,13 @@ function Resumo({ fim }: { fim: Fim }) {
   const par = estimativaMin(s.lista.map(e => e.treino)) * 60;
   const validas = useContagem(s.validas), preparos = useContagem(s.preparos), sobem = useContagem(s.sobem), tempo = useContagem(segs);
   const n = fim.totalAntes + 1, primeira = n === 1, conquista = conquistaNova(n);
+  const { carregado: guiaPronto, dica } = useGuia();
+  const primeiroNome = useApp(x => x.conta?.nome.split(" ")[0] ?? "");
+  useEffect(() => {
+    if (!guiaPronto || !primeira) return;
+    const t = setTimeout(() => dica("done", { alvo: "#weekSlotsDone", face: 13, texto: `Primeira missão cumprida, ${primeiroNome}! Guardei a carga de cada exercício e a semana de ajuste começou hoje. No próximo treino eu já sugiro a carga, e quando você bater o topo da faixa, ela sobe.` }), 2600);
+    return () => clearTimeout(t);
+  }, [guiaPronto, primeira, primeiroNome, dica]);
   const fase = protocolo ? { ligada: protocolo.camada.fase, semanas: protocolo.camada.semanas, meta: protocolo.camada.metaN } : { ligada: false, semanas: 6, meta: 3 };
   const pr = presenca(sessoes.map(x => diaCorrido(new Date(x.diaLocal + "T12:00:00"))), diaCorrido(new Date()), fase);
   const titulo = cedo ? "Presença registrada" : `Missão ${n} concluída`;
@@ -81,7 +90,7 @@ function Resumo({ fim }: { fim: Fim }) {
         <div><span>Tempo</span><b className="num">{relogio(tempo)}</b></div>
         <div className="par"><span>Par <small>estimativa do plano</small></span><b className="num">{relogio(par)}</b></div>
       </div>
-      <Slots feitos={pr.feitosNaSemana} meta={protocolo?.camada.metaN ?? 3} />
+      <Slots id="weekSlotsDone" feitos={pr.feitosNaSemana} meta={protocolo?.camada.metaN ?? 3} />
       <div className="prog-list" id="nextUps">
         {primeira ? <>
           <p className="next-meta">Cargas guardadas como referência para o próximo treino:</p>

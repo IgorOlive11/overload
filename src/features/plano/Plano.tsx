@@ -1,6 +1,6 @@
 // Aba Plano: fase atual e montagem de protocolo, como no mock (estrutura.html #v-plano e primeiro-acesso.js: frPlan e a camada "phase").
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { diaCorrido, presenca } from "../../domain/presenca.ts";
 import { FACE } from "../../lib/faces.ts";
 import { useApp } from "../../app/estado.ts";
@@ -15,7 +15,8 @@ const DIAS_TXT = (d: number) => d === 1 ? "1 dia" : d + " dias";
 export function Plano() {
   const { protocolo, sessoes, carregado, carregar, salvar, bib } = useProtocolo();
   const { conta, sair, fila } = useApp();
-  const [vista, setVista] = useState<"cur" | "build">("cur");
+  const local = useLocation();
+  const [vista, setVista] = useState<"cur" | "build">((local.state as { montar?: boolean } | null)?.montar ? "build" : "cur");
   const [primeiraFase, setPrimeiraFase] = useState<Rascunho | null>(null);
   const navegar = useNavigate();
   useEffect(() => { if (!carregado) void carregar(); }, [carregado, carregar]);
@@ -52,7 +53,7 @@ export function Plano() {
           <li><b>Nunca faltar duas vezes.</b> Perdeu um treino, o próximo vira obrigatório.</li>
           <li><b>{seq ? "Treinos em fila." : "Cada treino no seu dia."}</b> {seq ? "Se faltar, você faz o que ficou para trás." : "Se faltar, aquele treino volta na semana seguinte."}</li>
         </ul>
-        <button className="btn btn-primary" onClick={() => { setPrimeiraFase(null); setVista("cur"); navegar("/"); }}>Bora</button>
+        <button className="btn btn-primary" onClick={() => { setPrimeiraFase(null); setVista("cur"); navegar("/", { state: { primeiro: true } }); }}>Bora</button>
       </div></div>
     );
   }

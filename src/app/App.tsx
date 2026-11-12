@@ -6,6 +6,8 @@ import { Cadastro, Confirmar, Entrar, Esqueci, Redefinir } from "../features/con
 import { Progresso } from "../features/progresso/Progresso.tsx";
 import { Clarao, RodapeDoDescanso, Treino } from "../features/treino/Treino.tsx";
 import { useTreino } from "./treino.ts";
+import { Guia } from "./Guia.tsx";
+import { useGuia } from "./guia.ts";
 import { Plano } from "../features/plano/Plano.tsx";
 import { Hoje } from "../features/hoje/Hoje.tsx";
 import { Dicas } from "../components/Dicas.tsx";
@@ -50,6 +52,8 @@ function Moldura() {
   const aoVivo = useTreino(x => !!x.sessao);
   const restaurar = useTreino(x => x.restaurar);
   useEffect(() => { void restaurar(); }, [restaurar]);
+  const carregarGuia = useGuia(x => x.carregar);
+  useEffect(() => { void carregarGuia(); }, [carregarGuia]);
   useEffect(() => {
     const pararFogo = fogoCv.current ? fogo(fogoCv.current) : () => {};
     const pararFaces = facesVivas();
@@ -67,6 +71,7 @@ function Moldura() {
         <RodapeDoDescanso />
         <Abas />
         <Dicas />
+        <Guia />
         <Toast />
       </main>
     </div>

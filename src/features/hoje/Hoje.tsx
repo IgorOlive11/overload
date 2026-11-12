@@ -1,7 +1,7 @@
 // Tela Hoje, portada de design/mock/hoje.js e primeiro-acesso.js (frHome), com os dados da conta.
 // Mostra só o próximo treino pelo modo de agenda (decisão do PO de 11/11); a escolha livre fica escondida no Plano.
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { diaDaSemana, proximoTreino } from "../../domain/agenda.ts";
 import { EQUIPAMENTOS, unidade } from "../../domain/equipamento.ts";
 import { GER } from "../../domain/ger.ts";
@@ -13,6 +13,8 @@ import { fmt } from "../../domain/texto.ts";
 import type { Equipamento, Registro } from "../../domain/tipos.ts";
 import { useProtocolo } from "../../app/protocolo.ts";
 import { useTreino } from "../../app/treino.ts";
+import { useApp } from "../../app/estado.ts";
+import { useGuia } from "../../app/guia.ts";
 import { Pix } from "../../components/pix.tsx";
 import { Slots } from "../../components/Slots.tsx";
 import { buscarUltimos, type Ultimos } from "../../app/historico.ts";
@@ -63,19 +65,46 @@ export function Hoje() {
 
   const quando = (emDias: number) => emDias === 0 ? "hoje" : emDias === 1 ? "amanhã" : DIAN[(dow + emDias) % 7]!.toLowerCase();
 
+  // O Doomguy: o tour do app na conta nova (guia.js: tourApp) e, depois de salvar a primeira fase, a dica do primeiro treino.
+  const primeiroNome = useApp(x => x.conta?.nome.split(" ")[0] ?? "");
+  const { carregado: guiaPronto, tour, dica } = useGuia();
+  const depoisDaFase = !!(useLocation().state as { primeiro?: boolean } | null)?.primeiro;
+  const semProtocolo = carregado && !protocolo && !total;
+  useEffect(() => {
+    if (!guiaPronto || !semProtocolo) return;
+    const t0 = setTimeout(() => tour("app", [
+      { face: 13, pos: "bottom", texto: `Fala, ${primeiroNome}! Eu sou o Doomguy. Vou te mostrar o Overload em poucos passos e depois a gente monta o seu protocolo.` },
+      { alvo: "#stageHome", face: 10, texto: "Aqui no Hoje fica só o próximo treino, com a carga do primeiro exercício em 3D. Nada de escolher entre vinte opções." },
+      { alvo: "#homeLoad", face: 9, texto: "O método é sobrecarga progressiva: você repete a mesma carga até chegar ao topo da faixa em todas as séries. Aí a carga sobe sozinha no treino seguinte." },
+      { alvo: "#homeFaceBtn", face: 8, faces: [7, 8, 9, 10], texto: "Depois de cada série você me diz quanto sobrou no tanque. Cada cara minha é um nível. Quanto mais perto da falha, mais estímulo, mas sem perder a técnica." },
+      { alvo: "#weekSlots", face: 10, texto: "Cada treino feito vira uma keycard. A meta é por semana, em qualquer dia. O que conta é aparecer, não fazer dias seguidos." },
+      { alvo: '.tabs [data-v="progresso"]', face: 9, texto: "Em Progresso você vê a presença e a carga subindo em cada exercício." },
+      { alvo: '.tabs [data-v="plano"]', face: 13, botao: "Montar protocolo", texto: "E no Plano mora o seu protocolo. Bora montar o seu agora." }
+    ], () => navegar("/plano", { state: { montar: true } })), 350);
+    return () => clearTimeout(t0);
+  }, [guiaPronto, semProtocolo, primeiroNome, tour, navegar]);
+  const dicaDeHoje = t && prox ? (prox.hoje
+    ? `Pronto. Seu primeiro treino é ${nome}. Em cada exercício eu pergunto a carga, porque ainda não sei sua força. A partir do segundo treino, eu sugiro.`
+    : `Pronto. Hoje é descanso no seu protocolo, e o primeiro treino é ${nome}, ${quando(prox.emDias)}. Se quiser começar hoje, pode: nada conta até o primeiro treino.`) : null;
+  useEffect(() => {
+    if (!guiaPronto || !depoisDaFase || !dicaDeHoje) return;
+    const t0 = setTimeout(() => dica("today", { alvo: "#startBtn", face: 10, texto: dicaDeHoje }), 400);
+    return () => clearTimeout(t0);
+  }, [guiaPronto, depoisDaFase, dicaDeHoje, dica]);
+
   // Sem protocolo: o Hoje do mock para a conta nova.
   if (!r || !t || !prox) {
     return <>
       <div className="topbar"><div className="mark">Overload</div><div className="row" style={{ gap: 6 }}>
         <button className="tip chip map" data-tip="Primeira missão da fase 1.">Episódio <b>1</b> · Missão <b>{total + 1}</b></button></div></div>
-      <div className="hero"><Palco eq="carregada" kg={40}><button className="load tip" data-tip="Aqui aparece a carga do primeiro exercício do próximo treino."><span className="kg">?</span><span className="u" /><span className="ex">Primeira missão</span></button></Palco></div>
+      <div className="hero"><Palco id="stageHome" eq="carregada" kg={40}><button id="homeLoad" className="load tip" data-tip="Aqui aparece a carga do primeiro exercício do próximo treino."><span className="kg">?</span><span className="u" /><span className="ex">Primeira missão</span></button></Palco></div>
       <div className="next">
-        <button className="tip facebtn" data-tip="Esforço alvo de hoje: aparece depois de montar o protocolo."><img className="face bob" src={FACE[10]} width={48} height={74} alt="Doom face do esforço alvo" /></button>
+        <button id="homeFaceBtn" className="tip facebtn" data-tip="Esforço alvo de hoje: aparece depois de montar o protocolo."><img className="face bob" src={FACE[10]} width={48} height={74} alt="Doom face do esforço alvo" /></button>
         <div><h2 className="next-title">{carregado ? "Sem protocolo ainda" : "Carregando"}</h2>
           <p className="next-meta"><span>Monte o seu no Plano</span> <button className="tip pill" data-tip="Os treinos aparecem aqui depois que o protocolo for montado."><span>primeira missão</span></button></p></div>
       </div>
-      <button className="btn btn-primary" onClick={() => navegar("/plano")}>Montar protocolo</button>
-      <div className="week"><Slots feitos={pr.feitosNaSemana} meta={meta} /></div>
+      <button id="startBtn" className="btn btn-primary" onClick={() => navegar("/plano", { state: { montar: true } })}>Montar protocolo</button>
+      <div className="week"><Slots id="weekSlots" feitos={pr.feitosNaSemana} meta={meta} /></div>
     </>;
   }
 
@@ -106,14 +135,14 @@ export function Hoje() {
     <div className="topbar"><div className="mark">Overload</div><div className="row" style={{ gap: 6 }}>
       <button className="tip chip map" data-tip={total ? `Fase 1 do protocolo, sessão ${total + 1}.` : "Primeira missão da fase 1."}>Episódio <b>1</b> · Missão <b>{total + 1}</b></button></div></div>
     <div className="hero">
-      <Palco eq={eq} kg={kg} pilha={L?.pilhaKg}>
-        <button className="load tip" data-tip={sg.kg != null ? `${L?.nome}. ${sg.porque}` : `${L?.nome}: primeira vez. A carga é perguntada no começo do exercício.`}>
+      <Palco id="stageHome" eq={eq} kg={kg} pilha={L?.pilhaKg}>
+        <button id="homeLoad" className="load tip" data-tip={sg.kg != null ? `${L?.nome}. ${sg.porque}` : `${L?.nome}: primeira vez. A carga é perguntada no começo do exercício.`}>
           <span className="kg">{sg.kg != null ? fmt(kg) : "?"}</span><span className="u">{sg.kg != null ? unidade(eq) : ""}</span><span className="ex">{L?.nome}</span>
         </button>
       </Palco>
     </div>
     <div className="next">
-      <button className="tip facebtn" data-tip={`Esforço alvo de hoje: ${GER[gAlvo]!.titulo}. Termine cada série com ${alvoTxt}.`}><img className="face bob" src={FACE[face]} width={48} height={74} alt="Doom face do esforço alvo" /></button>
+      <button id="homeFaceBtn" className="tip facebtn" data-tip={`Esforço alvo de hoje: ${GER[gAlvo]!.titulo}. Termine cada série com ${alvoTxt}.`}><img className="face bob" src={FACE[face]} width={48} height={74} alt="Doom face do esforço alvo" /></button>
       <div>
         <h2 className="next-title">{titulo}</h2>
         <p className="next-meta"><span>{metaTxt}</span> <button className="tip pill" data-tip={upsTip}><span>{ups}</span></button></p>
@@ -121,10 +150,10 @@ export function Hoje() {
     </div>
     {regra && <p className="state">{regra}</p>}
     {aoVivo
-      ? <button className="btn btn-primary" onClick={() => navegar("/treino")}>Voltar ao treino: {aoVivo.titulo}</button>
-      : <button className={`btn ${prox.hoje ? "btn-primary" : "btn-ghost"}`} onClick={() => navegar("/treino", { state: { dia: t.i } })}>{botao}</button>}
+      ? <button id="startBtn" className="btn btn-primary" onClick={() => navegar("/treino")}>Voltar ao treino: {aoVivo.titulo}</button>
+      : <button id="startBtn" className={`btn ${prox.hoje ? "btn-primary" : "btn-ghost"}`} onClick={() => navegar("/treino", { state: { dia: t.i } })}>{botao}</button>}
     <div className="week">
-      <Slots feitos={pr.feitosNaSemana} meta={meta} />
+      <Slots id="weekSlots" feitos={pr.feitosNaSemana} meta={meta} />
       <button className="tip infobtn" aria-label="Sobre a meta da semana"
         data-tip={`Cada sessão feita vira uma keycard. A meta é ${meta} por semana, em qualquer dia; a sessão a mais é bônus e não aumenta a meta seguinte. A meta é parte da camada de aderência, configurada ao montar o protocolo.`}><Pix nome="info" w={16} /></button>
     </div>

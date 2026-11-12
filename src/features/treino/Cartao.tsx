@@ -240,7 +240,7 @@ export function CartaoAtivo({ s, i, modo, travado, slot, concluir, corrigir, inf
           {p.tipo === "TRABALHO" && <button className="tip lk" data-tip="A carga fica travada nas séries válidas, como na v1. Para corrigir, volte no reel até a carga de hoje deste exercício." aria-label="Por que a carga está travada">{ICON.lock}</button>}
         </div>
       </Palco>
-      <div className={`cardbody${travado ? " locked" : ""}`}>{corpo}</div>
+      <div id="cardBody" className={`cardbody${travado ? " locked" : ""}`}>{corpo}</div>
       {slot && createPortal(acoes, slot)}
     </article>
   );

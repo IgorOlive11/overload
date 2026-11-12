@@ -3,8 +3,8 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { mostrar3D } from "../lib/cena3d.js";
 import type { Equipamento } from "../domain/tipos.ts";
 
-export function Palco({ eq, kg, pilha, animar = false, children }: { eq: Equipamento; kg: number; pilha?: number | null; animar?: boolean; children?: ReactNode }) {
+export function Palco({ eq, kg, pilha, animar = false, id, children }: { eq: Equipamento; kg: number; pilha?: number | null; animar?: boolean; id?: string; children?: ReactNode }) {
   const palco = useRef<HTMLDivElement>(null);
   useEffect(() => { if (palco.current) void mostrar3D(palco.current, eq, kg, animar, pilha ?? 100); }, [eq, kg, pilha, animar]);
-  return <div className="stage" ref={palco}>{children}</div>;
+  return <div className="stage" id={id} ref={palco}>{children}</div>;
 }

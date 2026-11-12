@@ -7,6 +7,7 @@ import { relogio, type EstadoDaSessao } from "../../domain/sessao.ts";
 import { cap } from "../../domain/texto.ts";
 import { useProtocolo } from "../../app/protocolo.ts";
 import { useTreino } from "../../app/treino.ts";
+import { useGuia, type PassoDoGuia } from "../../app/guia.ts";
 import { Gaveta } from "../../components/camadas.tsx";
 import { Pix, PixLinhas } from "../../components/pix.tsx";
 import { tempoDoDescanso, useAgora } from "./tempo.ts";
@@ -65,6 +66,30 @@ export function Reel({ s }: { s: EstadoDaSessao }) {
   const total = s.passos.length;
   const modoDe = (i: number): Modo => i === s.i ? "live" : i < s.i ? "edit" : "fut";
   const md = modoDe(vista), descansando = !!s.descanso;
+
+  // Dicas do Doomguy no primeiro treino, uma vez por conta (guia.js: frCardHint, frAfterWork e a do descanso).
+  const { carregado: guiaPronto, dica, vistos } = useGuia();
+  const novato = useProtocolo(x => x.carregado && !x.sessoes.length);
+  const atual = s.passos[s.i];
+  const qual = !atual ? null : descansando ? "rest"
+    : atual.tipo === "CALIBRACAO" && s.wk[atual.k]!.cartao.modo === "pergunta" ? "wq"
+    : atual.tipo === "PREPARO" ? "prep"
+    : atual.tipo === "TRABALHO" && atual.serie.tipo === "NORMAL" ? "ger" : null;
+  const ritmo = s.validas >= 1 && !!vistos.ger;
+  useEffect(() => {
+    if (!guiaPronto || !novato || vista !== s.i) return;
+    const D: Record<string, PassoDoGuia> = {
+      wq: { alvo: "#cardBody .qbox", face: 9, texto: "Primeira vez neste exercício, então eu ainda não sei sua força. Escolha uma carga que dê para fazer a faixa deixando a reserva que eu pedi. Se errar, tudo bem: no próximo treino eu corrijo." },
+      prep: { alvo: "#cardBody", face: 10, texto: "Isto é preparo: séries leves para aquecer o músculo. Não contam como série válida e não precisam ir perto da falha." },
+      ger: { alvo: "#cardBody .gersel", face: 8, faces: [7, 8, 9, 10], texto: "Série válida. Quando terminar, me diga quanto sobrou: é com isso que eu decido se a carga sobe. Seja honesto, iniciante costuma achar que sobrou menos do que sobrou." },
+      rest: { alvo: "#rPanel", face: 9, texto: "Descanso. O cronômetro conta sozinho e avisa quando acabar. Dá para tirar ou somar 15 segundos, ou seguir antes se já estiver pronto." }
+    };
+    const t = setTimeout(() => {
+      if (ritmo) dica("rhythm", { pos: "top", face: 13, texto: "Isso! Agora é com você: mesmo ritmo até o fim. Carga, repetições, quanto sobrou e descanso. Eu fico de olho e só volto a falar quando tiver novidade." });
+      if (qual) dica(qual, D[qual]!);
+    }, ritmo ? 700 : 400);
+    return () => clearTimeout(t);
+  }, [guiaPronto, novato, vista, s.i, qual, ritmo, dica]);
   const travado = (descansando && md === "live") || md === "fut";
 
   /* posições do reel: cartão ativo no centro, vizinhos encolhendo e apagando como na v1 */

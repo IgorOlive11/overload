@@ -12,6 +12,8 @@ import { gravarChave, lerChave } from "../../lib/idb.ts";
 import { Gaveta } from "../../components/camadas.tsx";
 import { toast } from "../../lib/aviso.ts";
 import { ICON } from "../../components/icones.tsx";
+import { useGuia } from "../../app/guia.ts";
+import { useProtocolo } from "../../app/protocolo.ts";
 import {
   alcance, alertasDaSemana, avisoDeDias, cabe, DIAS, diasDeTreino, doModelo, E, equipamentoTxt, escada,
   fluxo, GERL, GRUPOS, M2, misto, MODELOS, N, nomeDoDia, precisaAviso, resumoDoEx, revisaoDoDia, RRP, setEscada, sincronizarDias, T,
@@ -58,6 +60,24 @@ export function Montador({ inicial, bibInicial, travado, salvar }: MontadorProps
   const [busca, setBusca] = useState("");
   const [achados, setAchados] = useState<{ id: string; item: Item }[] | null>(null);
   const [aberto, setAberto] = useState(-1);
+
+  // Dicas do Doomguy em cada passo, uma vez por conta, até o primeiro treino (guia.js: frBuildHint).
+  const { carregado: guiaPronto, dica } = useGuia();
+  const novato = useProtocolo(x => x.carregado && !x.sessoes.length);
+  useEffect(() => {
+    if (!guiaPronto || !novato || travado) return;
+    const H: Record<number, [string, Parameters<typeof dica>[1]]> = {
+      0: ["b0", { alvo: "#bSimple .pick", face: 10, texto: "Se está começando, use um modelo pronto. Os dois são de baixo volume: poucas séries, bem feitas, e treinos de 30 a 45 minutos." }],
+      1: ["b1", { alvo: "#bSimple .sdaypick", face: 9, texto: "Toque nos dias em que você vai treinar. Se marcar mais ou menos dias que o modelo, eu te mostro como fica a divisão." }],
+      2: ["b2", { alvo: '#bSimple .pick[data-v="sequencia"]', face: 8, texto: "Isso decide o que acontece quando você falta. Na fila, nenhum treino se perde." }],
+      3: ["b3", { alvo: "#sList > li", face: 10, revelar: false, texto: "Repare que cada exercício mostra o total de séries. Os quadradinhos vazados são o aquecimento, que eu coloco sozinho com cargas leves. Os cheios são as séries que valem. No 4 × 10 a 12 que muita gente faz, as primeiras séries já são aquecimento: aqui elas viram preparo e ficam separadas. Toque num exercício para ver como fica." }],
+      4: ["b4", { alvo: "#bSimple .report", face: 13, texto: "Aqui eu confiro tudo: volume de cada músculo, tempo de cada dia e descanso entre partes do corpo. Se estiver certo, é só salvar." }]
+    };
+    const h = H[passo];
+    if (!h) return;
+    const t = setTimeout(() => dica(h[0], h[1]), 300);
+    return () => clearTimeout(t);
+  }, [passo, guiaPronto, novato, travado, dica]);
   const [serieAberta, setSerieAberta] = useState(0);
   const [avancado, setAvancado] = useState(false);
   const [dia, setDia] = useState(0);
@@ -221,7 +241,7 @@ export function Montador({ inicial, bibInicial, travado, salvar }: MontadorProps
       <button className="pick" aria-pressed={d.agenda === "semana"} onClick={() => mudar(r => { r.agenda = "semana"; })}>
         <b>Pulo aquele treino</b><span>Cada treino fica no seu dia. Faltou na terça: na quinta você faz o treino de quinta.</span>
       </button>
-      <button className="pick" aria-pressed={d.agenda === "sequencia"} onClick={() => mudar(r => { r.agenda = "sequencia"; })}>
+      <button className="pick" data-v="sequencia" aria-pressed={d.agenda === "sequencia"} onClick={() => mudar(r => { r.agenda = "sequencia"; })}>
         <b>Faço o que ficou para trás</b><span>Os treinos seguem uma fila. Faltou na terça: na quinta você faz o de terça, e o resto anda uma casa.</span>
         {rec && <em className="tag">Recomendado para os dias que você marcou</em>}
       </button>
