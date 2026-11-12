@@ -1,11 +1,11 @@
 // Rascunho do protocolo no montador, portado de design/mock/plano-simples.js e plano-montador.js.
 // Sem React: entra e sai dado, para os testes rodarem no Node. A tela (Montador.tsx) só desenha.
-import { RAMPAS, estimativaMin, preparo } from "../../domain/preparo.ts";
-import { EQUIPAMENTOS } from "../../domain/equipamento.ts";
-import { GER } from "../../domain/ger.ts";
-import { cap, faixaTxt, fmt, juntar } from "../../domain/texto.ts";
-import type { CamadaDeAderencia, Equipamento, ExercicioDoPlano, ExercicioDoTreino, Faixa, ItemDaBiblioteca, ModoAgenda, Serie } from "../../domain/tipos.ts";
-import { MUSCULOS } from "../../domain/tipos.ts";
+import { RAMPAS, estimativaMin, preparo } from "../domain/preparo.ts";
+import { EQUIPAMENTOS } from "../domain/equipamento.ts";
+import { GER } from "../domain/ger.ts";
+import { cap, faixaTxt, fmt, juntar } from "../domain/texto.ts";
+import type { CamadaDeAderencia, Equipamento, ExercicioDoPlano, ExercicioDoTreino, Faixa, ItemDaBiblioteca, ModoAgenda, Serie } from "../domain/tipos.ts";
+import { MUSCULOS } from "../domain/tipos.ts";
 
 export const DIAS = ["SEG", "TER", "QUA", "QUI", "SEX", "SÁB", "DOM"] as const;
 export const DIAN = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"] as const;

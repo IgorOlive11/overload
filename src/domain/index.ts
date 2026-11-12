@@ -7,3 +7,4 @@ export * from "./progressao.ts";
 export * from "./agenda.ts";
 export * from "./presenca.ts";
 export * from "./csv.ts";
+export * from "./historico.ts";

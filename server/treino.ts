@@ -124,20 +124,36 @@ export function rotasDeTreino(app: FastifyInstance, pool: pg.Pool) {
       chave: { type: "string", minLength: 1, maxLength: 90 }, configuracao: { type: "string", minLength: 1, maxLength: 200 } } } }
   }, async req => {
     const q = req.query as { chave: string; configuracao: string };
-    return { ultimo: await transacao(pool, req.contaId, async c => {
+    return { ultimo: await transacao(pool, req.contaId, c => ultimaVez(c, q.chave, q.configuracao)) };
+  });
+  async function ultimaVez(c: Cliente, chave: string, configuracao: string) {
       const s = (await c.query(
         `select s.id, s.iniciada_em from overload.sessoes_treino s
           where s.estado in ('concluida', 'encerrada')
             and exists (select 1 from overload.registros_serie r where r.sessao_id = s.id and r.exercicio_chave = $1 and r.configuracao = $2 and r.passo = 'valida')
-          order by s.iniciada_em desc limit 1`, [q.chave, q.configuracao])).rows[0];
+          order by s.iniciada_em desc limit 1`, [chave, configuracao])).rows[0];
       if (!s) return null;
       const regs = (await c.query(
         `select r.passo, r.ordem, r.tipo, r.kg, r.reps, r.ger, r.b1, r.b2, r.blocos, r.ultimo from overload.registros_serie r
           where r.sessao_id = $1 and r.exercicio_chave = $2 and r.configuracao = $3
             and not exists (select 1 from overload.registros_serie x where x.substitui = r.id)
-          order by r.passo, r.ordem, r.feito_em`, [s.id, q.chave, q.configuracao])).rows;
-      return { sessaoId: s.id, em: s.iniciada_em, registros: regs };
-    }) };
+          order by r.passo, r.ordem, r.feito_em`, [s.id, chave, configuracao])).rows;
+      return { sessaoId: s.id as string, em: s.iniciada_em as string, registros: regs };
+  }
+
+  // A última vez de vários exercícios de uma vez, para a tela Hoje e o começo do treino.
+  app.post("/historico/ultimos", {
+    preHandler: exigirConta,
+    schema: { body: { type: "object", additionalProperties: false, required: ["itens"], properties: { itens: {
+      type: "array", maxItems: 40, items: { type: "object", additionalProperties: false, required: ["chave", "configuracao"], properties: {
+        chave: { type: "string", minLength: 1, maxLength: 90 }, configuracao: { type: "string", minLength: 1, maxLength: 200 } } } } } } }
+  }, async req => {
+    const { itens } = req.body as { itens: { chave: string; configuracao: string }[] };
+    const ultimos: Record<string, { sessaoId: string; em: string; registros: object[] } | null> = {};
+    await transacao(pool, req.contaId, async c => {
+      for (const q of itens) ultimos[`${q.chave}|${q.configuracao}`] = await ultimaVez(c, q.chave, q.configuracao);
+    });
+    return { ultimos };
   });
 
   // Carga por exercício ao longo das sessões, para o Progresso: a maior carga válida de cada sessão.

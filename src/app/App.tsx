@@ -1,10 +1,13 @@
 // Casca do app com a marcação do mock (design/mock/estrutura.html): .shell > .app > .screens e as quatro abas.
 // As telas Hoje, Treino, Progresso e Plano chegam no bloco 2.
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Cadastro, Confirmar, Entrar, Esqueci, Redefinir } from "../features/conta/telas.tsx";
 import { EmBreve } from "../features/inicio/EmBreve.tsx";
 import { Plano } from "../features/plano/Plano.tsx";
+import { Hoje } from "../features/hoje/Hoje.tsx";
+import { Dicas } from "../components/Dicas.tsx";
+import { fogo, facesVivas } from "../lib/efeitos.ts";
 import { Toast } from "../components/camadas.tsx";
 import { Pix } from "../components/pix.tsx";
 import { AvisoDaFila } from "../components/AvisoDaFila.tsx";
@@ -38,14 +41,22 @@ function Abas() {
 }
 
 function Moldura() {
+  const fogoCv = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const pararFogo = fogoCv.current ? fogo(fogoCv.current) : () => {};
+    const pararFaces = facesVivas();
+    return () => { pararFogo(); pararFaces(); };
+  }, []);
   return (
     <div className="shell">
       <main className="app" id="app" tabIndex={-1}>
+        <canvas id="fireCv" ref={fogoCv} width={96} height={64} aria-hidden="true" />
         <AvisoDaFila />
         <div className="screens">
           <section className="screen"><Outlet /></section>
         </div>
         <Abas />
+        <Dicas />
         <Toast />
       </main>
     </div>
@@ -63,7 +74,7 @@ export function App() {
       <Route path="/esqueci" element={<Esqueci />} />
       <Route path="/redefinir" element={<Redefinir />} />
       <Route element={<SoComConta><Moldura /></SoComConta>}>
-        <Route index element={<EmBreve tela="Hoje" />} />
+        <Route index element={<Hoje />} />
         <Route path="treino" element={<EmBreve tela="Treino" />} />
         <Route path="progresso" element={<EmBreve tela="Progresso" />} />
         <Route path="plano" element={<Plano />} />

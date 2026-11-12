@@ -16,7 +16,7 @@ import {
   alcance, alertasDaSemana, avisoDeDias, cabe, DIAS, diasDeTreino, doModelo, E, equipamentoTxt, escada,
   fluxo, GERL, GRUPOS, M2, misto, MODELOS, N, nomeDoDia, precisaAviso, resumoDoEx, revisaoDoDia, RRP, setEscada, sincronizarDias, T,
   TIPOS, TSHORT, vazio, type Bib, type Ex, type Item, type Rascunho, type Tipo
-} from "./modelo.ts";
+} from "../../lib/plano.ts";
 
 interface ItemDaApi { id: string; nome: string; nomePt: string | null; musculo: string; acessorios: string[]; equipamento: Item["equipamento"]; pilhaKg: number | null }
 const paraItem = (i: ItemDaApi): Item => ({ nome: i.nomePt || i.nome, musculo: i.musculo, acessorios: i.acessorios, equipamento: i.equipamento, pilhaKg: i.pilhaKg });

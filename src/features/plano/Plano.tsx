@@ -8,7 +8,7 @@ import { rascunhoDoProtocolo, useProtocolo } from "../../app/protocolo.ts";
 import { toast } from "../../lib/aviso.ts";
 import { ICON } from "../../components/icones.tsx";
 import { Montador } from "./Montador.tsx";
-import { bibDaApi, DIAS, resumoDoEx, type Rascunho } from "./modelo.ts";
+import { bibDaApi, DIAS, resumoDoEx, type Rascunho } from "../../lib/plano.ts";
 
 const DIAS_TXT = (d: number) => d === 1 ? "1 dia" : d + " dias";
 

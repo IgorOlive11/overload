@@ -5,7 +5,7 @@ import { test } from "node:test";
 import vm from "node:vm";
 import {
   alertasDaSemana, avisoDeDias, cabe, conflitosDeDescanso, diasDeTreino, doModelo, paraApi, precisaAviso, resumoDoEx, sincronizarDias, type Bib
-} from "../../src/features/plano/modelo.ts";
+} from "../../src/lib/plano.ts";
 
 // A biblioteca de exemplo do próprio mock.
 const ctx: { LIB?: Record<string, { name: string; m: string; acc: string[]; eq: string; max?: number }> } = {};

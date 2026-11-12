@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { api, ErroDaApi } from "../lib/api.ts";
 import { gravarChave, lerChave } from "../lib/idb.ts";
-import { bibDaApi, daApi, paraApi, type Item, type ProtocoloDaApi, type Rascunho } from "../features/plano/modelo.ts";
+import { bibDaApi, daApi, paraApi, type Item, type ProtocoloDaApi, type Rascunho } from "../lib/plano.ts";
 
 export interface SessaoFeita { id: string; dia: number; indiceTreino: number; diaLocal: string; iniciadaEm: string; terminadaEm: string; estado: "concluida" | "encerrada" }
 
