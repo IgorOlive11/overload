@@ -27,7 +27,8 @@ test('Dado que o lint precisa entender TypeScript, quando npm run lint rodar, en
 })
 
 test('Dado que os tipos precisam ser conferidos no CI, quando um pull request for aberto, então o CI deve rodar um script typecheck', () => {
-  assert.equal(pacote().scripts.typecheck, 'tsc --noEmit')
+  // O app e o servidor têm um tsconfig cada; o typecheck confere os dois.
+  assert.match(pacote().scripts.typecheck, /^tsc --noEmit && tsc --noEmit -p tsconfig\.server\.json$/)
   assert.match(ler('.github', 'workflows', 'ci.yml'), /run: npm run typecheck/)
 })
 
