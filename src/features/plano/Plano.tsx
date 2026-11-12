@@ -1,7 +1,12 @@
 // Aba Plano: fase atual e montagem de protocolo, como no mock (estrutura.html #v-plano e primeiro-acesso.js: frPlan e a camada "phase").
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { diaDaSemana, proximoTreino } from "../../domain/agenda.ts";
+import { GER } from "../../domain/ger.ts";
 import { diaCorrido, presenca } from "../../domain/presenca.ts";
+import { api } from "../../lib/api.ts";
+import { gravarChave, lerChave } from "../../lib/idb.ts";
+import { Pix } from "../../components/pix.tsx";
 import { FACE } from "../../lib/faces.ts";
 import { useApp } from "../../app/estado.ts";
 import { rascunhoDoProtocolo, useProtocolo } from "../../app/protocolo.ts";
@@ -11,6 +16,43 @@ import { Montador } from "./Montador.tsx";
 import { bibDaApi, DIAS, resumoDoEx, type Rascunho } from "../../lib/plano.ts";
 
 const DIAS_TXT = (d: number) => d === 1 ? "1 dia" : d + " dias";
+const hojeLocal = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+
+interface Ideia { id: string; texto: string }
+
+/* Ideias para a próxima fase (plano-fase.js), na conta; sem rede, a lista guardada no aparelho. */
+function Ideias({ semana }: { semana: number }) {
+  const [ideias, setIdeias] = useState<Ideia[]>([]);
+  const [texto, setTexto] = useState("");
+  useEffect(() => {
+    void (async () => {
+      try { const { ideias: i } = await api<{ ideias: Ideia[] }>("GET", "/ideias"); setIdeias(i); await gravarChave("ideias", i); }
+      catch { setIdeias((await lerChave<Ideia[]>("ideias").catch(() => undefined)) ?? []); }
+    })();
+  }, []);
+  const anotar = async () => {
+    const v = texto.trim(); if (!v) return;
+    try {
+      const { ideia } = await api<{ ideia: Ideia }>("POST", "/ideias", { texto: v });
+      const novas = [...ideias, ideia]; setIdeias(novas); setTexto(""); void gravarChave("ideias", novas);
+    } catch { toast("Sem conexão", "A ideia não foi anotada. Tente de novo com internet.", 8); }
+  };
+  const apagar = async (id: string) => {
+    try { await api("DELETE", `/ideias/${id}`); const novas = ideias.filter(i => i.id !== id); setIdeias(novas); void gravarChave("ideias", novas); }
+    catch { toast("Sem conexão", "Tente apagar de novo com internet.", 8); }
+  };
+  return (
+    <div className="card">
+      <h3>Ideias para a semana {semana}</h3>
+      <form className="idea-form" onSubmit={e => { e.preventDefault(); void anotar(); }}>
+        <label className="sr" htmlFor="ideaInput">Nova ideia</label>
+        <input id="ideaInput" placeholder="Ex.: trocar flexora por adutora" autoComplete="off" maxLength={200} value={texto} onChange={e => setTexto(e.target.value)} />
+        <button type="submit">Anotar</button>
+      </form>
+      <ul className="ideas">{ideias.map(i => <li key={i.id}>{i.texto} <button className="linkbtn" aria-label={`Apagar a ideia: ${i.texto}`} onClick={() => void apagar(i.id)}><Pix nome="x" w={10} /></button></li>)}</ul>
+    </div>
+  );
+}
 
 export function Plano() {
   const { protocolo, sessoes, carregado, carregar, salvar, bib } = useProtocolo();
@@ -60,6 +102,8 @@ export function Plano() {
 
   const treinos = protocolo ? protocolo.dias.map((x, i) => ({ ...x, i })).filter(x => !x.folga && x.exercicios.length) : [];
   const r = protocolo ? rascunhoDoProtocolo(protocolo) : null;
+  const prox = protocolo && r ? proximoTreino({ modo: r.agenda, dias: treinos.map(x => x.i), hoje: diaDaSemana(new Date()), feitoHoje: sessoes.some(s => s.diaLocal === hojeLocal()), proximoDaFila: Math.min(protocolo.fila ?? 0, Math.max(0, treinos.length - 1)) }) : null;
+  const naFase = Math.min(pr.total, fase.meta * fase.semanas), possiveis = fase.meta * fase.semanas;
   const b = protocolo ? { ...bib, ...bibDaApi(protocolo) } : bib;
 
   return <>
@@ -80,15 +124,34 @@ export function Plano() {
           ? <div className="card adjust"><h3>Semana de ajuste</h3><p>Começa no seu primeiro treino e dura 7 dias. Até lá, e durante ela, troque o que precisar: um exercício que sua academia não tem, um dia que não encaixa.</p><button className="btn btn-ghost" onClick={() => setVista("build")}>Ajustar protocolo</button></div>
           : pr.ajusteRestante > 0
             ? <div className="card adjust"><h3>Semana de ajuste</h3><p>Faltam {DIAS_TXT(pr.ajusteRestante)} para a fase travar. Até lá, troque o que precisar: um exercício que sua academia não tem, um dia que não encaixa.</p><button className="btn btn-ghost" onClick={() => setVista("build")}>Ajustar protocolo</button></div>
-            : <div className="card"><div className="lock">{ICON.cadeado}<h3>Travado até a semana {protocolo.camada.semanas + 1}</h3></div><p className="why">A semana de ajuste acabou. Ideias de mudança ficam para a próxima fase.</p></div>}
+            : <div className="card"><div className="lock">{ICON.cadeado}<h3>Travado até a semana {protocolo.camada.semanas + 1} <button className="tip infobtn" aria-label="Por que o plano está travado"
+                data-tip={`Esta fase foi criada com a camada de aderência ligada: plano travado, meta de ${fase.meta} ${fase.meta > 1 ? "sessões" : "sessão"} por semana, treino ${protocolo.agenda === "sequencia" ? "por sequência" : "no dia fixo"}${protocolo.camada.nuncaDuas ? " e regra de nunca faltar duas vezes" : ""}. Anote ideias abaixo para a próxima fase.`}><Pix nome="info" w={16} /></button></h3></div></div>}
+        {fase.ligada && dias.length > 0 && <div className="card">
+          <div className="row between"><h3>Fase 1</h3><button className="tip pill" data-tip={`Sessões feitas na fase, de ${possiveis} possíveis com a meta de ${fase.meta} por semana em ${fase.semanas} semanas.`}><span className="num">{naFase} de {possiveis}</span></button></div>
+          <div className="bar-track"><div className="bar-fill" style={{ width: `${(naFase / possiveis * 100).toFixed(1)}%` }} /></div>
+        </div>}
+        {pr.travado && <Ideias semana={protocolo.camada.semanas + 1} />}
         {treinos.map(x => {
           const l = r!.dias[x.i]!.exercicios;
-          return <details className="card" key={x.i}><summary><h3>{x.nome || DIAS[x.i]}</h3></summary>
+          const ehProx = !!prox && treinos[prox.indice]?.i === x.i;
+          return <details className="card" key={x.i} open={ehProx}><summary><h3>{x.nome || DIAS[x.i]}{ehProx ? " · próximo" : ""}</h3></summary>
             <ul className="plan-list">{l.map((e, k) => {
               const res = resumoDoEx(r!, l, k, b);
               return <li key={e.uid}><span>{b[e.id]?.nome ?? e.id}</span><span><span className="sdots" aria-hidden="true">{Array.from({ length: res.preparo }, (_, i) => <i key={`w${i}`} className="w" />)}{Array.from({ length: res.validas }, (_, i) => <i key={i} />)}</span>{res.texto}</span></li>;
-            })}</ul></details>;
+            })}</ul>
+            {/* Escolha livre, escondida aqui (decisão do PO de 11/11): a Hoje só oferece o próximo. */}
+            {!ehProx && <button className="linkbtn" onClick={() => navegar("/treino", { state: { dia: x.i } })}>Treinar este hoje</button>}
+          </details>;
         })}
+        <details className="card">
+          <summary><h3>Como executar</h3></summary>
+          <ol className="rules">
+            <li>Termine cada série com a reserva combinada no exercício, a carinha do Doomguy. A escala vai de {GER[7]!.alvo} até {GER[10]!.alvo.toLowerCase()}.</li>
+            <li>Chegou ao topo da faixa em todas as séries, sem passar do esforço combinado: a carga sobe no próximo treino.</li>
+            <li>O preparo segue o músculo: 3 séries na primeira vez dele no treino, 2 quando já trabalhou como acessório e 1 quando já foi o principal.</li>
+            {protocolo.camada.nuncaDuas && <li>Faltou uma vez: a próxima oportunidade é obrigatória.</li>}
+          </ol>
+        </details>
       </>}
       {/* O mock não mostra onde fica o Sair; até a decisão, ele fica no fim do Plano. */}
       <button className="linkbtn" onClick={() => void sairComCuidado()}>Sair da conta ({conta?.nome})</button>

@@ -26,10 +26,11 @@ async function protocoloCompleto(c: pg.PoolClient) {
   await c.query(`insert into overload.registros_serie (id, sessao_id, exercicio_chave, exercicio_id, configuracao, passo, ordem, tipo, kg, reps, ger, feito_em)
                  values ($1, $2, 'nome:SUPINO', $3, 'N10:8-10', 'valida', 0, 'NORMAL', 60, 9, 9, now())`, [r, s, e]);
   await c.query("insert into overload.sessoes_login (token_hash) values (decode(repeat('ab', 32), 'hex'))");
-  return { p, e, s, r };
+  const i = (await c.query("insert into overload.ideias (texto) values ('Trocar a flexora pela adutora') returning id")).rows[0].id as string;
+  return { p, e, s, r, i };
 }
 
-const TABELAS = ["contas", "sessoes_login", "protocolos", "protocolo_dias", "protocolo_exercicios", "protocolo_series", "sessoes_treino", "registros_serie"];
+const TABELAS = ["contas", "sessoes_login", "protocolos", "protocolo_dias", "protocolo_exercicios", "protocolo_series", "sessoes_treino", "registros_serie", "ideias"];
 
 describe("isolamento por conta no banco", { skip: semBanco }, () => {
   let ids: Awaited<ReturnType<typeof protocoloCompleto>>;
@@ -71,6 +72,7 @@ describe("isolamento por conta no banco", { skip: semBanco }, () => {
       assert.equal((await c.query("update overload.contas set nome = 'invasor' where id = $1", [a])).rowCount, 0);
       assert.equal((await c.query("update overload.sessoes_treino set estado = 'cancelada', terminada_em = now() where id = $1", [ids.s])).rowCount, 0);
       assert.equal((await c.query("delete from overload.sessoes_login")).rowCount, 0);
+      assert.equal((await c.query("delete from overload.ideias where id = $1", [ids.i])).rowCount, 0);
     });
     await conta(a, async c => assert.equal((await c.query("select descanso from overload.protocolos where id = $1", [ids.p])).rows[0].descanso, 120));
   });
@@ -88,6 +90,13 @@ describe("isolamento por conta no banco", { skip: semBanco }, () => {
     await assert.rejects(conta(b, c => c.query(
       `insert into overload.registros_serie (id, sessao_id, exercicio_chave, configuracao, passo, ordem, tipo, kg, reps, feito_em)
        values ($1, $2, 'x', 'N10:8-10', 'valida', 0, 'NORMAL', 1, 1, now())`, [randomUUID(), ids.s])), /foreign key/);
+  });
+
+  test("ideia: a conta dona apaga a própria, e a API não altera texto", async () => {
+    await assert.rejects(conta(a, c => c.query("update overload.ideias set texto = 'x' where id = $1", [ids.i])), /permission denied/);
+    await assert.rejects(conta(a, c => c.query("insert into overload.ideias (texto) values ('   ')")), /check/);
+    const nova = await conta(a, async c => (await c.query("insert into overload.ideias (texto) values ('Apagar depois') returning id")).rows[0].id) as string;
+    await conta(a, async c => assert.equal((await c.query("delete from overload.ideias where id = $1", [nova])).rowCount, 1));
   });
 
   test("registro de série só é acrescentado: a API não altera nem apaga", async () => {

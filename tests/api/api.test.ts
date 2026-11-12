@@ -159,7 +159,7 @@ describe("API", { skip: semBanco }, () => {
   });
 
   test("sem login, nada de dado: 401 em todas as rotas de conta", async () => {
-    for (const [m, u] of [["GET", "/protocolo"], ["GET", "/sessoes"], ["GET", "/progresso"], ["GET", "/biblioteca"], ["POST", "/envio"]] as const) {
+    for (const [m, u] of [["GET", "/protocolo"], ["GET", "/sessoes"], ["GET", "/progresso"], ["GET", "/ideias"], ["GET", "/biblioteca"], ["POST", "/envio"]] as const) {
       assert.equal((await chamar(m, u, m === "POST" ? {} : undefined)).statusCode, 401, `${m} ${u}`);
     }
   });
@@ -212,6 +212,18 @@ describe("API", { skip: semBanco }, () => {
       registros: [reg(s1, 60), errado, reg(s2, 65, errado.id), reg(s3, 90)] }, a.cookie);
     const { cargas } = (await chamar("GET", "/progresso", undefined, a.cookie)).json();
     assert.deepEqual(cargas.map((c: { kg: number }) => c.kg), [60, 65]);
+  });
+
+  test("ideias para a próxima fase: anota, lista e apaga só as da própria conta", async () => {
+    const a = await contaConfirmada(), b = await contaConfirmada();
+    const { ideia } = (await chamar("POST", "/ideias", { texto: "  Trocar a flexora pela adutora " }, a.cookie)).json();
+    assert.equal(ideia.texto, "Trocar a flexora pela adutora");
+    assert.equal((await chamar("POST", "/ideias", { texto: "   " }, a.cookie)).statusCode, 400);
+    assert.deepEqual((await chamar("GET", "/ideias", undefined, b.cookie)).json().ideias, []);
+    await chamar("DELETE", `/ideias/${ideia.id}`, undefined, b.cookie);
+    assert.equal((await chamar("GET", "/ideias", undefined, a.cookie)).json().ideias.length, 1);
+    await chamar("DELETE", `/ideias/${ideia.id}`, undefined, a.cookie);
+    assert.deepEqual((await chamar("GET", "/ideias", undefined, a.cookie)).json().ideias, []);
   });
 
   test("o protocolo guarda o nome do treino e devolve os itens da biblioteca que usa", async () => {

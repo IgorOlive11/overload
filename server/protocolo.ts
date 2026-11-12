@@ -146,6 +146,27 @@ export async function gravarProtocolo(c: Cliente, e: Entrada): Promise<Protocolo
 export function rotasDeProtocolo(app: FastifyInstance, pool: pg.Pool) {
   app.get("/protocolo", { preHandler: exigirConta }, async req => ({ protocolo: await transacao(pool, req.contaId, lerProtocolo) }));
 
+  // Ideias para a próxima fase: anotadas com o plano travado.
+  app.get("/ideias", { preHandler: exigirConta }, async req => ({
+    ideias: await transacao(pool, req.contaId, async c => (await c.query("select id, texto, criada_em as \"criadaEm\" from overload.ideias order by criada_em")).rows)
+  }));
+  app.post("/ideias", {
+    preHandler: exigirConta,
+    schema: { body: { type: "object", additionalProperties: false, required: ["texto"], properties: { texto: { type: "string", minLength: 1, maxLength: 200 } } } }
+  }, async (req, res) => {
+    const texto = (req.body as { texto: string }).texto.trim();
+    if (!texto) return res.code(400).send({ erro: "Escreva a ideia." });
+    return { ideia: await transacao(pool, req.contaId, async c => (await c.query(
+      "insert into overload.ideias (texto) values ($1) returning id, texto, criada_em as \"criadaEm\"", [texto])).rows[0]) };
+  });
+  app.delete("/ideias/:id", {
+    preHandler: exigirConta,
+    schema: { params: { type: "object", properties: { id: { type: "string", format: "uuid" } }, required: ["id"] } }
+  }, async req => {
+    await transacao(pool, req.contaId, c => c.query("delete from overload.ideias where id = $1", [(req.params as { id: string }).id]));
+    return { ok: true };
+  });
+
   app.put("/protocolo", { preHandler: exigirConta, schema: { body: esquemaProtocolo } }, async (req, reply) => {
     try {
       return { protocolo: await transacao(pool, req.contaId, c => gravarProtocolo(c, req.body as Entrada)) };

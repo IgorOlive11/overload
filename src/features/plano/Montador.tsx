@@ -48,6 +48,30 @@ export interface MontadorProps {
   salvar(r: Rascunho, b: Bib): Promise<void>;
 }
 
+/* Arrastar para reordenar (plano-montador.js: bListDown): a linha segue o dedo e as outras abrem espaço. */
+function arrastar(h: HTMLElement, y0: number, pointerId: number, mover: (para: number) => void) {
+  const item = h.closest<HTMLElement>(".bex"); if (!item?.parentElement) return;
+  const items = [...item.parentElement.children].filter((x): x is HTMLElement => x instanceof HTMLElement && x.matches(".bex"));
+  const from = items.indexOf(item), rects = items.map(x => x.getBoundingClientRect());
+  const gap = rects.length > 1 ? Math.max(0, rects[1]!.top - rects[0]!.bottom) : 0, sh = rects[from]!.height + gap;
+  let to = from;
+  try { h.setPointerCapture(pointerId); } catch { /* sem captura */ }
+  item.classList.add("dragging"); document.body.classList.add("dragmode");
+  const move = (ev: PointerEvent) => {
+    const dy = ev.clientY - y0, cy = rects[from]!.top + rects[from]!.height / 2 + dy;
+    item.style.transform = `translateY(${dy}px)`;
+    to = from;
+    rects.forEach((r, i) => { const mid = r.top + r.height / 2; if (i < from && cy < mid) to = Math.min(to, i); if (i > from && cy > mid) to = Math.max(to, i); });
+    items.forEach((x, i) => { if (x === item) return; let d = 0; if (from < to && i > from && i <= to) d = -sh; if (from > to && i < from && i >= to) d = sh; x.style.transform = d ? `translateY(${d}px)` : ""; });
+  };
+  const up = () => {
+    window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up);
+    items.forEach(x => { x.style.transform = ""; }); item.classList.remove("dragging"); document.body.classList.remove("dragmode");
+    if (to !== from) mover(to);
+  };
+  window.addEventListener("pointermove", move); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+}
+
 export function Montador({ inicial, bibInicial, travado, salvar }: MontadorProps) {
   const [d, setD] = useState<Rascunho>(() => inicial ?? vazio());
   const [bib, setBib] = useState<Record<string, Item>>({ ...bibInicial });
@@ -353,6 +377,7 @@ function LinhaDoEx(p: {
     <li className="bex">
       <div className="hd">
         <button className="grip" aria-label={`Mover ${nome}. Setas do teclado também movem.`}
+          onPointerDown={ev => { if (p.aberto) p.abrir(); const alvo = ev.currentTarget, y = ev.clientY, id = ev.pointerId; ev.preventDefault(); requestAnimationFrame(() => arrastar(alvo, y, id, p.mover)); }}
           onKeyDown={ev => { if (ev.key === "ArrowUp" || ev.key === "ArrowDown") { ev.preventDefault(); p.mover(k + (ev.key === "ArrowUp" ? -1 : 1)); } }}>{ICON.grip}</button>
         <button className="nm" aria-expanded={p.aberto} onClick={p.abrir}><b>{nome}</b>
           <small><span className="sdots" aria-hidden="true">{Array.from({ length: res.preparo }, (_, i) => <i key={`w${i}`} className="w" />)}{Array.from({ length: res.validas }, (_, i) => <i key={i} />)}</span>{res.texto}</small>
