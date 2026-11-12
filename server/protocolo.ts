@@ -49,7 +49,8 @@ export const esquemaProtocolo = {
       meta: { type: "boolean" }, metaN: { type: "integer", minimum: 1, maximum: 7 }, nuncaDuas: { type: "boolean" } } },
     dias: { type: "array", minItems: 7, maxItems: 7, items: {
       type: "object", additionalProperties: false, required: ["folga", "exercicios"], properties: {
-        folga: { type: "boolean" }, exercicios: { type: "array", maxItems: 30, items: exercicio } } } }
+        folga: { type: "boolean" }, nome: { type: "string", maxLength: 40 },
+        exercicios: { type: "array", maxItems: 30, items: exercicio } } } }
   }
 } as const;
 
@@ -61,14 +62,22 @@ export interface ExercicioSalvo {
 export interface ProtocoloSalvo {
   id: string; versao: number; agenda: "semana" | "sequencia"; descanso: number; descansoPreparo: number; fila: number;
   camada: { fase: boolean; semanas: number; meta: boolean; metaN: number; nuncaDuas: boolean };
-  dias: { folga: boolean; exercicios: ExercicioSalvo[] }[];
+  dias: { folga: boolean; nome: string; exercicios: ExercicioSalvo[] }[];
+  /* Os itens da biblioteca usados no protocolo, para o app ter nome, músculo e equipamento sem internet. */
+  biblioteca: Record<string, ItemSalvo>;
 }
-type Entrada = Omit<ProtocoloSalvo, "id" | "versao" | "fila"> & { versao: number | null };
+export interface ItemSalvo {
+  id: string; nome: string; nomePt: string | null; gifUrl: string | null; musculo: string; acessorios: string[];
+  equipamento: string; pilhaKg: number | null; instrucoes: string[]; instrucoesPt: string[] | null;
+}
+export const CAMPOS_DA_BIBLIOTECA = `id, nome, nome_pt as "nomePt", gif_url as "gifUrl", musculo, acessorios, equipamento, pilha_kg as "pilhaKg",
+  instrucoes, instrucoes_pt as "instrucoesPt"`;
+type Entrada = Omit<ProtocoloSalvo, "id" | "versao" | "fila" | "biblioteca" | "dias"> & { versao: number | null; dias: { folga: boolean; nome?: string; exercicios: ExercicioSalvo[] }[] };
 
 export async function lerProtocolo(c: Cliente): Promise<ProtocoloSalvo | null> {
   const p = (await c.query("select * from overload.protocolos where ativo")).rows[0];
   if (!p) return null;
-  const dias = (await c.query("select dia, folga from overload.protocolo_dias where protocolo_id = $1", [p.id])).rows;
+  const dias = (await c.query("select dia, folga, nome from overload.protocolo_dias where protocolo_id = $1", [p.id])).rows;
   const exs = (await c.query("select * from overload.protocolo_exercicios where protocolo_id = $1 order by dia, ordem", [p.id])).rows;
   const ser = (await c.query(
     "select s.* from overload.protocolo_series s join overload.protocolo_exercicios e on e.id = s.exercicio_id where e.protocolo_id = $1 order by s.ordem",
@@ -84,12 +93,16 @@ export async function lerProtocolo(c: Cliente): Promise<ProtocoloSalvo | null> {
     camada: { fase: p.fase, semanas: p.fase_semanas, meta: p.meta, metaN: p.meta_n, nuncaDuas: p.nunca_duas },
     dias: Array.from({ length: 7 }, (_, d) => ({
       folga: dias.find(x => x.dia === d)?.folga ?? true,
+      nome: dias.find(x => x.dia === d)?.nome ?? "",
       exercicios: exs.filter(e => e.dia === d).map(e => ({
         id: e.id, bibliotecaId: e.biblioteca_id, nome: e.nome, musculo: e.musculo, equipamento: e.equipamento, apelido: e.apelido,
         acessorios: e.acessorios, preparo: e.preparo ?? "auto", descanso: e.descanso, descansoPreparo: e.descanso_preparo,
         series: seriesDe.get(e.id) ?? []
       }))
-    }))
+    })),
+    biblioteca: Object.fromEntries((await c.query(
+      `select ${CAMPOS_DA_BIBLIOTECA} from overload.biblioteca where id = any($1)`,
+      [[...new Set(exs.map(e => e.biblioteca_id).filter(Boolean))]])).rows.map(i => [i.id, i]))
   };
 }
 
@@ -115,7 +128,7 @@ export async function gravarProtocolo(c: Cliente, e: Entrada): Promise<Protocolo
   }
   for (let d = 0; d < 7; d++) {
     const dia = e.dias[d]!;
-    await c.query("insert into overload.protocolo_dias (protocolo_id, dia, folga) values ($1, $2, $3)", [id, d, dia.folga]);
+    await c.query("insert into overload.protocolo_dias (protocolo_id, dia, folga, nome) values ($1, $2, $3, $4)", [id, d, dia.folga, dia.nome ?? ""]);
     for (const [ordem, x] of dia.exercicios.entries()) {
       await c.query(`insert into overload.protocolo_exercicios (id, protocolo_id, dia, ordem, biblioteca_id, nome, musculo, equipamento,
                      apelido, acessorios, preparo, descanso, descanso_preparo) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,

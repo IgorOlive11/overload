@@ -202,6 +202,25 @@ describe("API", { skip: semBanco }, () => {
     assert.equal((await chamar("GET", "/historico/ultimo?chave=x&configuracao=N10:8-10", undefined, a.cookie)).json().ultimo, null);
   });
 
+  test("o protocolo guarda o nome do treino e devolve os itens da biblioteca que usa", async () => {
+    const { cookie } = await contaConfirmada();
+    const p = protocolo(null);
+    p.dias[0] = { folga: false, nome: "Superior A", exercicios: [{ ...p.dias[0]!.exercicios[0]!, bibliotecaId: "sup", nome: null, musculo: null, equipamento: null }] } as never;
+    const salvo = (await chamar("PUT", "/protocolo", p, cookie)).json().protocolo;
+    assert.equal(salvo.dias[0].nome, "Superior A");
+    assert.equal(salvo.biblioteca.sup.nome, "Supino inclinado no Smith");
+    assert.equal(salvo.biblioteca.sup.equipamento, "smith");
+  });
+
+  test("a busca na biblioteca ignora acento e filtra por grupo muscular", async () => {
+    const { cookie } = await contaConfirmada();
+    const nomes = (r: Resp) => r.json().itens.map((i: { id: string }) => i.id);
+    assert.ok(nomes(await chamar("GET", "/biblioteca?q=triceps", undefined, cookie)).includes("pul"));
+    assert.ok(nomes(await chamar("GET", "/biblioteca?q=elevacao", undefined, cookie)).includes("elev"));
+    const pernas = nomes(await chamar("GET", `/biblioteca?musculos=${encodeURIComponent("QUADRÍCEPS,POSTERIOR")}`, undefined, cookie));
+    assert.ok(pernas.includes("hack") && pernas.includes("stiff") && !pernas.includes("sup"));
+  });
+
   test("login tem limite de tentativas", async () => {
     const email = `${randomUUID()}@exemplo.test`;
     let ultimo = 0;

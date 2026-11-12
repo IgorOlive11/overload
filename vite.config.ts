@@ -46,7 +46,10 @@ export default defineConfig({
         navigateFallback: "/index.html",
         // A API nunca vem do cache: dado de treino vive no IndexedDB, não no service worker.
         navigateFallbackDenylist: [/^\/api\//],
-        cleanupOutdatedCaches: true
+        cleanupOutdatedCaches: true,
+        // A versão nova assume na hora (o app recarrega sozinho); sem isso ela fica esperando até fechar todas as abas.
+        skipWaiting: true,
+        clientsClaim: true
       }
     })
   ],

@@ -3,21 +3,25 @@ import type { FastifyInstance } from "fastify";
 import type pg from "pg";
 import { transacao } from "./banco.ts";
 import { exigirConta } from "./conta.ts";
-
-const CAMPOS = `id, nome, nome_pt as "nomePt", gif_url as "gifUrl", musculo, acessorios, equipamento, pilha_kg as "pilhaKg",
-  partes, instrucoes, instrucoes_pt as "instrucoesPt"`;
+import { CAMPOS_DA_BIBLIOTECA as CAMPOS } from "./protocolo.ts";
 
 export function rotasDaBiblioteca(app: FastifyInstance, pool: pg.Pool) {
   app.get("/biblioteca", {
     preHandler: exigirConta,
     schema: { querystring: { type: "object", additionalProperties: false, properties: {
-      q: { type: "string", maxLength: 60 }, pagina: { type: "integer", minimum: 0, maximum: 1000, default: 0 } } } }
+      q: { type: "string", maxLength: 60 }, musculos: { type: "string", maxLength: 200 },
+      pagina: { type: "string", pattern: "^[0-9]{1,4}$" } } } }
   }, async req => {
-    const { q = "", pagina = 0 } = req.query as { q?: string; pagina?: number };
+    const { q = "", musculos = "", pagina = "0" } = req.query as { q?: string; musculos?: string; pagina?: string };
+    // Busca sem acento, como no mock: "supino" acha "Supino", "triceps" acha "TRÍCEPS".
     const termo = `%${q.trim().replace(/[\\%_]/g, m => `\\${m}`)}%`;
+    const grupo = musculos.split(",").map(m => m.trim()).filter(Boolean);
     return { itens: await transacao(pool, req.contaId, async c => (await c.query(
-      `select ${CAMPOS} from overload.biblioteca where nome ilike $1 or nome_pt ilike $1 or musculo ilike $1
-        order by coalesce(nome_pt, nome) limit 30 offset $2`, [termo, pagina * 30])).rows) };
+      `select ${CAMPOS} from overload.biblioteca
+        where (overload.sem_acento(nome) ilike overload.sem_acento($1) or overload.sem_acento(coalesce(nome_pt, '')) ilike overload.sem_acento($1)
+               or overload.sem_acento(musculo) ilike overload.sem_acento($1))
+          and (cardinality($2::text[]) = 0 or musculo = any($2))
+        order by coalesce(nome_pt, nome) limit 30 offset $3`, [termo, grupo, Number(pagina) * 30])).rows) };
   });
 
   app.get("/biblioteca/:id", { preHandler: exigirConta }, async (req, reply) => {
