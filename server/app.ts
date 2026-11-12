@@ -6,6 +6,7 @@ import type pg from "pg";
 import { rotasDaBiblioteca } from "./biblioteca.ts";
 import type { Config } from "./config.ts";
 import { lerSessao, rotasDeConta } from "./conta.ts";
+import { servirApp } from "./estatico.ts";
 import { rotasDeProtocolo } from "./protocolo.ts";
 import { rotasDeTreino } from "./treino.ts";
 
@@ -48,6 +49,8 @@ export async function construirApp(pool: pg.Pool, cfg: Config, avisarEmail: () =
     rotasDeTreino(api, pool);
     rotasDaBiblioteca(api, pool);
   }, { prefix: "/api" });
+
+  if (cfg.pastaApp && !(await servirApp(app, cfg.pastaApp))) throw new Error(`PASTA_APP sem index.html: ${cfg.pastaApp}`);
 
   return app;
 }

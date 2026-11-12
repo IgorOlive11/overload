@@ -11,6 +11,8 @@ export interface Config {
   remetente: string;
   /* Atrás do proxy do Coolify, o IP de quem chama vem do X-Forwarded-For. */
   confiarProxy: boolean;
+  /* Pasta do PWA construído, servida na mesma origem. Sem ela, só a API sobe. */
+  pastaApp: string | undefined;
 }
 
 export function lerConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -25,6 +27,7 @@ export function lerConfig(env: NodeJS.ProcessEnv = process.env): Config {
     producao,
     resendChave: env.RESEND_API_KEY,
     remetente: env.EMAIL_REMETENTE ?? "Overload <nao-responda@overload.app.br>",
-    confiarProxy: env.CONFIAR_PROXY !== "0"
+    confiarProxy: env.CONFIAR_PROXY !== "0",
+    pastaApp: env.PASTA_APP
   };
 }

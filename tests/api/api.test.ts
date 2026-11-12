@@ -11,7 +11,7 @@ import type { Config } from "../../server/config.ts";
 import { bancoDeTeste, semBanco, type Banco } from "../db/apoio.ts";
 
 const ORIGEM = "https://overload.test";
-const cfg: Config = { porta: 0, urlBanco: "", origem: ORIGEM, producao: false, resendChave: undefined, remetente: "x", confiarProxy: false };
+const cfg: Config = { porta: 0, urlBanco: "", origem: ORIGEM, producao: false, resendChave: undefined, remetente: "x", confiarProxy: false, pastaApp: undefined };
 
 let banco: Banco;
 let pool: pg.Pool;
