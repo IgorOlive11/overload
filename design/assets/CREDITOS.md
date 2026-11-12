@@ -12,3 +12,8 @@ Cada sprite, rosto, fonte ou imagem usada no Overload tem uma linha aqui, com qu
 | VT323 | `fontes/vt323-*.woff2` | The VT323 Project Authors | SIL OFL 1.1 (`fontes/LICENSE-vt323.txt`) |
 | Babylon.js (minificado) | `babylon-mini.js` | Babylon.js | Apache-2.0 (a confirmar a versão) |
 | Ícone do app (O de pedra em chamas) e os tamanhos gerados dele | `icone/icone-original.jpg`, `public/icones/*`, `public/favicon*` | A confirmar pelo dono do repositório | A confirmar |
+
+## Biblioteca de exercícios
+
+- Nomes, músculos, instruções e GIFs da biblioteca migrada do v1: ExerciseDB (static.exercisedb.dev), uso não comercial. Se o app virar produto pago, a licença precisa ser revista (docs/produto/rascunho-regras.md, Biblioteca).
+- Os 17 GIFs dos exercícios cadastrados à mão no v1 (ids `custom-*`) vieram do bucket `exercises` do Supabase do v1 e ficam em `public/biblioteca/`.

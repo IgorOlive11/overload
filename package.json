@@ -14,7 +14,8 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.server.json",
     "api": "node server/index.ts",
     "db:preparar": "node db/preparar.ts",
-    "db:migrar": "node db/migrar.ts"
+    "db:migrar": "node db/migrar.ts",
+    "db:migrar-v1": "node db/v1/migrar.ts"
   },
   "engines": {
     "node": ">=22.18"

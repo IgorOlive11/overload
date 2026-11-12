@@ -236,6 +236,14 @@ describe("API", { skip: semBanco }, () => {
     assert.equal(salvo.biblioteca.sup.equipamento, "smith");
   });
 
+  test("a busca traduz termos de academia: supino inclinado com halteres acha o nome em inglês", async () => {
+    const { cookie } = await contaConfirmada();
+    await dono.query("insert into overload.biblioteca (id, nome, musculo, equipamento) values ('tst-incline', 'dumbbell incline bench press', 'PEITO', 'halteres') on conflict do nothing");
+    const ids = (q: string) => chamar("GET", `/biblioteca?q=${encodeURIComponent(q)}`, undefined, cookie).then(r => r.json().itens.map((i: { id: string }) => i.id));
+    assert.ok((await ids("supino inclinado com halteres")).includes("tst-incline"));
+    assert.ok(!(await ids("supino declinado")).includes("tst-incline"));
+  });
+
   test("a busca na biblioteca ignora acento e filtra por grupo muscular", async () => {
     const { cookie } = await contaConfirmada();
     const nomes = (r: Resp) => r.json().itens.map((i: { id: string }) => i.id);
