@@ -22,15 +22,15 @@ function responder(decisao, motivo) {
   process.exit(0)
 }
 
-if (relativo.startsWith('supabase/migrations/') && existsSync(path.resolve(raiz, alvo))) {
-  responder('deny', 'Migração já existente não é editada. Crie uma migração nova com supabase migration new.')
+if (relativo.startsWith('db/migrations/') && existsSync(path.resolve(raiz, alvo))) {
+  responder('deny', 'Migração já existente não é editada. Crie uma migração nova em db/migrations com o próximo número.')
 }
 
 const pedemConfirmacao = [
   'AGENTS.md',
   'CLAUDE.md',
-  'supabase/AGENTS.md',
-  'supabase/CLAUDE.md',
+  'db/AGENTS.md',
+  'db/CLAUDE.md',
   '.github/CODEOWNERS',
 ]
 const pastasQuePedemConfirmacao = ['.claude/', '.github/workflows/']

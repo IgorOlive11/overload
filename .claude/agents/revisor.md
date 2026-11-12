@@ -12,7 +12,7 @@ Para cada pull request:
 2. Para cada critério, encontre o teste que o cobre, ou a conferência, no caso do item 6. Diga se ele existe, se o nome bate com o critério e se o teste realmente verifica o que o critério pede.
 3. Confira se o pull request mexe em algo fora do escopo da issue.
 4. Confira as regras do `AGENTS.md`, principalmente as da seção Nunca.
-5. Se o pull request mexe em `supabase/`, confira as regras do `supabase/AGENTS.md`.
+5. Se o pull request mexe em `db/` ou `server/`, confira as regras do `db/AGENTS.md` e se toda leitura de dado de conta passa por `transacao` com a conta da sessão.
 6. Se o pull request é só de documento ou de spike, confira a lista de conferência no lugar dos testes: cada critério precisa de um comando ou de uma leitura que o comprove.
 7. Se o pull request cria ou muda um registro em `docs/decisoes` com status aceito ou rejeitado, confira se a issue tem o comentário do dono com essa resposta.
 

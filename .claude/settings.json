@@ -11,17 +11,15 @@
       "Bash(npx playwright install *)",
       "Bash(node design/mock/*)",
       "Bash(node --test *)",
-      "Bash(supabase start)",
-      "Bash(supabase test db)",
-      "Bash(supabase migration new *)",
       "Bash(git status)",
       "Bash(git diff *)",
-      "Bash(git log *)"
+      "Bash(git log *)",
+      "Bash(npm run db:migrar)",
+      "Bash(npm run api)"
     ],
     "ask": [
       "Bash(npm uninstall *)",
-      "Bash(supabase db push *)",
-      "Bash(supabase link *)"
+      "Bash(npm run db:preparar)"
     ],
     "deny": [
       "Read(./.env)",
