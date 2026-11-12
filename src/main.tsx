@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { registerSW } from "virtual:pwa-register";
 import { App } from "./app/App.tsx";
+import "../design/mock/fontes.css";
+import "../design/mock/estilos.css";
 import "./index.css";
 
 // O service worker se atualiza sozinho (regra da v1 mantida) e deixa o app abrir sem rede.

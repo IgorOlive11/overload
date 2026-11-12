@@ -1,6 +1,7 @@
-// Rotas e moldura do app. As telas de Hoje, Plano, Treino e Progresso chegam no bloco 2.
+// Casca do app com a marcação do mock (design/mock/estrutura.html): .shell > .app > .screens e as quatro abas.
+// As telas Hoje, Treino, Progresso e Plano chegam no bloco 2.
 import { useEffect, type ReactNode } from "react";
-import { Navigate, NavLink, Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Cadastro, Confirmar, Entrar, Esqueci, Redefinir } from "../features/conta/telas.tsx";
 import { EmBreve } from "../features/inicio/EmBreve.tsx";
 import { AvisoDaFila } from "../components/AvisoDaFila.tsx";
@@ -9,32 +10,42 @@ import { useApp } from "./estado.ts";
 function SoComConta({ children }: { children: ReactNode }) {
   const { conta, carregando } = useApp();
   const local = useLocation();
-  if (carregando) return <p className="p-4 text-muted">Carregando...</p>;
+  if (carregando) return null;
   if (!conta) return <Navigate to="/entrar" replace state={{ de: local.pathname }} />;
   return children;
 }
 
-function Moldura() {
-  const { conta, sair, fila: f } = useApp();
-  const aba = ({ isActive }: { isActive: boolean }) =>
-    `flex-1 py-3 text-center uppercase tracking-[0.05em] ${isActive ? "text-accent" : "text-muted"}`;
-  const sairComCuidado = async () => {
-    if (f.pendentes && !confirm(`Ainda há ${f.pendentes} registro(s) sem enviar. Sair agora apaga esses registros do aparelho. Sair mesmo assim?`)) return;
-    await sair();
-  };
+const ICONES: Record<string, ReactNode> = {
+  hoje: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" /></svg>,
+  treino: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M2 12h2M20 12h2M6 7v10M18 7v10M9 9v6M15 9v6M9 12h6" /></svg>,
+  progresso: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 20h18M5 16l5-5 4 3 6-7" /></svg>,
+  plano: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3" /></svg>
+};
+const ABAS = [["hoje", "/", "Hoje"], ["treino", "/treino", "Treino"], ["progresso", "/progresso", "Progresso"], ["plano", "/plano", "Plano"]] as const;
+
+function Abas() {
+  const local = useLocation();
+  const navegar = useNavigate();
+  const ativa = (para: string) => (para === "/" ? local.pathname === "/" : local.pathname.startsWith(para));
   return (
-    <div className="flex min-h-full flex-col pb-[env(safe-area-inset-bottom)]">
-      <header className="flex items-center justify-between px-4 pt-[max(12px,env(safe-area-inset-top))]">
-        <span className="text-3xl text-accent">OVERLOAD</span>
-        <button className="link text-base" onClick={() => void sairComCuidado()}>Sair ({conta?.nome})</button>
-      </header>
-      <AvisoDaFila />
-      <main className="flex-1 px-4 py-4"><Outlet /></main>
-      <nav className="sticky bottom-0 flex border-t border-line bg-bg">
-        <NavLink to="/" end className={aba}>Hoje</NavLink>
-        <NavLink to="/plano" className={aba}>Plano</NavLink>
-        <NavLink to="/progresso" className={aba}>Progresso</NavLink>
-      </nav>
+    <nav className="tabs four" role="tablist" aria-label="Seções">
+      {ABAS.map(([id, para, nome]) => (
+        <button key={id} role="tab" aria-selected={ativa(para)} data-v={id} onClick={() => navegar(para)}>{ICONES[id]}{nome}</button>
+      ))}
+    </nav>
+  );
+}
+
+function Moldura() {
+  return (
+    <div className="shell">
+      <main className="app" id="app" tabIndex={-1}>
+        <AvisoDaFila />
+        <div className="screens">
+          <section className="screen"><Outlet /></section>
+        </div>
+        <Abas />
+      </main>
     </div>
   );
 }
@@ -51,12 +62,11 @@ export function App() {
       <Route path="/redefinir" element={<Redefinir />} />
       <Route element={<SoComConta><Moldura /></SoComConta>}>
         <Route index element={<EmBreve tela="Hoje" />} />
-        <Route path="plano" element={<EmBreve tela="Plano" />} />
+        <Route path="treino" element={<EmBreve tela="Treino" />} />
         <Route path="progresso" element={<EmBreve tela="Progresso" />} />
+        <Route path="plano" element={<EmBreve tela="Plano" />} />
       </Route>
-      <Route path="/treino" element={<SoComConta><EmBreve tela="Treino" /></SoComConta>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
-
