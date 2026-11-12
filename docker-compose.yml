@@ -44,5 +44,21 @@ services:
       timeout: 5s
       retries: 20
 
+  # Backup diário para o S3 da oracle-micro-1. Sem as três variáveis BACKUP_S3_*, fica desligado e avisa no log.
+  backup:
+    build:
+      context: ./db/backup
+    restart: unless-stopped
+    environment:
+      - SENHA_OVERLOAD_DONO=${SERVICE_PASSWORD_DONO}
+      - BACKUP_S3_ENDPOINT=${BACKUP_S3_ENDPOINT}
+      - BACKUP_S3_CHAVE=${BACKUP_S3_CHAVE}
+      - BACKUP_S3_SEGREDO=${BACKUP_S3_SEGREDO}
+      - BACKUP_S3_BALDE=${BACKUP_S3_BALDE:-overload-backups}
+      - BACKUP_DIAS=${BACKUP_DIAS:-30}
+    depends_on:
+      banco:
+        condition: service_healthy
+
 volumes:
   overload-banco:
