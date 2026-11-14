@@ -2,11 +2,13 @@
 // Uso:
 //   DATABASE_URL_V1=postgres://...supabase...  DATABASE_URL_MIGRACAO=postgres://overload_dono:...@host/db  node db/v1/migrar.ts
 //   O padrão só lê e mostra o relatório. Com --aplicar, grava no v2.
-// O v1 só é lido. No v2, uma conta que já existe (pelo id ou pelo e-mail) é pulada: rodar de novo não duplica nada.
+// O v1 só é lido. No v2, a conta que já existe (já migrada, ou criada na prévia com o mesmo e-mail) recebe o histórico
+// e fica com a senha de lá; o protocolo do v1 só entra se ela não tiver um. Os ids são estáveis: rodar de novo não duplica,
+// e na troca do domínio traz só o que foi feito no v1 depois da rodada anterior.
 // O relatório não mostra e-mail nem nome: cada conta aparece pelo começo do id.
 import pg from "pg";
 import { itemDaBiblioteca, migrarConta, type ItemV1 } from "./converter.ts";
-import { gravarConta, gravarItens } from "./gravar.ts";
+import { destinoDaConta, gravarConta, gravarItens } from "./gravar.ts";
 
 pg.types.setTypeParser(pg.types.builtins.NUMERIC, v => Number(v));
 
@@ -40,15 +42,19 @@ try {
   for (const c of contas) {
     const rotulo = String(c.id).slice(0, 8);
     if (!/^\$2[aby]\$\d\d\$.{53}$/.test(c.senhaHash ?? "")) { console.log(`${rotulo}: pulada, senha fora do formato bcrypt.`); puladas++; continue; }
-    const existe = (await v2.query("select 1 from overload.contas where id = $1 or email = lower(btrim($2))", [c.id, c.email])).rowCount;
-    if (existe) { console.log(`${rotulo}: pulada, já existe no v2.`); puladas++; continue; }
     const m = migrarConta({ ...c, criadaEm: new Date(c.criadaEm).toISOString(), confirmadoEm: c.confirmadoEm ? new Date(c.confirmadoEm).toISOString() : null }, biblioteca);
     const treinos = m.protocolo ? m.protocolo.dias.filter(d => !d.folga).length : 0;
-    console.log(`${rotulo}: ${m.protocolo ? `protocolo com ${treinos} treino(s)` : "sem protocolo"}, ${m.sessoes.length} sessão(ões), ${m.registros.length} registro(s).`);
+    const d = await destinoDaConta(v2, m);
+    const onde = d.nova ? "conta nova" : d.contaId === m.conta.id ? "já migrada antes, acrescenta o que for novo" : "junta na conta da prévia com o mesmo e-mail (fica a senha da prévia)";
+    const prot = m.protocolo && d.temProtocolo ? " (o protocolo do v1 não entra: a conta já tem um)" : "";
+    console.log(`${rotulo}: ${onde}; ${m.protocolo ? `protocolo com ${treinos} treino(s)` : "sem protocolo"}, ${m.sessoes.length} sessão(ões), ${m.registros.length} registro(s)${prot}.`);
     for (const a of m.avisos) console.log(`  - ${a}`);
     if (!aplicar) continue;
     await v2.query("begin");
-    try { await gravarConta(v2, m); await v2.query("commit"); migradas++; }
+    try {
+      const g = await gravarConta(v2, m); await v2.query("commit"); migradas++;
+      console.log(`  gravado: ${g.sessoes} sessão(ões) e ${g.registros} registro(s) novos.`);
+    }
     catch (e) { await v2.query("rollback"); console.log(`  ! não gravada: ${(e as Error).message}`); }
   }
   console.log(aplicar ? `Pronto: ${migradas} conta(s) migrada(s), ${puladas} pulada(s).` : "Só leitura. Rode com --aplicar para gravar no v2.");

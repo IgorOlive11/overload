@@ -2,7 +2,14 @@
 // Decisões do PO em 12/11 (no chat): a semana-tipo é a semana em que a pessoa parou; série pulse vira normal com a mesma faixa e GER;
 // a biblioteca entra inteira, com o equipamento em categoria automática (o que não cabe vira máquina de placas);
 // os 17 GIFs do bucket do Supabase passam a ser servidos pelo próprio app, em /biblioteca.
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
+
+/* Id estável a partir dos dados do v1: rodar a migração de novo gera os mesmos ids, e "on conflict do nothing" não duplica.
+   Assim dá para rodar de novo na troca do domínio e trazer só o que foi feito no v1 depois da primeira rodada. */
+export function idEstavel(...partes: (string | number)[]): string {
+  const h = createHash("sha256").update(partes.join("\u0000")).digest("hex");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-4${h.slice(13, 16)}-${(8 + (parseInt(h[16]!, 16) % 4)).toString(16)}${h.slice(17, 20)}-${h.slice(20, 32)}`;
+}
 import { chaveDoExercicio, configuracao } from "../../src/domain/historico.ts";
 import type { Equipamento, Serie } from "../../src/domain/tipos.ts";
 
@@ -39,6 +46,16 @@ export function equipamentoDoV1(lista: readonly string[]): Equipamento {
   if (["leverage machine", "sled machine"].includes(e)) return "carregada";
   if (["dumbbell", "halter", "halteres", "kettlebell"].includes(e)) return "halteres";
   // Polia, máquina e tudo o que não cabe numa categoria (peso do corpo, elástico, bola...): máquina de placas.
+  return "pilha";
+}
+
+/* Exercício criado à mão no v1, sem equipamento: a categoria sai do nome ("rosca com halteres" é halteres). */
+export function equipamentoPeloNome(nome: string): Equipamento {
+  const n = nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (/smith/.test(n)) return "smith";
+  if (/halter|dumbbell|kettlebell/.test(n)) return "halteres";
+  if (/leg press|hack|carregad|articulad|hammer/.test(n)) return "carregada";
+  if (/\bbarra\b|barbell|\bterra\b|\bstiff\b/.test(n) && !/barra fixa/.test(n)) return "barra";
   return "pilha";
 }
 
@@ -151,8 +168,8 @@ export function migrarConta(c: ContaV1, biblioteca: ReadonlyMap<string, ItemV2>)
     const ac = musculoDoV1(txt(e.accessoryMuscle), true);
     const id = `v1-${slug(nome) || "exercicio"}`;
     if (!biblioteca.has(id) && !novosItens.has(id)) {
-      novosItens.set(id, { id, nome: nome.slice(0, 120), nomePt: nome.slice(0, 120), gifUrl: null, musculo, acessorios: ac && ac !== musculo ? [ac] : [], equipamento: "pilha", pilhaKg: null, partes: [], instrucoes: [], instrucoesPt: null });
-      avisos.push(`Exercício sem item na biblioteca entrou como ${id} (máquina de placas).`);
+      novosItens.set(id, { id, nome: nome.slice(0, 120), nomePt: nome.slice(0, 120), gifUrl: null, musculo, acessorios: ac && ac !== musculo ? [ac] : [], equipamento: equipamentoPeloNome(nome), pilhaKg: null, partes: [], instrucoes: [], instrucoesPt: null });
+      avisos.push(`Exercício sem item na biblioteca entrou como ${id} (${equipamentoPeloNome(nome)}).`);
     }
     doV1.set(k, id);
     return id;
@@ -218,7 +235,7 @@ export function migrarConta(c: ContaV1, biblioteca: ReadonlyMap<string, ItemV2>)
       const fim = Math.max(ini, Date.parse(txt(s.completedAt)) || ini + (num(s.durationSec) ?? 3600) * 1000);
       const dia = num(s.dayIdx);
       const iniciadaEm = new Date(ini).toISOString();
-      return { id: randomUUID(), dia: dia != null && dia >= 0 && dia <= 6 ? dia : diaDaSemanaLocal(iniciadaEm), indiceTreino: 0, diaLocal: diaLocal(iniciadaEm), iniciadaEm, terminadaEm: new Date(fim).toISOString(), ini, fim };
+      return { id: idEstavel(c.id, "sessao", iniciadaEm), dia: dia != null && dia >= 0 && dia <= 6 ? dia : diaDaSemanaLocal(iniciadaEm), indiceTreino: 0, diaLocal: diaLocal(iniciadaEm), iniciadaEm, terminadaEm: new Date(fim).toISOString(), ini, fim };
     });
   const registros: RegistroV2[] = [];
   const sessaoDe = (t: number) => {
@@ -227,7 +244,7 @@ export function migrarConta(c: ContaV1, biblioteca: ReadonlyMap<string, ItemV2>)
       // Registro sem sessão no v1: vira uma sessão daquele dia, junto com os outros registros do mesmo dia.
       const iso = new Date(t).toISOString(), dl = diaLocal(iso);
       s = sessoes.find(x => x.diaLocal === dl && x.id.startsWith("v1sem"));
-      if (!s) { s = { id: "v1sem" + randomUUID().slice(5), dia: diaDaSemanaLocal(iso), indiceTreino: 0, diaLocal: dl, iniciadaEm: iso, terminadaEm: iso, ini: t, fim: t }; sessoes.push(s); }
+      if (!s) { s = { id: "v1sem:" + idEstavel(c.id, "sessao-do-dia", dl), dia: diaDaSemanaLocal(iso), indiceTreino: 0, diaLocal: dl, iniciadaEm: iso, terminadaEm: iso, ini: t, fim: t }; sessoes.push(s); }
       s.ini = Math.min(s.ini, t); s.fim = Math.max(s.fim, t);
       s.iniciadaEm = new Date(s.ini).toISOString(); s.terminadaEm = new Date(s.fim).toISOString();
     }
@@ -250,30 +267,30 @@ export function migrarConta(c: ContaV1, biblioteca: ReadonlyMap<string, ItemV2>)
     [...arr(e.warmups), ...arr(e.feeders)].map(obj).forEach((x, j) => {
       const kg = kgDe(x), reps = clamp(num(x.reps), 0, 200);
       if (kg == null || reps == null || j > 20) return;
-      registros.push({ ...base, id: randomUUID(), passo: "preparo", ordem: j, tipo: null, kg: num(x.kg) ?? kg, reps });
+      registros.push({ ...base, id: idEstavel(c.id, chave, feitoEm, "preparo", j), passo: "preparo", ordem: j, tipo: null, kg: num(x.kg) ?? kg, reps });
     });
     sets.forEach((x, j) => {
       const kg = num(x.kg) ?? num(e.kg);
       if (kg == null || kg < 0 || kg > 1000 || j > 20) return;
       const blocos = arr(x.blocks).map(b => num(obj(b).reps) ?? 0);
-      if (tipos[j] === "REST_PAUSE") { registros.push({ ...base, id: randomUUID(), passo: "valida", ordem: j, tipo: "REST_PAUSE", kg, b1: clamp(blocos[0] ?? 0, 0, 200), b2: clamp(blocos[1] ?? 0, 0, 200) }); return; }
+      if (tipos[j] === "REST_PAUSE") { registros.push({ ...base, id: idEstavel(c.id, chave, feitoEm, "valida", j), passo: "valida", ordem: j, tipo: "REST_PAUSE", kg, b1: clamp(blocos[0] ?? 0, 0, 200), b2: clamp(blocos[1] ?? 0, 0, 200) }); return; }
       if (tipos[j] === "MUSCLE_ROUND") {
         // v1: até 12 blocos de 4; v2: até 6. Blocos completos antes da falha, e as repetições do bloco da falha (ou do sexto).
         const falhou = num(x.failedBlock);
         const completos = Math.min(6, falhou != null ? Math.max(0, Math.round(falhou) - 1) : blocos.filter(r => r >= 4).length);
         const ultimo = completos >= 6 ? (blocos[5] ?? 4) : (num(x.failedReps) ?? 0);
-        registros.push({ ...base, id: randomUUID(), passo: "valida", ordem: j, tipo: "MUSCLE_ROUND", kg, blocos: completos, ultimo: clamp(ultimo, 0, 200) });
+        registros.push({ ...base, id: idEstavel(c.id, chave, feitoEm, "valida", j), passo: "valida", ordem: j, tipo: "MUSCLE_ROUND", kg, blocos: completos, ultimo: clamp(ultimo, 0, 200) });
         return;
       }
       const reps = clamp(num(x.reps), 0, 200);
       if (reps == null) { semReps++; return; }
-      registros.push({ ...base, id: randomUUID(), passo: "valida", ordem: j, tipo: "NORMAL", kg, reps });
+      registros.push({ ...base, id: idEstavel(c.id, chave, feitoEm, "valida", j), passo: "valida", ordem: j, tipo: "NORMAL", kg, reps });
     });
   }
   if (semReps) avisos.push(`${semReps} série(s) sem repetições (pulse ou registro incompleto) ficaram de fora do histórico.`);
 
   const final: SessaoV2[] = sessoes.map(s => {
-    const id = s.id.startsWith("v1sem") ? randomUUID() : s.id;
+    const id = s.id.startsWith("v1sem:") ? s.id.slice(6) : s.id;
     registros.forEach(r => { if (r.sessaoId === s.id) r.sessaoId = id; });
     return { id, dia: s.dia, indiceTreino: Math.max(0, diasDeTreino.indexOf(s.dia)), diaLocal: s.diaLocal, iniciadaEm: s.iniciadaEm, terminadaEm: s.terminadaEm };
   }).sort((a, b) => a.iniciadaEm.localeCompare(b.iniciadaEm));

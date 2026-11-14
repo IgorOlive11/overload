@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { after, before, describe, test } from "node:test";
 import bcrypt from "bcryptjs";
 import pg from "pg";
-import { equipamentoDoV1, itemDaBiblioteca, migrarConta, semanaParada, type ContaV1, type ItemV1 } from "../../db/v1/converter.ts";
+import { equipamentoDoV1, equipamentoPeloNome, itemDaBiblioteca, migrarConta, semanaParada, type ContaV1, type ItemV1 } from "../../db/v1/converter.ts";
 import { gravarConta, gravarItens } from "../../db/v1/gravar.ts";
 import { registroDaApi } from "../../src/domain/historico.ts";
 import { sugestao } from "../../src/domain/progressao.ts";
@@ -70,6 +70,14 @@ test("migração v1: equipamento vira categoria, e o que não cabe vira máquina
   assert.equal(equipamentoDoV1(["leverage machine"]), "carregada");
   assert.equal(equipamentoDoV1(["cable"]), "pilha");
   assert.equal(equipamentoDoV1(["body weight"]), "pilha");
+});
+
+test("migração v1: exercício criado à mão no v1 tira o equipamento do nome", () => {
+  assert.equal(equipamentoPeloNome("Rosca direta com halteres"), "halteres");
+  assert.equal(equipamentoPeloNome("Leg press"), "carregada");
+  assert.equal(equipamentoPeloNome("Supino inclinado no Smith"), "smith");
+  assert.equal(equipamentoPeloNome("Stiff com barra"), "barra");
+  assert.equal(equipamentoPeloNome("Barra fixa"), "pilha");
 });
 
 test("migração v1: os GIFs do bucket do Supabase passam a ser servidos pelo app, em /biblioteca", () => {
@@ -139,5 +147,37 @@ describe("migração v1 gravada no banco", { skip: semBanco }, () => {
       assert.equal((await x.query("select count(*)::int n from overload.protocolo_exercicios")).rows[0].n, 3);
     });
     await comoConta(banco.api, randomUUID(), async x => assert.equal((await x.query("select count(*)::int n from overload.registros_serie")).rows[0].n, 0));
+  });
+
+  test("migração v1: rodar de novo não duplica e traz só o treino novo do v1", async () => {
+    const dono = new pg.Client({ connectionString: banco.urlDono });
+    await dono.connect();
+    const c = contaFake();
+    try {
+      await dono.query("begin"); await gravarItens(dono, [...biblioteca.values()]); await gravarConta(dono, migrarConta(c, biblioteca)); await dono.query("commit");
+      const rodar = async () => { await dono.query("begin"); const g = await gravarConta(dono, migrarConta(c, biblioteca)); await dono.query("commit"); return g; };
+      const de2 = await rodar();
+      assert.deepEqual([de2.sessoes, de2.registros], [0, 0]);
+      (c.secoes.workoutSessions as object[]).push({ dayIdx: 0, weekIdx: 1, startedAt: "2026-08-24T20:00:00Z", completedAt: "2026-08-24T21:00:00Z" });
+      const de3 = await rodar();
+      assert.equal(de3.sessoes, 1);
+    } finally { await dono.end(); }
+  });
+
+  test("migração v1: conta criada na prévia com o mesmo e-mail recebe o histórico e fica com a senha da prévia", async () => {
+    const c = contaFake();
+    const dono = new pg.Client({ connectionString: banco.urlDono });
+    await dono.connect();
+    try {
+      await dono.query("insert into overload.contas (email, nome, senha_hash) values (lower($1), 'Pessoa', $2)", [c.email, bcrypt.hashSync("senha da previa", 4)]);
+      await dono.query("begin"); await gravarItens(dono, [...biblioteca.values()]);
+      const g = await gravarConta(dono, migrarConta(c, biblioteca)); await dono.query("commit");
+      assert.equal(g.destino.nova, false);
+      assert.notEqual(g.destino.contaId, c.id);
+      const conta = (await dono.query("select senha_hash from overload.contas where email = lower($1)", [c.email])).rows[0];
+      assert.ok(bcrypt.compareSync("senha da previa", conta.senha_hash));
+      assert.equal((await dono.query("select count(*)::int n from overload.sessoes_treino where conta_id = $1", [g.destino.contaId])).rows[0].n, 3);
+      assert.equal((await dono.query("select count(*)::int n from overload.contas where email = lower($1)", [c.email])).rows[0].n, 1);
+    } finally { await dono.end(); }
   });
 });

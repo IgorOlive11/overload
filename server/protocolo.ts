@@ -75,7 +75,7 @@ export const CAMPOS_DA_BIBLIOTECA = `id, nome, nome_pt as "nomePt", gif_url as "
 type Entrada = Omit<ProtocoloSalvo, "id" | "versao" | "fila" | "biblioteca" | "dias"> & { versao: number | null; dias: { folga: boolean; nome?: string; exercicios: ExercicioSalvo[] }[] };
 
 export async function lerProtocolo(c: Cliente): Promise<ProtocoloSalvo | null> {
-  const p = (await c.query("select * from overload.protocolos where ativo")).rows[0];
+  const p = (await c.query("select * from overload.protocolos where ativo and conta_id = overload.conta_atual()")).rows[0];
   if (!p) return null;
   const dias = (await c.query("select dia, folga, nome from overload.protocolo_dias where protocolo_id = $1", [p.id])).rows;
   const exs = (await c.query("select * from overload.protocolo_exercicios where protocolo_id = $1 order by dia, ordem", [p.id])).rows;
@@ -112,7 +112,7 @@ export class Conflito extends Error {
 }
 
 export async function gravarProtocolo(c: Cliente, e: Entrada): Promise<ProtocoloSalvo> {
-  const atual = (await c.query("select id, versao from overload.protocolos where ativo for update")).rows[0] as { id: string; versao: number } | undefined;
+  const atual = (await c.query("select id, versao from overload.protocolos where ativo and conta_id = overload.conta_atual() for update")).rows[0] as { id: string; versao: number } | undefined;
   if ((atual?.versao ?? null) !== e.versao) throw new Conflito(await lerProtocolo(c));
   const valores = [e.agenda, e.descanso, e.descansoPreparo, e.camada.fase, e.camada.semanas, e.camada.meta, e.camada.metaN, e.camada.nuncaDuas];
   let id: string;
